@@ -1,6 +1,4 @@
 
-/.vs/CtrlAltEngine/CopilotIndices
-
 # Visual Studio files
 .vs/
 *.suo
@@ -22,6 +20,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+/.vs/CtrlAltEngine/CopilotIndices
+
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
