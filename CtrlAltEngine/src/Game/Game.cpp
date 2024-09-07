@@ -28,7 +28,7 @@ namespace GameClass {
     /// 
     /// </summary>
     Game::~Game() {
-        spdlog::info("Game destructor called!");
+        spdlog::info("Game destructor called!"); 
     }
 
     /// <summary>
