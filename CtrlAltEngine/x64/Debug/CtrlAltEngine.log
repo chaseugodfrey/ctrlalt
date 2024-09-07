@@ -4,13 +4,6 @@ C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(1
       E:\SEP2\ctrlalt\CtrlAltEngine\libs\GLFW\include\GLFW\glfw3.h(123,11):
       see previous definition of 'APIENTRY'
   
-  Main.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(130,9): warning C4005: 'APIENTRY': macro redefinition
-  (compiling source file 'src/Main.cpp')
-      E:\SEP2\ctrlalt\CtrlAltEngine\libs\GLFW\include\GLFW\glfw3.h(123,11):
-      see previous definition of 'APIENTRY'
-  
-  Generating Code...
   LINK : E:\SEP2\ctrlalt\x64\Debug\CtrlAltEngine.exe not found or not built by the last incremental link; performing full link
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   CtrlAltEngine.vcxproj -> E:\SEP2\ctrlalt\x64\Debug\CtrlAltEngine.exe
