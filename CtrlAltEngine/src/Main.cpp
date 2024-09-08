@@ -1,7 +1,7 @@
-#include "Game/Game.h"
+#include "Scene/Scene.h"
 
 int main() {
-    GameClass::Game game;
+    SceneClass::Scene game;
     game.Initialize();
     game.Run();
     game.Destroy();

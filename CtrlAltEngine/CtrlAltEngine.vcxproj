@@ -142,7 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\ECS\ECS.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +151,9 @@
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
     <ClInclude Include="src\ECS\ECS.h" />
-    <ClInclude Include="src\ECS\Scene.h" />
     <ClInclude Include="src\ECS\Types.h" />
-    <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\utility\TimeClass\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\GLFW\lib-vc2022\glfw3.dll" />
