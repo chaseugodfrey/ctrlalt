@@ -33,11 +33,11 @@ namespace ECS
 
 	//Components
 	using ComponentID = uint8_t; //Allows up to 256 components
-	constexpr ComponentID MAX_COMPONENTS = 256;
+	constexpr ComponentID MAX_COMPONENTS = (ComponentID)256;
 	// Eacg bit in the mask represents a component
 	// '1' == active '0' == inactive
-	using Signature = std::bitset <MAX_COMPONENTS>;
-	using Masks = std::vector<Signature>;
+	using ComponentSignature = std::bitset <MAX_COMPONENTS>;
+	using SignatureMasks = std::vector<ComponentSignature>;
 	class InterfaceComponent {
 	protected:
 		static ComponentID componentID;

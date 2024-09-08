@@ -24,7 +24,7 @@ namespace ECS
 		return entities;
 	}
 
-	const Signature& System::GetSignature() const {
+	const ComponentSignature& System::GetSignature() const {
 		return componentSignature;
 	}
 

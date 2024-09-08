@@ -72,7 +72,7 @@ namespace ECS
 	public:
 		//Constructor
 		Entity(int id) : id(id) {}
-		int GetID() const { return id; }
+		EntityID GetID() const { return id; }
 
 		//Operator overloads
 		Entity operator =(const Entity& other) {
