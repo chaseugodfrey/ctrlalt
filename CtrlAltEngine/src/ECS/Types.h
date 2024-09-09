@@ -28,16 +28,16 @@ namespace ECS
 	/******************************************************************************/
 	//Entities
 	using EntityID = uint64_t;
-	using numEntities = uint32_t;
-	constexpr numEntities MAX_ENTITIES = 100000;
+	using NumEntities = uint64_t;
+	constexpr NumEntities MAX_ENTITIES = 100000;
 
 	//Components
 	using ComponentID = uint8_t; //Allows up to 256 components
 	constexpr ComponentID MAX_COMPONENTS = (ComponentID)256;
 	// Eacg bit in the mask represents a component
 	// '1' == active '0' == inactive
-	using ComponentSignature = std::bitset <MAX_COMPONENTS>;
-	using SignatureMasks = std::vector<ComponentSignature>;
+	using ComponentMask = std::bitset <MAX_COMPONENTS>;
+	using SignatureMasks = std::vector<ComponentMask>;
 	class InterfaceComponent {
 	protected:
 		static ComponentID componentID;
@@ -46,7 +46,6 @@ namespace ECS
 	//Pool
 	//We need a pool of interfaces to store all the components because we don't know the type of the component at compile time.
 	//This works because all components inherit from InterfaceComponent that has a static variable componentID.
-	//This works because inheritance is a compile-time concept.
 	class InterfacePool {
 	public:
 		virtual ~InterfacePool() = default;

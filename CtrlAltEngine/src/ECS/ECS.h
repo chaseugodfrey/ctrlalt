@@ -23,9 +23,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 ///=========================================================================================================
 #include "Types.h"
 #include <unordered_map>
+#include <set>
 //The type_index class is a wrapper class around a std::type_info object, 
 // that can be used as index in associative and unordered associative containers.
 #include <typeindex>
+#include <spdlog/spdlog.h>
+#include <memory>
 
 namespace ECS
 {
@@ -34,8 +37,8 @@ namespace ECS
 	*/
 	class Entity;
 	using SystemEntities = std::vector<Entity>;
-	class Systems;
-	using SystemsHashmap = std::unordered_map<std::type_index, Systems*>;
+	class System;
+	using SystemsHashmap = std::unordered_map < std::type_index, std::shared_ptr<System>> ;
 
 	/******************************************************************************/
 	/*!
@@ -73,31 +76,17 @@ namespace ECS
 		//Constructor
 		Entity(int id) : id(id) {}
 		EntityID GetID() const { return id; }
+		Entity(const Entity& other) = default;
 
 		//Operator overloads
-		Entity operator =(const Entity& other) {
-			id = other.id;
-			return *this;
-		}
+		Entity operator =(const Entity& other) { id = other.id; return *this; } //follows copy and swap idiom
 
-		bool operator == (const Entity& other) const {
-			return id == other.id;
-		}
-		bool operator != (const Entity& other) const {
-			return id != other.id;
-		}
-		bool operator > (const Entity& other) const {
-			return id > other.id;
-		}
-		bool operator < (const Entity& other) const {
-			return id < other.id;
-		}
-		bool operator >= (const Entity& other) const {
-			return id >= other.id;
-		}
-		bool operator <= (const Entity& other) const {
-			return id <= other.id;
-		}
+		bool operator == (const Entity& other) const {return id == other.id;}
+		bool operator != (const Entity& other) const {return id != other.id;}
+		bool operator > (const Entity& other) const {return id > other.id;}
+		bool operator < (const Entity& other) const {return id < other.id;}
+		bool operator >= (const Entity& other) const {return id >= other.id;}
+		bool operator <= (const Entity& other) const {return id <= other.id;}
 	};
 
 
@@ -110,7 +99,7 @@ namespace ECS
 	/******************************************************************************/
 	class System {
 	private:
-		ComponentSignature componentSignature;
+		ComponentMask componentMask;
 		SystemEntities entities;
 
 	public:
@@ -120,7 +109,7 @@ namespace ECS
 		void AddEntity(Entity entity);
 		void RemoveEntity(Entity entity);
 		std::vector<Entity> GetEntities() const;
-		const ComponentSignature& GetSignature() const;
+		const ComponentMask& GetComponentMask() const;
 		template <typename TComponent> void RequireComponent();
 	};
 
@@ -140,7 +129,7 @@ namespace ECS
 		const ComponentID componentID = Component<TComponent>::GetId();
 
 		//Set the bit at the component ID to true
-		componentSignature.set(componentID);
+		componentMask.set(componentID);
 	}
 
 	/******************************************************************************/
@@ -153,6 +142,8 @@ namespace ECS
 	private: 
 		std::vector<T> data;
 
+		// Have to clear some of these functions, as they wont be used for now some are just
+		// interfaces to the std::vector functions
 	public:
 		virtual ~Pool() = default;
 
@@ -165,7 +156,7 @@ namespace ECS
 			return data.empty();
 		}
 
-		int GetSize() const {
+		NumEntities GetSize() const {
 			return data.size();
 		}
 
@@ -197,14 +188,6 @@ namespace ECS
 			data.clear();
 		}
 
-		void Reserve(int size) {
-			data.reserve(size);
-		}
-
-		void ShrinkToFit() {
-			data.shrink_to_fit();
-		}
-
 		void SetComponent(int index, T component) {
 			data[index] = component;
 		}
@@ -222,38 +205,139 @@ namespace ECS
 	class Registry {
 	private:
 		//Keeps track of the amount of entities in the world
-		numEntities numEntities = 0;
+		NumEntities numEntities = 0;
 
 		//Each pool contains data for a specific component type
-		std::vector<InterfacePool*> componentPools;
+		std::vector<std::shared_ptr<InterfacePool>> componentPools;
 
 		//The signature will let us know which components an entity has
 		SignatureMasks entityComponentMasks;
 
+		//Map of active systems
 		SystemsHashmap systems;
 
+		// Flagged entites that will be removed or added
+		std::set<Entity> entitiesAddQueue;
+		std::set<Entity> entitiesRemoveQueue;
+
 	public:
-		//Registry() = default;
-		//~Registry() = default;
 
-		////Entity functions
-		//Entity CreateEntity();
-		//void DestroyEntity(Entity entity);
+		Registry()
+		{
+			spdlog::info("Registry created");
+		}
+		~Registry()
+		{
+			spdlog::info("Registry destroyed");
+		}
 
-		////Component functions
-		//template <typename T> void RegisterComponent();
-		//template <typename T> void AddComponent(Entity entity, T component);
-		//template <typename T> void RemoveComponent(Entity entity);
-		//template <typename T> T& GetComponent(Entity entity);
+		void Update();
 
-		////System functions
-		//template <typename T> void RegisterSystem();
-		//template <typename T> void AddEntityToSystem(Entity entity);
-		//template <typename T> void RemoveEntityFromSystem(Entity entity);
-		//template <typename T> std::vector<Entity> GetEntitiesFromSystem();
+		//Entity Management
+		Entity CreateEntity();
 
+
+		//Component Management
+		template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
+		template <typename TComponent> void RemoveComponent(Entity entity);
+		template <typename TComponent> bool HasComponent(Entity entity)const;
+
+
+		//System Management
+		template <typename TSystem,typename ...TArgs> void AddSystem(TArgs&&  ...args);
+		template <typename TSystem> void RemoveSystem();
+		template <typename TSystem> bool HasSystem() const;
+		template <typename TSystem> TSystem& GetSystem() const;
+
+		void AddEntityToSystems(Entity entity);
 	};
 
+	template <typename TSystem, typename ...TArgs> void Registry::AddSystem(TArgs&&  ...args)
+	{
+		std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
+		systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
+	}
+	
+	template <typename TSystem> 
+	void Registry::RemoveSystem()
+	{
+		systems.erase(systems.find(std::type_index(typeid(TSystem))));
+	}
+
+	template <typename TSystem> 
+	bool Registry::HasSystem() const
+	{
+		return systems.find(std::type_index(typeid(TSystem))) != systems.end();
+	}
+
+	template <typename TSystem> 
+	TSystem& Registry::GetSystem() const
+	{
+		auto system = systems.find(std::type_index(typeid(TSystem)));
+		return *(std::static_pointer_cast<TSystem>(system->second));
+	}
+
+
+	template <typename TComponent, typename ...TArgs>
+	void Registry::AddComponent(Entity entity, TArgs&& ...args)
+	{
+		//Get the component ID from the component type
+		const ComponentID componentID = Component<TComponent>::GetId();
+		const EntityID entityId = entity.GetID();
+
+		if (componentID >= componentPools.size())
+		{
+			componentPools.resize(componentID + 1);
+		}
+		if (!componentPools[componentID])
+		{
+			std::shared_ptr<Pool<TComponent>> newComponentPool = std::make_shared<Pool<TComponent>>();
+			componentPools[componentID] = newComponentPool;
+		}
+
+		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
+
+		if (entityId >= componentPool->GetSize())
+		{
+			componentPool->Resize(numEntities);
+		}
+
+		TComponent newComponent(std::forward<TArgs>(args)...);
+
+		componentPool->SetComponent(entityId, newComponent);
+		entityComponentMasks[entityId].set(componentID);
+	}
+
+	template <typename TComponent>
+	void Registry::RemoveComponent(Entity entity)
+	{
+		//Get the component ID from the component type
+		const ComponentID componentID = Component<TComponent>::GetId();
+		const EntityID entityID = entity.GetID();
+
+		if (componentID >= componentPools.size())
+		{
+			return;
+		}
+
+		if (!componentPools[componentID])
+		{
+			return;
+		}
+		entityComponentMasks[entityID].set(componentID, false);
+	}
+
+	template <typename TComponent>
+	bool Registry::HasComponent(Entity entity) const
+	{
+		const ComponentID componentID = Component<TComponent>::GetId();
+		const EntityID entityID = entity.GetID();
+
+		return entityComponentMasks[entityID].test(componentID);
+	}
+
+	//seperation of templated definitions, will do in future
+	//#include "ECSTemplates.h"
 }
 
 #endif

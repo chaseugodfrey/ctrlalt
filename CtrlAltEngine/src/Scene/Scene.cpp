@@ -22,8 +22,9 @@ namespace SceneClass {
     /// <summary>
     /// 
     /// </summary>
-    Scene::Scene() : isRunning(false), window(nullptr) {
+    Scene::Scene() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
         spdlog::info("Game constructor called!");
+
     }
 
     /// <summary>
@@ -81,6 +82,9 @@ namespace SceneClass {
     /// </summary>
     void Scene::Setup() {
 		// TODO: Create game objects...
+		ECS::Entity E_Player = registry->CreateEntity();
+		ECS::Entity E_RabbitWhite = registry->CreateEntity();
+		ECS::Entity E_RabbitBlack = registry->CreateEntity();
     }
 
     /// <summary>

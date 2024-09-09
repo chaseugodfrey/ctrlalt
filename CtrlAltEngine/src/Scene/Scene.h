@@ -19,6 +19,14 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #ifndef SCENE_H
 #define SCENE_H
 
+// This is here because= GLFW uses the APIENTRY macro to declare the same name function, both have windows.h  files
+#ifdef _WIN32
+#include <windows.h>
+#else
+#define APIENTRY
+#endif
+
+
 // INCLUDES
 // =========================================================================================================
 #include  <GLFW/glfw3.h>
@@ -33,6 +41,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include <spdlog/spdlog.h>
+#include "../ECS/ECS.h"
 
 // DECLARATIONS
 // =========================================================================================================
@@ -47,6 +56,8 @@ namespace SceneClass
 	private:
 		bool isRunning;
 		GLFWwindow* window;
+
+		std::unique_ptr<ECS::Registry> registry;
 
 	public:
 		//constructor/destructor
