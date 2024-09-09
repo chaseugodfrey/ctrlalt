@@ -27,8 +27,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 //The type_index class is a wrapper class around a std::type_info object, 
 // that can be used as index in associative and unordered associative containers.
 #include <typeindex>
-#include <spdlog/spdlog.h>
 #include <memory>
+#include <../src/Utility/U_Logger/Logger.h>
 
 namespace ECS
 {
@@ -224,11 +224,11 @@ namespace ECS
 
 		Registry()
 		{
-			spdlog::info("Registry created");
+			Utility::Logger::LogInfo("Registry created");
 		}
 		~Registry()
 		{
-			spdlog::info("Registry destroyed");
+
 		}
 
 		void Update();

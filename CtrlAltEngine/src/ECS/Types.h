@@ -29,7 +29,7 @@ namespace ECS
 	//Entities
 	using EntityID = uint64_t;
 	using NumEntities = uint64_t;
-	constexpr NumEntities MAX_ENTITIES = 100000;
+	constexpr NumEntities MAX_ENTITIES = 100'000'000;
 
 	//Components
 	using ComponentID = uint8_t; //Allows up to 256 components

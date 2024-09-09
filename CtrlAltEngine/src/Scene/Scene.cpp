@@ -17,13 +17,12 @@ m.lazaroo@digipen.edu
 // DEFINITIONS
 // =========================================================================================================
 
-namespace SceneClass {
+namespace Scene{
 
     /// <summary>
     /// 
     /// </summary>
     Scene::Scene() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
-        spdlog::info("Game constructor called!");
 
     }
 
@@ -31,7 +30,6 @@ namespace SceneClass {
     /// 
     /// </summary>
     Scene::~Scene() {
-        spdlog::info("Game destructor called!"); 
     }
 
     /// <summary>
@@ -39,7 +37,6 @@ namespace SceneClass {
     /// </summary>
     void Scene::Initialize() {
         if (!glfwInit()) {
-            spdlog::error("GLFW Failed to Initialize!");
             return;
         }
 
@@ -53,7 +50,7 @@ namespace SceneClass {
 
         window = glfwCreateWindow(windowWidth, windowHeight, "AxelUnderland", glfwGetPrimaryMonitor(), nullptr);
         if (!window) {
-            spdlog::error("Failed to create GLFW window");
+
             glfwTerminate();
             return;
         }

@@ -40,13 +40,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::warn("WARN") Loglevel: Warn
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
-#include <spdlog/spdlog.h>
 #include "../ECS/ECS.h"
 
 // DECLARATIONS
 // =========================================================================================================
 
-namespace SceneClass
+namespace Scene
 {
 	/// <summary>
 	/// Uber game class that contains all relevant render and gameplay code

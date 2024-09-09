@@ -53,13 +53,13 @@ namespace ECS
 
 		if (entityId >= MAX_ENTITIES)
 		{
-			spdlog::error("Max entities reached!");
+
 			return Entity(-1);
 		}
 
 		// Create check for debug
 		// if debug == true
-		spdlog::info("Entity created with ID: {}", entityId);
+
 		return entity;
 	}
 
