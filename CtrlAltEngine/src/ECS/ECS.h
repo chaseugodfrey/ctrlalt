@@ -28,7 +28,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // that can be used as index in associative and unordered associative containers.
 #include <typeindex>
 #include <memory>
-#include <../src/Utility/U_Logger/Logger.h>
+#include <../src/Logger/Logger.h>
 
 namespace ECS
 {
@@ -224,7 +224,7 @@ namespace ECS
 
 		Registry()
 		{
-			Utility::Logger::LogInfo("Registry created");
+			Logger::LogInfo("Registry created");
 		}
 		~Registry()
 		{

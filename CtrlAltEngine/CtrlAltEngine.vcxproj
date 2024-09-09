@@ -146,8 +146,8 @@
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Utility\U_Logger\Logger.cpp" />
-    <ClCompile Include="src\Utility\U_Logger\Logger.h" />
+    <ClCompile Include="src\Logger\Logger.cpp" />
+    <ClCompile Include="src\Logger\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3.h" />
