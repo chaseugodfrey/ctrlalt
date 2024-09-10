@@ -34,7 +34,7 @@ class Logger {
 
 public:
     static void LogInfo(const std::string& message);
-    static std::deque<LogEntry> messages;
+    static std::vector<LogEntry> messages;
 private:
     static std::string CurrentDateTimeToString();
 };

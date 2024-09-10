@@ -1,6 +1,2 @@
-﻿  ECS.cpp
-  Scene.cpp
-  Main.cpp
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  CtrlAltEngine.vcxproj -> E:\SEP2\ctrlalt\x64\Debug\CtrlAltEngine.exe
+﻿  Logger.cpp
+  CtrlAltEngine.vcxproj -> C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\x64\Debug\CtrlAltEngine.exe

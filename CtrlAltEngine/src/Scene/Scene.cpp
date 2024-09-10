@@ -11,7 +11,6 @@ m.lazaroo@digipen.edu
 // =========================================================================================================
 #include "Scene.h"
 #include "../ECS/ECS.h"
-#include "../utility/TimeClass/Time.h"
 #include <iostream>
 
 // DEFINITIONS
@@ -23,13 +22,14 @@ namespace Scene{
     /// 
     /// </summary>
     Scene::Scene() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
-
+        Logger::LogInfo("Scene Created");
     }
 
     /// <summary>
     /// 
     /// </summary>
     Scene::~Scene() {
+        Logger::LogInfo("Scene Deleted");
     }
 
     /// <summary>
@@ -82,6 +82,7 @@ namespace Scene{
 		ECS::Entity E_Player = registry->CreateEntity();
 		ECS::Entity E_RabbitWhite = registry->CreateEntity();
 		ECS::Entity E_RabbitBlack = registry->CreateEntity();
+        
     }
 
     /// <summary>

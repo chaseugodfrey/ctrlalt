@@ -2,7 +2,10 @@
 #define TRANSFORMCOMPONENT_H
 
 #include <../libs/glm/glm.hpp> // implement our own
+
 namespace Component {
+
+	
 	struct Transform
 	{
 		glm::vec2 position;

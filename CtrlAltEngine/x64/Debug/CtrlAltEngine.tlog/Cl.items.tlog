@@ -1,4 +1,6 @@
-E:\SEP2\ctrlalt\CtrlAltEngine\src\Components\C_Transform.h;E:\SEP2\ctrlalt\CtrlAltEngine\x64\Debug\C_Transform.obj
-E:\SEP2\ctrlalt\CtrlAltEngine\src\ECS\ECS.cpp;E:\SEP2\ctrlalt\CtrlAltEngine\x64\Debug\ECS.obj
-E:\SEP2\ctrlalt\CtrlAltEngine\src\Scene\Scene.cpp;E:\SEP2\ctrlalt\CtrlAltEngine\x64\Debug\Scene.obj
-E:\SEP2\ctrlalt\CtrlAltEngine\src\Main.cpp;E:\SEP2\ctrlalt\CtrlAltEngine\x64\Debug\Main.obj
+C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\src\Components\CTransform.h;C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\x64\Debug\CTransform.obj
+C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\src\ECS\ECS.cpp;C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\x64\Debug\ECS.obj
+C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\src\Scene\Scene.cpp;C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\x64\Debug\Scene.obj
+C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\src\Main.cpp;C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\x64\Debug\Main.obj
+C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\src\Logger\Logger.cpp;C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\x64\Debug\Logger.obj
+C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\src\Logger\Logger.h;C:\Users\pc\OneDrive\Documents\GitHub\ctrlalt\CtrlAltEngine\x64\Debug\Logger.obj

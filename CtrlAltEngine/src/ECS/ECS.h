@@ -228,7 +228,7 @@ namespace ECS
 		}
 		~Registry()
 		{
-
+			Logger::LogInfo("Registry deleted");
 		}
 
 		void Update();
