@@ -141,23 +141,27 @@ namespace ECS
 	class Pool :public InterfacePool {
 	private: 
 		std::vector<T> data;
+		int size;
 
+		std::unordered_map<int, int> entityIDToIndex;
+		std::unordered_map<int, int> indexToEntityID;
 		// Have to clear some of these functions, as they wont be used for now some are just
 		// interfaces to the std::vector functions
 	public:
 		virtual ~Pool() = default;
 
-		Pool(int size = 100)
+		Pool(int capacity = 100)
 		{
-			data.reserve(size);
+			size = 0;
+			data.reserve(capacity);
 		}	
 
-		bool isEmpty() const {
-			return data.empty();
+		bool IsEmpty() const {
+			return size == 0;
 		}
 
 		NumEntities GetSize() const {
-			return data.size();
+			return size;
 		}
 
 		void AddComponent(T component) {
@@ -185,14 +189,47 @@ namespace ECS
 		}
 
 		void Clear() {
-			data.clear();
+			size = 0;
 		}
 
-		void SetComponent(int index, T component) {
+		void SetComponent(int entityID, T component) {
+			if (entityIDToIndex.find(entityID) != entityIDToIndex.end())
+			{
+				int index = entityIDToIndex[entityID];
+				data[index] = component;
+			}
+			else
+			{
+				int index = size;
+				entityIDToIndex.emplace(entityID, index);
+				indexToEntityID.emplace(index, entityID);
+			}
+			if (index >= data.capacity())
+			{
+				data.resize(size * 2);
+			}
 			data[index] = component;
+			size++
 		}
 
-		T& GetComponent(int index) {
+		void RemoveC(int entityID)
+		{
+			int indexOfRemoved = entityIDToIndex[entityID];
+			int indexOfLast = size - 1;
+			data[indexOfRemoved] = data[indexOfLast];
+
+			int entityIDOfLastElement = indexToEntityID[indexOfLast];
+			entityIDToIndex[entityIDOfLastElement] = indexOfRemoved;
+			indexToEntityID[indexOfRemoved] = entityIDOfLastElement;
+
+			entityIDToIndex.erase(entityID);
+			indexToEntityID.erase(indexOfLast);
+
+			size--;
+		}
+
+		T& GetComponent(int entityID) {
+			int index = entityIDToIndex[entityID];
 			return static_cast<T&>(data[index]);
 		}
 	};
@@ -283,7 +320,7 @@ namespace ECS
 	{
 		//Get the component ID from the component type
 		const ComponentID componentID = Component<TComponent>::GetId();
-		const EntityID entityId = entity.GetID();
+		const EntityID entityID = entity.GetID();
 
 		if (componentID >= componentPools.size())
 		{
@@ -297,15 +334,12 @@ namespace ECS
 
 		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
 
-		if (entityId >= componentPool->GetSize())
-		{
-			componentPool->Resize(numEntities);
-		}
-
 		TComponent newComponent(std::forward<TArgs>(args)...);
 
-		componentPool->SetComponent(entityId, newComponent);
+		componentPools->SetComponent(entityId, newComponent);
 		entityComponentMasks[entityId].set(componentID);
+
+		Logger::LogInfo("Component ID = " + std::to_string(componentID) + "was added to entity ID " + std::to_string(entityId));
 	}
 
 	template <typename TComponent>
@@ -324,6 +358,9 @@ namespace ECS
 		{
 			return;
 		}
+		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
+		componentPools->RemoveC(entityID);
+
 		entityComponentMasks[entityID].set(componentID, false);
 	}
 
