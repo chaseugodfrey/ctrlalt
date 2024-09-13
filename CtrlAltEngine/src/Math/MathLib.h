@@ -75,8 +75,85 @@ namespace MathLib
 
 	};
 
-	//ostream vector
+	class vec3
+	{
+	private:
+		float x, y,z;
+		float m[3];
+
+	public:
+		//default constructor
+		vec3() :x{ 0.f }, y{ 0.f },z{0.f}
+		{
+			m[0] = x;
+			m[1] = y;
+			m[2] = z;
+		}
+
+		//constructor with float
+		vec3(float inx, float iny, float inz) : x{ inx }, y{ iny }, z{ inz }
+		{
+			m[0] = x;
+			m[1] = y;
+			m[2] = z;
+		}
+
+		//constructor with int
+		vec3(int inx, int iny, int inz) : x{ (float)inx }, y{ (float)iny }, z{ (float)inz }
+		{
+			m[0] = x;
+			m[1] = y;
+			m[2] = z;
+		}
+
+		//constructor with double
+		vec3(double inx, double iny, double inz) : x{ (float)inx }, y{ (float)iny }, z{ (float)inz }
+		{
+			m[0] = x;
+			m[1] = y;
+			m[2] = z;
+		}
+
+		//copy constructor
+		vec3(vec3&);
+
+		//copy assignment 
+		vec3 operator=(vec3&);
+
+		//swap
+		void swap(vec3&, vec3&);
+
+		//scale vector
+		vec3 operator*(float);
+		vec3& operator*=(float);
+
+		//vector addition
+		vec3 operator+(const vec3&);
+		vec3& operator+=(const vec3&);
+
+		//vector subtraction
+		vec3 operator-(const vec3&);
+		vec3& operator-=(const vec3&);
+
+		//vector normalising
+		void normalise(vec3&);
+
+		//accessor
+		float getX() const;
+		float getY() const;
+		float getZ() const;
+
+		//modifier
+		void setX(float);
+		void setY(float);
+		void setZ(float);
+
+	};
+
+	//ostream vector2
 	std::ostream& operator<<(std::ostream&, const vec2&);
+	//ostream vector3
+	std::ostream& operator<<(std::ostream&, const vec3&);
 }
 
 #endif
