@@ -21,7 +21,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 namespace Render {
 
+	//Class that represents something that can be drawn
 
+	class Renderable {
+		/*
+		Render 
+		*/
+	public:
+		
+	};
 
 }
 
