@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\ECS\ECS.cpp" />
+    <ClCompile Include="src\Math\MathLib.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
+    <ClInclude Include="src\Math\MathLib.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
