@@ -12,6 +12,8 @@ m.lazaroo@digipen.edu
 #include "Scene.h"
 #include "../ECS/ECS.h"
 #include <iostream>
+#include "glm/glm.hpp"
+#include "../Components/CTransform.h"
 
 // DEFINITIONS
 // =========================================================================================================
@@ -82,7 +84,9 @@ namespace Scene{
 		ECS::Entity E_Player = registry->CreateEntity();
 		ECS::Entity E_RabbitWhite = registry->CreateEntity();
 		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-        
+        registry->AddComponent<Component::CTransform>(E_Player, glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
+
+   
     }
 
     /// <summary>

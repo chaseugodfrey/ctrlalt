@@ -74,7 +74,7 @@ namespace ECS
 
 	public:
 		//Constructor
-		Entity(int id) : id(id) {}
+		Entity(EntityID id) : id(id) {}
 		EntityID GetID() const { return id; }
 		Entity(const Entity& other) = default;
 
@@ -172,11 +172,11 @@ namespace ECS
 			return data;
 		}
 
-		T& operator[](unsigned int index) {
+		T& operator[](EntityID index) {
 			return data[index];
 		}
 
-		const T& operator[](int index) const {
+		const T& operator[](EntityID index) const {
 			return data[index];
 		}
 
@@ -188,11 +188,11 @@ namespace ECS
 			data.clear();
 		}
 
-		void SetComponent(int index, T component) {
+		void SetComponent(EntityID index, T component) {
 			data[index] = component;
 		}
 
-		T& GetComponent(int index) {
+		T& GetComponent(EntityID index) {
 			return static_cast<T&>(data[index]);
 		}
 	};
