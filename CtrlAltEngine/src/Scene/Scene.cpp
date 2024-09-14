@@ -14,6 +14,8 @@ m.lazaroo@digipen.edu
 #include <iostream>
 #include "glm/glm.hpp"
 #include "../Components/CTransform.h"
+#include "../Components/CRigidBody.h"
+#include "../Systems/SMovement.h"
 
 // DEFINITIONS
 // =========================================================================================================
@@ -81,12 +83,15 @@ namespace Scene{
     /// </summary>
     void Scene::Setup() {
 		// TODO: Create game objects...
+		registry->AddSystem<System::SMovement>();
+
 		ECS::Entity E_Player = registry->CreateEntity();
 		ECS::Entity E_RabbitWhite = registry->CreateEntity();
 		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-        registry->AddComponent<Component::CTransform>(E_Player, glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
 
-   
+        E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
+		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
+
     }
 
     /// <summary>
@@ -94,7 +99,9 @@ namespace Scene{
     /// </summary>
     void Scene::Update() {
 
-    
+		registry->GetSystem<System::SMovement>().Update();
+
+        registry->Update();
     }
 
     /// <summary>
