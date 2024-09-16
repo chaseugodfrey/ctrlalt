@@ -43,6 +43,7 @@ namespace ECS
 
 		entityId = numEntities++;
 		Entity entity(static_cast<int>(entityId));
+		entity.registry = this;
 		std::string message{ "Entity created with ID: " + std::to_string(entityId) };
 		Logger::LogInfo(message);
 		entitiesAddQueue.insert(entity);
@@ -79,7 +80,7 @@ namespace ECS
 				system.second->AddEntity(entity);
 			}
 		}
-	}
+	}	
 
 	void Registry::Update()
 	{
