@@ -19,14 +19,17 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #ifndef ECS_H
 #define ECS_H
 
+#include "GLFW/glfw3.h"
+
 namespace Render {
 
 	//Class that represents something that can be drawn
 
 	class Renderable {
 		/*
-		Render 
+		Render Variables
 		*/
+		GLuint textureHandle;
 	public:
 		
 	};
