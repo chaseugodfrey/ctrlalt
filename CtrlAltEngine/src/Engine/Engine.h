@@ -16,8 +16,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 // PREPROCESSOR DIRECTIVES
 // =========================================================================================================
-#ifndef Engine_H
-#define Engine_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 // This is here because= GLFW uses the APIENTRY macro to declare the same name function, both have windows.h  files
 #ifdef _WIN32
@@ -31,7 +31,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // =========================================================================================================
 
 #include <GLEW/GL/glew.h>
-#include  <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>\
 
 /// spdlog is a lightweight C++ logging class
 /// usage
@@ -43,6 +43,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
+#include "../Editor/Editor.h"
 
 // DECLARATIONS
 // =========================================================================================================
@@ -52,13 +53,19 @@ namespace Engine
 	/// <summary>
 	/// Uber game class that contains all relevant render and gameplay code
 	/// </summary>
+	/// 
+
+
 	class Engine
 	{
 	private:
 		bool isRunning;
-		GLFWwindow* window;
+		GLFWwindow* main_window;
 
 		std::unique_ptr<ECS::Registry> registry;
+		GameEditor::Editor* editor;
+
+		GLFWwindow* CreateGLFWwindow(int width, int height);
 
 	public:
 		//constructor/destructor
@@ -78,6 +85,7 @@ namespace Engine
 		void Destroy();
 		int windowWidth;
 		int windowHeight;
+
 	};
 }
 

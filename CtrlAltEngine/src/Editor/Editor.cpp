@@ -1,17 +1,14 @@
 #include "Editor.h"
 
-#include "../../imgui/include/imgui.h"
-#include "../../imgui/include/imgui_impl_glfw.h"
-#include "../../imgui/include/imgui_impl_opengl3.h"
+#include <imgui/include/imgui.h>
+#include <imgui/include/imgui_impl_glfw.h>
+#include <imgui/include/imgui_impl_opengl3.h>
 
 namespace GameEditor
 {
 
 
-
-	// Compulsory set up for initialization of IMGUI
-
-	Editor::Editor() : window(nullptr) 
+	Editor::Editor() : window(nullptr)
 	{
 
 	};
@@ -21,13 +18,9 @@ namespace GameEditor
 
 	}
 
-	void Editor::Load(GLFWwindow* _window)
+	void Editor::Initialize(GLFWwindow* _window)
 	{
 		window = _window;
-	}
-
-	void Editor::Initialize()
-	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -44,7 +37,7 @@ namespace GameEditor
 		}
 	}
 
-	void Editor::Render()
+	void Editor::Draw()
 	{
 		glfwMakeContextCurrent(window);
 		ImGui_ImplGlfw_NewFrame();
@@ -65,32 +58,6 @@ namespace GameEditor
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-	}
-
-	bool Editor::GetExitPrompt()
-	{
-		return isPromptedToExit;
-	}
-
-	bool GetExitPrompt()
-	{
-		return editor.GetExitPrompt();
-	}
-
-	void Activate(GLFWwindow* _window)
-	{
-		editor.Load(_window);
-		editor.Initialize();
-	}
-
-	void Run()
-	{
-		editor.Render();
-	}
-
-	void Terminate()
-	{
-		editor.Destroy();
 	}
 
 	// EDITOR WINDOWS
@@ -173,8 +140,9 @@ namespace GameEditor
 		}
 	}
 
-	//void Editor::DisplayInConsole()
-	//{
+	bool Editor::GetExitPrompt()
+	{
+		return isPromptedToExit;
+	}
 
-	//}
 }
