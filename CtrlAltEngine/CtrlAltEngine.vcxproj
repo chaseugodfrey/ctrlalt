@@ -142,8 +142,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libs\imgui\include\imgui.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_demo.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_draw.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_impl_glfw.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_tables.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\ECS\ECS.cpp" />
+    <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Render\glhelper.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
@@ -160,12 +168,22 @@
     <ClInclude Include="libs\GLEW\GL\wglew.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="libs\imgui\include\imconfig.h" />
+    <ClInclude Include="libs\imgui\include\imgui.h" />
+    <ClInclude Include="libs\imgui\include\imgui_impl_glfw.h" />
+    <ClInclude Include="libs\imgui\include\imgui_impl_opengl3.h" />
+    <ClInclude Include="libs\imgui\include\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="libs\imgui\include\imgui_internal.h" />
+    <ClInclude Include="libs\imgui\include\imstb_rectpack.h" />
+    <ClInclude Include="libs\imgui\include\imstb_textedit.h" />
+    <ClInclude Include="libs\imgui\include\imstb_truetype.h" />
     <ClInclude Include="libs\STB_Image\stb_image.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
     <ClInclude Include="src\Components\CRigidBody.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
+    <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Render\glhelper.h" />
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
@@ -176,6 +194,8 @@
     <None Include="libs\GLFW\lib-vc2022\glfw3.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="libs\GLEW\glew32.lib" />
+    <Library Include="libs\GLEW\glew32s.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3dll.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3_mt.lib" />
