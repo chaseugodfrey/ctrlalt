@@ -51,13 +51,19 @@ namespace Engine{
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
+        glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
+        glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8); 
 
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         windowWidth = mode->width;
         windowHeight = mode->height;
 
-        window = glfwCreateWindow(windowWidth, windowHeight, "AxelUnderland", glfwGetPrimaryMonitor(), nullptr);
+        window = glfwCreateWindow(windowWidth, windowHeight, "AxelUnderland", NULL, nullptr);
         if (!window) {
 
             glfwTerminate();
@@ -69,7 +75,7 @@ namespace Engine{
         glViewport(0, 0, windowWidth, windowHeight);
         glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
             glViewport(0, 0, width, height);
-            }); 
+            });
 
         GameEditor::Activate(window);
 

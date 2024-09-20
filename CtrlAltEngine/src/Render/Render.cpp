@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+
 //Some commnets
 //New branch maybe
 namespace Render {
@@ -34,9 +35,10 @@ namespace Render {
 	//Inits glfw window - not sure if it should be here
 	void RenderPipeline::Init(GLint width, GLint height, std::string const& window_title) {
 		//If no window, create a window - temporary since supposed to just draw to an fbo
+		glewInit();
 		if (ptr_window == nullptr) {
 			//Create window hints
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -44,7 +46,7 @@ namespace Render {
 			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 			glfwWindowHint(GLFW_DEPTH_BITS, 24);
 			glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
-			glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
+			glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);*/
 
 			render_window = glfwCreateWindow(width, height, window_title.c_str(), NULL, NULL);
 			if (!render_window) {
@@ -54,10 +56,10 @@ namespace Render {
 				//return false;
 			}
 			glfwMakeContextCurrent(render_window);
+			glEnable(GL_DEPTH_TEST);	//depth is written in fragment shader
 		}
 
 		//GLHelper::init(width, height, window_title, ptr_window);
-		glEnable(GL_DEPTH_TEST);	//depth is written in fragment shader
 
 		//GLHelper::print_specs();
 
@@ -86,7 +88,7 @@ namespace Render {
 		glfwTerminate();
 	}
 
-	void RenderPipeline::AddMesh(std::string name, GLModel && model) {
+	void RenderPipeline::AddMesh(std::string name, GLModel model) {
 		meshes.insert({ name, model });
 	}
 	void RenderPipeline::AddTexture(std::string name, GLuint textureID) {
@@ -100,8 +102,8 @@ namespace Render {
 		//Init all textures here
 		
 		//Init all meshes here, would read from file and stuff,
-		
-		render.AddMesh("quad", LoadQuad());
+		GLModel mdl = LoadQuad();
+		render.AddMesh("quad", mdl);
 	}
 
 	GLModel AssetLoader::LoadQuad() {
