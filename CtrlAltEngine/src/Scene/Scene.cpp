@@ -151,6 +151,7 @@ namespace Scene{
         {
             // IMGUI
             GameEditor::Terminate();
+            renderSystem.Cleanup();
         }
 
 

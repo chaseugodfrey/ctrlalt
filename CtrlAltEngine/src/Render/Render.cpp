@@ -62,6 +62,9 @@ namespace Render {
 		//GLHelper::print_specs();
 
 		//Init the actual graphics stuff here
+		//My assetloader is jsut a bunch of functions for now ig
+		AssetLoader loader;
+		loader.LoadGraphics(*this);
 	}
 
 	//Draw all objects
