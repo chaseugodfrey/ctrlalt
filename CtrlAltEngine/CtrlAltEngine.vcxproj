@@ -111,7 +111,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CtrlAltEngine\libs;$(SolutionDir)CtrlAltEngine\libs\spdlog\include;$(SolutionDir)CtrlAltEngine\libs\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CtrlAltEngine\libs;$(SolutionDir)CtrlAltEngine\libs\spdlog\include;$(SolutionDir)CtrlAltEngine\libs\GLFW\include;$(SolutionDir)CtrlAltEngine\libs\imgui\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,8 +142,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libs\imgui\include\imgui.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_demo.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_draw.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_impl_glfw.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_tables.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\ECS\ECS.cpp" />
+    <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
@@ -153,11 +161,21 @@
   <ItemGroup>
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="libs\imgui\include\imconfig.h" />
+    <ClInclude Include="libs\imgui\include\imgui.h" />
+    <ClInclude Include="libs\imgui\include\imgui_impl_glfw.h" />
+    <ClInclude Include="libs\imgui\include\imgui_impl_opengl3.h" />
+    <ClInclude Include="libs\imgui\include\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="libs\imgui\include\imgui_internal.h" />
+    <ClInclude Include="libs\imgui\include\imstb_rectpack.h" />
+    <ClInclude Include="libs\imgui\include\imstb_textedit.h" />
+    <ClInclude Include="libs\imgui\include\imstb_truetype.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
     <ClInclude Include="src\Components\CRigidBody.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
+    <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
