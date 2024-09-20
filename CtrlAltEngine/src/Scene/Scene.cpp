@@ -17,6 +17,8 @@ m.lazaroo@digipen.edu
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
 
+#include "../Editor/Editor.h"
+
 // DEFINITIONS
 // =========================================================================================================
 
@@ -64,7 +66,9 @@ namespace Scene{
         glViewport(0, 0, windowWidth, windowHeight);
         glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
             glViewport(0, 0, width, height);
-            });
+            }); 
+
+        GameEditor::Activate(window);
 
         isRunning = true;
     }
@@ -111,8 +115,14 @@ namespace Scene{
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        {
+            // IMGUI
+            GameEditor::Run();
+        }
+
         glfwSwapBuffers(window);
         glfwPollEvents();
+
     }
 
     /// <summary>
@@ -120,7 +130,7 @@ namespace Scene{
     /// </summary>
     void Scene::Run() {
         Setup();
-        while (isRunning && !glfwWindowShouldClose(window)) {
+        while (isRunning && !glfwWindowShouldClose(window) && !GameEditor::GetExitPrompt()) {
             ProcessInput();
             Update();
             Render();
@@ -131,6 +141,13 @@ namespace Scene{
     /// 
     /// </summary>
     void Scene::Destroy() {
+
+        {
+            // IMGUI
+            GameEditor::Terminate();
+        }
+
+
         glfwDestroyWindow(window);
         glfwTerminate();
     }
