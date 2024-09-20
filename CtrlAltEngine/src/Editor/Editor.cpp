@@ -135,7 +135,12 @@ namespace GameEditor
 
 		if (ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse ))
 		{
-
+			if (ImGui::TreeNode("Transform"))
+			{
+				static float coord[2]{ 0, 0 };
+				ImGui::DragFloat2("x: ", coord);
+				ImGui::TreePop();
+			}
 
 			ImGui::End();
 		}
@@ -166,4 +171,9 @@ namespace GameEditor
 			ImGui::End();
 		}
 	}
+
+	//void Editor::DisplayInConsole()
+	//{
+
+	//}
 }
