@@ -1,6 +1,6 @@
 /** 
 @group CTRL ALT
-@file Scene.cpp
+@file Engine.cpp
 @brief Implementation of the Game class
 Created by Michael Lazaroo
 m.lazaroo@digipen.edu
@@ -9,7 +9,7 @@ m.lazaroo@digipen.edu
 
 // INCLUDES
 // =========================================================================================================
-#include "Scene.h"
+#include "Engine.h"
 #include "../ECS/ECS.h"
 #include <iostream>
 #include "glm/glm.hpp"
@@ -25,26 +25,26 @@ m.lazaroo@digipen.edu
 // =========================================================================================================
 
 Render::RenderPipeline renderSystem;
-namespace Scene{
+namespace Engine{
 
     /// <summary>
     /// 
     /// </summary>
-    Scene::Scene() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
-        Logger::LogInfo("Scene Created");
+    Engine::Engine() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
+        Logger::LogInfo("Engine Created");
     }
 
     /// <summary>
     /// 
     /// </summary>
-    Scene::~Scene() {
-        Logger::LogInfo("Scene Deleted");
+    Engine::~Engine() {
+        Logger::LogInfo("Engine Deleted");
     }
 
     /// <summary>
     /// 
     /// </summary>
-    void Scene::Initialize() {
+    void Engine::Initialize() {
         if (!glfwInit()) {
             return;
         }
@@ -81,7 +81,7 @@ namespace Scene{
     /// <summary>
     /// 
     /// </summary>
-    void Scene::ProcessInput() {
+    void Engine::ProcessInput() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
@@ -90,7 +90,7 @@ namespace Scene{
     /// <summary>
     /// 
     /// </summary>
-    void Scene::Setup() {
+    void Engine::Setup() {
 		// TODO: Create game objects...
 		registry->AddSystem<System::SMovement>();
 
@@ -106,7 +106,7 @@ namespace Scene{
     /// <summary>
     /// 
     /// </summary>
-    void Scene::Update() {
+    void Engine::Update() {
 
 		registry->GetSystem<System::SMovement>().Update();
 
@@ -116,7 +116,7 @@ namespace Scene{
     /// <summary>
     /// 
     /// </summary>
-    void Scene::Render() {
+    void Engine::Render() {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -134,7 +134,7 @@ namespace Scene{
     /// <summary>
     /// 
     /// </summary>
-    void Scene::Run() {
+    void Engine::Run() {
         Setup();
         while (isRunning && !glfwWindowShouldClose(window) && !GameEditor::GetExitPrompt()) {
             ProcessInput();
@@ -146,7 +146,7 @@ namespace Scene{
     /// <summary>
     /// 
     /// </summary>
-    void Scene::Destroy() {
+    void Engine::Destroy() {
 
         {
             // IMGUI
