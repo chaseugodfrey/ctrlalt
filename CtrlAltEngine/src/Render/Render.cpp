@@ -1,11 +1,14 @@
 #include "Render.h"
 
-#include "glhelper.h"
 #include <array>
+
+#include <iostream>
 
 //Some commnets
 //New branch maybe
 namespace Render {
+	GLFWwindow* render_window = nullptr;
+
 	/************************************/
 	//Renderable
 	/************************************/
@@ -30,31 +33,45 @@ namespace Render {
 
 	//Inits glfw window - not sure if it should be here
 	void RenderPipeline::Init(GLint width, GLint height, std::string const& window_title) {
-		//Setting up window and input callbacks
-		GLHelper::init(width, height, window_title, ptr_window);
+		//If no window, create a window - temporary since supposed to just draw to an fbo
+		if (ptr_window == nullptr) {
+			//Create window hints
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+			glfwWindowHint(GLFW_DEPTH_BITS, 24);
+			glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
+			glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
+
+			render_window = glfwCreateWindow(width, height, window_title.c_str(), NULL, NULL);
+			if (!render_window) {
+				std::cerr << "GLFW unable to create OpenGL context - abort program\n";
+				glfwTerminate();
+				return;
+				//return false;
+			}
+			glfwMakeContextCurrent(render_window);
+		}
+
+		//GLHelper::init(width, height, window_title, ptr_window);
 		glEnable(GL_DEPTH_TEST);	//depth is written in fragment shader
 
-		GLHelper::print_specs();
+		//GLHelper::print_specs();
 
 		//Init the actual graphics stuff here
 	}
+
+	//Draw all objects
 	void RenderPipeline::Draw() {
+		glfwMakeContextCurrent(render_window);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	/************************************/
-	//AssetManager
-	/************************************/
-	void AssetManager::Init() {
-		//Init all textures here
-		
-		//Init all meshes here, would read from file and stuff,
-		
-		GLModel mdl = LoadQuad();
-		meshes.insert({ "quad", mdl });
-	}
-
-	void AssetManager::Cleanup() {
+	//Cleanup any resources allocated
+	void RenderPipeline::Cleanup() {
 		for (std::pair<std::string, GLuint> const& pair : textures) {
 			glDeleteTextures(1, &pair.second);
 		}
@@ -62,9 +79,29 @@ namespace Render {
 			glDeleteBuffers(1, &pair.second.vbo_ID);
 			glDeleteVertexArrays(1, &pair.second.vao_ID);
 		}
+
+		glfwTerminate();
 	}
 
-	AssetManager::GLModel AssetManager::LoadQuad() {
+	void RenderPipeline::AddMesh(std::string name, GLModel && model) {
+		meshes.insert({ name, model });
+	}
+	void RenderPipeline::AddTexture(std::string name, GLuint textureID) {
+		textures.insert({ name, textureID });
+	}
+
+	/************************************/
+	//AssetManager
+	/************************************/
+	void AssetLoader::LoadGraphics(RenderPipeline& render) {
+		//Init all textures here
+		
+		//Init all meshes here, would read from file and stuff,
+		
+		render.AddMesh("quad", LoadQuad());
+	}
+
+	GLModel AssetLoader::LoadQuad() {
 		//Init basic quad
 		std::vector<glm::vec2> pos_vtx{
 		glm::vec2(-0.5f, -0.5f), glm::vec2(0.5f, -0.5f),

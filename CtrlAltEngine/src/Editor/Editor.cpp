@@ -46,6 +46,7 @@ namespace GameEditor
 
 	void Editor::Render()
 	{
+		glfwMakeContextCurrent(window);
 		ImGui_ImplGlfw_NewFrame();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();

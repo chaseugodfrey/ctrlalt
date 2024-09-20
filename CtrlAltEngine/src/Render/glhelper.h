@@ -28,7 +28,7 @@ struct GLHelper
   /*! GLHelper structure to encapsulate initialization stuff ...
   */
 {
-  static bool init(GLint width, GLint height, std::string title, GLFWwindow* window);
+  static bool init(GLint width, GLint height, std::string title);
   static void cleanup();
 
   // callbacks ...

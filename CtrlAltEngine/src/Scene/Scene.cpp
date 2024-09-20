@@ -19,9 +19,12 @@ m.lazaroo@digipen.edu
 
 #include "../Editor/Editor.h"
 
+#include "../Render/Render.h"
+
 // DEFINITIONS
 // =========================================================================================================
 
+Render::RenderPipeline renderSystem;
 namespace Scene{
 
     /// <summary>
@@ -69,6 +72,8 @@ namespace Scene{
             }); 
 
         GameEditor::Activate(window);
+
+        renderSystem.Init();
 
         isRunning = true;
     }
@@ -118,6 +123,7 @@ namespace Scene{
         {
             // IMGUI
             GameEditor::Run();
+            renderSystem.Draw();
         }
 
         glfwSwapBuffers(window);

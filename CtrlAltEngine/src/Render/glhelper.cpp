@@ -48,7 +48,7 @@ compatible with OpenGL 4.5 and doesn't support "old" OpenGL, has 32-bit RGBA,
 double-buffered color buffer, 24-bit depth buffer and 8-bit stencil buffer 
 with each buffer of size width x height pixels
 */
-bool GLHelper::init(GLint width, GLint height, std::string title, GLFWwindow* window) {
+bool GLHelper::init(GLint width, GLint height, std::string title) {
   GLHelper::width = width;
   GLHelper::height = height;
   GLHelper::title = title;
@@ -59,22 +59,22 @@ bool GLHelper::init(GLint width, GLint height, std::string title, GLFWwindow* wi
     return false;
   }
 
-  //// In case a GLFW function fails, an error is reported to callback function
-  //glfwSetErrorCallback(GLHelper::error_cb);
+  // In case a GLFW function fails, an error is reported to callback function
+  glfwSetErrorCallback(GLHelper::error_cb);
 
-  //// Before asking GLFW to create an OpenGL context, we specify the minimum constraints
-  //// in that context:
-  //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-  //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  // Before asking GLFW to create an OpenGL context, we specify the minimum constraints
+  // in that context:
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  //glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-  //glfwWindowHint(GLFW_DEPTH_BITS, 24);
-  //glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
-  //glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
+  glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+  glfwWindowHint(GLFW_DEPTH_BITS, 24);
+  glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
+  glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
 
-  GLHelper::ptr_window = window;//glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+  GLHelper::ptr_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
   if (!GLHelper::ptr_window) {
     std::cerr << "GLFW unable to create OpenGL context - abort program\n";
     glfwTerminate();
