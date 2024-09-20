@@ -33,12 +33,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 namespace ECS
 {
 	/*
-	* Defines 
+	* Defines
 	*/
 	class Entity;
 	using SystemEntities = std::vector<Entity>;
 	class System;
-	using SystemsHashmap = std::unordered_map < std::type_index, std::shared_ptr<System>> ;
+	using SystemsHashmap = std::unordered_map < std::type_index, std::shared_ptr<System>>;
 
 	/******************************************************************************/
 	/*!
@@ -51,7 +51,7 @@ namespace ECS
 	// Instead of creating a new component instance every time we call RequireComponent, we only want to check if the component exists in the entity's signature.
 	// We save memory this way in case we don't end up using it.
 	template <typename T>
-	class Component : public InterfaceComponent{
+	class Component : public InterfaceComponent {
 	public:
 		// Returns a unique component ID of Component<T>
 		static ComponentID GetId() {
@@ -74,7 +74,7 @@ namespace ECS
 
 	public:
 		//Constructor
-        Entity(EntityID id) : id(id), registry(nullptr) { 0; }
+		Entity(EntityID id) : id(id), registry(nullptr) { 0; }
 		EntityID GetID() const { return id; }
 		Entity(const Entity& other) = default;
 
@@ -82,12 +82,12 @@ namespace ECS
 		//Operator overloads
 		Entity operator =(const Entity& other) { id = other.id; return *this; } //follows copy and swap idiom
 
-		bool operator == (const Entity& other) const {return id == other.id;}
-		bool operator != (const Entity& other) const {return id != other.id;}
-		bool operator > (const Entity& other) const {return id > other.id;}
-		bool operator < (const Entity& other) const {return id < other.id;}
-		bool operator >= (const Entity& other) const {return id >= other.id;}
-		bool operator <= (const Entity& other) const {return id <= other.id;}
+		bool operator == (const Entity& other) const { return id == other.id; }
+		bool operator != (const Entity& other) const { return id != other.id; }
+		bool operator > (const Entity& other) const { return id > other.id; }
+		bool operator < (const Entity& other) const { return id < other.id; }
+		bool operator >= (const Entity& other) const { return id >= other.id; }
+		bool operator <= (const Entity& other) const { return id <= other.id; }
 
 		template <typename TComponent, typename ...TArgs> void AddComponent(TArgs&& ...args);
 		template <typename TComponent> void RemoveComponent();
@@ -148,29 +148,25 @@ namespace ECS
 	/******************************************************************************/
 	template <typename T>
 	class Pool :public InterfacePool {
-	private: 
+	private:
 		std::vector<T> data;
-		int size;
 
-		std::unordered_map<int, int> entityIDToIndex;
-		std::unordered_map<int, int> indexToEntityID;
 		// Have to clear some of these functions, as they wont be used for now some are just
 		// interfaces to the std::vector functions
 	public:
 		virtual ~Pool() = default;
 
-		Pool(int capacity = 100)
+		Pool(int size = 100)
 		{
-			size = 0;
-			data.reserve(capacity);
-		}	
+			data.reserve(size);
+		}
 
-		bool IsEmpty() const {
-			return size == 0;
+		bool isEmpty() const {
+			return data.empty();
 		}
 
 		NumEntities GetSize() const {
-			return size;
+			return data.size();
 		}
 
 		void AddComponent(T component) {
@@ -198,47 +194,14 @@ namespace ECS
 		}
 
 		void Clear() {
-			size = 0;
+			data.clear();
 		}
 
-		void SetComponent(int entityID, T component) {
-			if (entityIDToIndex.find(entityID) != entityIDToIndex.end())
-			{
-				int index = entityIDToIndex[entityID];
-				data[index] = component;
-			}
-			else
-			{
-				int index = size;
-				entityIDToIndex.emplace(entityID, index);
-				indexToEntityID.emplace(index, entityID);
-			}
-			if (index >= data.capacity())
-			{
-				data.resize(size * 2);
-			}
+		void SetComponent(EntityID index, T component) {
 			data[index] = component;
-			size++
 		}
 
-		void RemoveC(int entityID)
-		{
-			int indexOfRemoved = entityIDToIndex[entityID];
-			int indexOfLast = size - 1;
-			data[indexOfRemoved] = data[indexOfLast];
-
-			int entityIDOfLastElement = indexToEntityID[indexOfLast];
-			entityIDToIndex[entityIDOfLastElement] = indexOfRemoved;
-			indexToEntityID[indexOfRemoved] = entityIDOfLastElement;
-
-			entityIDToIndex.erase(entityID);
-			indexToEntityID.erase(indexOfLast);
-
-			size--;
-		}
-
-		T& GetComponent(int entityID) {
-			int index = entityIDToIndex[entityID];
+		T& GetComponent(EntityID index) {
 			return static_cast<T&>(data[index]);
 		}
 	};
@@ -290,7 +253,7 @@ namespace ECS
 		template <typename TComponent> TComponent& GetComponent(Entity entity) const;
 
 		//System Management
-		template <typename TSystem,typename ...TArgs> void AddSystem(TArgs&&  ...args);
+		template <typename TSystem, typename ...TArgs> void AddSystem(TArgs&&  ...args);
 		template <typename TSystem> void RemoveSystem();
 		template <typename TSystem> bool HasSystem() const;
 		template <typename TSystem> TSystem& GetSystem() const;
@@ -303,20 +266,20 @@ namespace ECS
 		std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
 		systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 	}
-	
-	template <typename TSystem> 
+
+	template <typename TSystem>
 	void Registry::RemoveSystem()
 	{
 		systems.erase(systems.find(std::type_index(typeid(TSystem))));
 	}
 
-	template <typename TSystem> 
+	template <typename TSystem>
 	bool Registry::HasSystem() const
 	{
 		return systems.find(std::type_index(typeid(TSystem))) != systems.end();
 	}
 
-	template <typename TSystem> 
+	template <typename TSystem>
 	TSystem& Registry::GetSystem() const
 	{
 		auto system = systems.find(std::type_index(typeid(TSystem)));
@@ -371,9 +334,6 @@ namespace ECS
 		{
 			return;
 		}
-		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
-		componentPools->RemoveC(entityID);
-
 		entityComponentMasks[entityID].set(componentID, false);
 		Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was removed from entity ID: " + std::to_string(entityID));
 	}
@@ -408,13 +368,13 @@ namespace ECS
 		registry->AddComponent<TComponent>(*this, std::forward<TArgs>(args)...);
 	}
 
-	template <typename TComponent> 
+	template <typename TComponent>
 	void Entity::RemoveComponent()
 	{
 		registry->RemoveComponent<TComponent>(*this);
 	}
 
-	template <typename TComponent> 
+	template <typename TComponent>
 	bool Entity::HasComponent() const
 	{
 		return registry->HasComponent<TComponent>(*this);
