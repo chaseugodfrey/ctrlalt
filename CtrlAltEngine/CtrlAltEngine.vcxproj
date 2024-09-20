@@ -72,10 +72,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,8 +117,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022;$(SolutionDir)CtrlAltEngine\libs\GLEW\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,13 +137,15 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022;$(SolutionDir)CtrlAltEngine\libs\GLEW\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\ECS\ECS.cpp" />
+    <ClCompile Include="src\Render\glhelper.cpp" />
+    <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -152,6 +154,10 @@
     <ClCompile Include="src\Systems\SMovement.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libs\GLEW\GL\eglew.h" />
+    <ClInclude Include="libs\GLEW\GL\glew.h" />
+    <ClInclude Include="libs\GLEW\GL\glxew.h" />
+    <ClInclude Include="libs\GLEW\GL\wglew.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
@@ -159,6 +165,8 @@
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
+    <ClInclude Include="src\Render\glhelper.h" />
+    <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
