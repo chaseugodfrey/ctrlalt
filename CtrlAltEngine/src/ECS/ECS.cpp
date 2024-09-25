@@ -44,7 +44,7 @@ namespace ECS
 		entityId = numEntities++;
 		Entity entity(static_cast<int>(entityId));
 		std::string message{ "Entity created with ID: " + std::to_string(entityId) };
-		Logger::LogInfo(message);
+		Logger::LogMessage(LOG_INFO, message);
 		entitiesAddQueue.insert(entity);
 
 		if (entityId >= entityComponentMasks.size())

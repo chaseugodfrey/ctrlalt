@@ -224,11 +224,11 @@ namespace ECS
 
 		Registry()
 		{
-			Logger::LogInfo("Registry created");
+			Logger::LogMessage(LOG_INFO, "Registry created");
 		}
 		~Registry()
 		{
-			Logger::LogInfo("Registry deleted");
+			Logger::LogMessage(LOG_INFO, "Registry deleted");
 		}
 
 		void Update();

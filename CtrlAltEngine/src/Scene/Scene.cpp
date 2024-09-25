@@ -14,8 +14,8 @@ m.lazaroo@digipen.edu
 #include <iostream>
 #include "glm/glm.hpp"
 #include "../Components/CTransform.h"
-#include "thread" //Simulated workload for FPS
-//#include "../Debug/Debugger.h"
+#include "../Debug/Debugger.h" //To be added into Logger
+#include "../Logger/Logger.h" //Dont need Debugger if this correct
 
 #include "../Editor/Editor.h"
 
@@ -25,23 +25,21 @@ m.lazaroo@digipen.edu
 
 namespace Scene{
     //Definitions for Scene namespace
-    auto endFrameTime = std::chrono::high_resolution_clock::now(); //Tracker for FPS, init with value first so auto knows the type
-    int framecount = 0; //Counter for FPS
-    std::chrono::duration<double> elapsedDurationBetweenFrames;
-
+    std::string fps_string[1]; //For fps
+    int fpsDisplayDelay = 0;
 
     /// <summary>
     /// 
     /// </summary>
     Scene::Scene() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
-        Logger::LogInfo("Scene Created");
+        Logger::LogMessage(LOG_INFO, "Scene Created");
     }
 
     /// <summary>
     /// 
     /// </summary>
     Scene::~Scene() {
-        Logger::LogInfo("Scene Deleted");
+        Logger::LogMessage(LOG_INFO, "Scene Deleted");
     }
 
     /// <summary>
@@ -78,7 +76,7 @@ namespace Scene{
         GameEditor::Activate(window);
 
         isRunning = true;
-        endFrameTime = std::chrono::high_resolution_clock::now();
+        //endFrameTime = std::chrono::high_resolution_clock::now(); //FPS related, not needed
     }
 
     /// <summary>
@@ -107,26 +105,12 @@ namespace Scene{
     /// 
     /// </summary>
     void Scene::Update() {
-        //Debug::fpsUpdate();
-        //Start of FPS Tracker
-        //Get time of new frame start
-        auto startFrameTime = std::chrono::high_resolution_clock::now();
-        //std::this_thread::sleep_for(std::chrono::milliseconds(8)); //Simulated workload, when rendering and stuff happens this can be removed
-        framecount++;
-        if ((startFrameTime - endFrameTime).count() > 0.01667f) // 1/60
-            elapsedDurationBetweenFrames += static_cast<std::chrono::duration<double>> (0.01667f);
-        else
-            elapsedDurationBetweenFrames += startFrameTime - endFrameTime;
-        //Calculate time between frames if
-        //Display difference
-        if (framecount == 60) {
-            //std::chrono::duration<double> duration = start - end;
-            auto fps = framecount / elapsedDurationBetweenFrames.count();
-            std::cout << "FPS: " << fps << std::endl;
-            framecount = 0;             //reset to 0
-            elapsedDurationBetweenFrames = startFrameTime - startFrameTime;   //reset to 0
-        }//End of FPS tracker, unsure if works correctly currently using simulated workload
-        endFrameTime = startFrameTime;
+        Debug::fpsUpdate(fps_string); //FPS tracker to be implemmeneted into LogMessage
+        if (fpsDisplayDelay == 60) {
+            Logger::LogMessage(LOG_INFO, "FPS: " + *fps_string); //FPS Tracker implemented onto logger, need to reformat texts //TBA toggling
+            fpsDisplayDelay = 0;
+        }
+        fpsDisplayDelay++;
     }
 
     /// <summary>
