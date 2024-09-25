@@ -67,7 +67,8 @@ namespace Render {
 		void Cleanup();
 
 		//API to add assets
-		void AddMesh(std::string name, GLModel&&);
+		//void AddMesh(std::string name, GLModel&&);
+		void AddMesh(std::string name, GLModel);
 		void AddTexture(std::string name, GLuint);	//temporary func
 	};
 

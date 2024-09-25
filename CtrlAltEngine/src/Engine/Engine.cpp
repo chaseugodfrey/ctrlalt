@@ -53,7 +53,6 @@ namespace Engine{
         main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
         // INITIALIZE SYSTEMS HERE
-
         renderSystem.Init();
         editor = new GameEditor::Editor();
         editor->Initialize(main_window);
@@ -130,7 +129,7 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Destroy() {
-
+        renderSystem.Cleanup();
         glfwDestroyWindow(main_window);
         glfwTerminate();
     }
@@ -138,6 +137,12 @@ namespace Engine{
     // HELPER FUNCTIONS
     GLFWwindow* Engine::CreateGLFWwindow(int width, int height)
     {
+
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
+        glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
+        glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
