@@ -16,14 +16,15 @@ namespace MathLib
 {
 	//Vec2
 
-	vec2::vec2(vec2& inv)
+	vec2::vec2(const vec2& inv)
 	{
-		vec2(inv.x, inv.y);
+		x = inv.x;
+		y = inv.y;
 	}
 	vec2 vec2::operator=(vec2& inv)
 	{
 		vec2  tmp{ inv };
-		swap(*this, tmp);
+		swap(*this,tmp);
 		return *this;
 	}
 
@@ -32,16 +33,21 @@ namespace MathLib
 		std::swap(lhs.x, rhs.x);
 		std::swap(lhs.y, rhs.y);
 	}
-
-	vec2 vec2::operator*(const float scalar)
+	
+	void vec2::swap(vec2& rhs)
 	{
-		vec2 tmp{ *this };
-		tmp.x *= scalar;
-		tmp.y *= scalar;
+		std::swap(this->x, rhs.x);
+		std::swap(this->y, rhs.y);
+	}
+
+	vec2 operator*(const vec2& lhs, float scalar)
+	{
+		vec2 tmp{ lhs };
+		tmp *= scalar;
 
 		return tmp;
 	}
-	vec2& vec2::operator*=(const float scalar)
+	vec2& vec2::operator*=(float scalar)
 	{
 		this->x *= scalar;
 		this->y *= scalar;
@@ -49,11 +55,26 @@ namespace MathLib
 		return *this;
 	}
 
-	vec2 vec2::operator/(float scalar)
+	vec2& vec2::operator*=(const vec2& inv)
 	{
-		vec2 tmp{ *this };
-		tmp.x /= scalar;
-		tmp.y /= scalar;
+		x *= inv.x;
+		y *= inv.y;
+
+		return *this;
+	}
+
+	vec2 operator*(const vec2& lhs, const vec2& rhs)
+	{
+		vec2 tmp{ lhs };
+		tmp *= rhs;
+
+		return tmp;
+	}
+
+	vec2 operator/(const vec2& lhs,float scalar)
+	{
+		vec2 tmp{ lhs };
+		tmp /= scalar;
 		return tmp;
 	}
 	vec2& vec2::operator/=(float scalar)
@@ -62,10 +83,33 @@ namespace MathLib
 		this->y /= scalar;
 		return *this;
 	}
-	//vector addition
-	vec2 vec2::operator+(const vec2& rhs)
+
+	vec2 operator/(const vec2& lhs, int scalar)
 	{
-		vec2 tmp{ *this };
+		vec2 tmp{ lhs };
+		tmp /= scalar;
+		return tmp;
+	}
+	vec2& vec2::operator/=(const vec2& inv)
+	{
+		x /= inv.x;
+		y /= inv.y;
+
+		return *this;
+	}
+
+	vec2 operator/(const vec2& lhs, const vec2& rhs)
+	{
+		vec2 tmp{ lhs };
+		tmp /= rhs;
+
+		return tmp;
+	}
+
+	//vector addition
+	vec2 operator+( const vec2& lhs, const vec2& rhs)
+	{
+		vec2 tmp{ lhs };
 		tmp += rhs;
 		return tmp;
 	}
@@ -79,9 +123,9 @@ namespace MathLib
 	}
 
 	//vector subtraction
-	vec2 vec2::operator-(const vec2& rhs)
+	vec2 operator-(const vec2& lhs,const vec2& rhs)
 	{
-		vec2 tmp{ *this };
+		vec2 tmp{ lhs };
 		tmp -= rhs;
 		return tmp;
 	}
@@ -135,32 +179,58 @@ namespace MathLib
 		return this->x * rhs.y - this->y * rhs.x;
 	}
 
-	float vec2::getX() const
+	float vec2::X() const
 	{
 		return this->x;
 	}
-	float vec2::getY() const
+	float vec2::Y() const
 	{
 		return this->y;
 	}
 
-	void vec2::setX(float in)
+	void vec2::X(float in)
 	{
 		this->x = in;
 	}
-	void vec2::setY(float in)
+	void vec2::Y(float in)
 	{
 		this->y = in;
 	}
+
+	const float& vec2::operator[](int pos) const
+	{
+		if(pos < 0 || pos > 2)
+			throw std::out_of_range("Index out of range");
+
+		if(pos == 0)
+			return x;
+		if (pos == 1)
+			return y;
+	}
+	float& vec2::operator[](int pos)
+	{
+		if(pos < 0 || pos > 2)
+			throw std::out_of_range("Index out of range");
+		
+		if (pos == 0)
+			return x;
+		if (pos == 1)
+			return y;
+	}
+
+	
 
 
 	//Vec3
 
 
-	vec3::vec3(vec3& inv)
+	vec3::vec3(const vec3& inv)
 	{
-		vec3(inv.x, inv.y,inv.z);
+		x = inv.x;
+		y = inv.y;
+		z = inv.z;
 	}
+
 	vec3 vec3::operator=(vec3& inv)
 	{
 		vec3  tmp{ inv };
@@ -175,16 +245,21 @@ namespace MathLib
 		std::swap(lhs.z, rhs.z);
 	}
 
-	vec3 vec3::operator*(const float scalar)
+	vec3 operator*(const vec3& lhs, float scalar)
 	{
-		vec3 tmp{ *this };
-		tmp.x *= scalar;
-		tmp.y *= scalar;
-		tmp.z *= scalar;
+		vec3 tmp{ lhs };
+		tmp *= scalar;
 
 		return tmp;
 	}
-	vec3& vec3::operator*=(const float scalar)
+
+	vec3 operator*(const vec3& lhs, const vec3& rhs)
+	{
+		vec3 tmp{ lhs };
+		tmp *= rhs;
+		return tmp;
+	}
+	vec3& vec3::operator*=(float scalar)
 	{
 		this->x *= scalar;
 		this->y *= scalar;
@@ -192,13 +267,27 @@ namespace MathLib
 
 		return *this;
 	}
-	//scale vector div
-	vec3 vec3::operator/(float scalar)
+	vec3& vec3::operator*=(const vec3& inv)
 	{
-		vec3 tmp{ *this };
-		tmp.x /= scalar;
-		tmp.y /= scalar;
-		tmp.z /= scalar;
+		this->x *= inv.X();
+		this->y *= inv.Y();
+		this->z *= inv.Z();
+
+		return *this;
+	}
+
+	//scale vector div
+	vec3 operator/(const vec3& lhs, float scalar)
+	{
+		vec3 tmp{ lhs };
+		tmp /= scalar;
+
+		return tmp;
+	}
+	vec3 operator/(const vec3& lhs, const vec3& rhs)
+	{
+		vec3 tmp{ lhs };
+		tmp /= rhs;
 
 		return tmp;
 	}
@@ -210,11 +299,19 @@ namespace MathLib
 
 		return *this;
 	}
+	vec3& vec3::operator/=(const vec3& inv)
+	{
+		this->x /= inv.X();
+		this->y /= inv.Y();
+		this->z /= inv.Z();
+
+		return *this;
+	}
 
 	//vector addition
-	vec3 vec3::operator+(const vec3& rhs)
+	vec3 operator+(const vec3& lhs,const vec3& rhs)
 	{
-		vec3 tmp{ *this };
+		vec3 tmp{ lhs };
 		tmp += rhs;
 		return tmp;
 	}
@@ -229,9 +326,9 @@ namespace MathLib
 	}
 
 	//vector subtraction
-	vec3 vec3::operator-(const vec3& rhs)
+	vec3 operator-(const vec3& lhs, const vec3& rhs)
 	{
-		vec3 tmp{ *this };
+		vec3 tmp{ lhs };
 		tmp -= rhs;
 		return tmp;
 	}
@@ -255,31 +352,66 @@ namespace MathLib
 	}
 
 	//accessor
-	float vec3::getX() const
+	float vec3::X() const
 	{
 		return this->x;
 	}
-	float vec3::getY() const
+	float vec3::Y() const
 	{
 		return this->y;
 	}
-	float vec3::getZ() const
+	float vec3::Z() const
 	{
 		return this->z;
 	}
 
+	const float& vec3::operator[](int pos) const
+	{
+		if (pos < 0 || pos > 3)
+			throw std::out_of_range("Index out of range");
+
+		if (pos == 0)
+			return x;
+		else if (pos == 1)
+			return y;
+		else if (pos == 2)
+			return z;
+	}
+	float& vec3::operator[](int pos)
+	{
+		if (pos < 0 || pos > 3)
+			throw std::out_of_range("Index out of range");
+
+		if (pos == 0)
+			return x;
+		else if (pos == 1)
+			return y;
+		else if (pos == 2)
+			return z;
+	}
+
 	//modifier
-	void vec3::setX(float in)
+	void vec3::X(float in)
 	{
 		this->x = in;
 	}
-	void vec3::setY(float in)
+	void vec3::Y(float in)
 	{
 		this->y = in;
 	}
-	void vec3::setZ(float in)
+	void vec3::Z(float in)
 	{
 		this->z = in;
+	}
+
+	vec3 to3D(const vec2& inv, float z)
+	{
+		return vec3(inv.X(), inv.Y(), z);
+	}
+
+	vec2 to2D(const vec3& inv)
+	{
+		return vec2(inv.X(), inv.Y());
 	}
 
 
@@ -359,7 +491,11 @@ namespace MathLib
 		std::swap(lhs.m22, rhs.m22);
 	}
 
-
+	float* m3x3::getM()
+	{
+		return m;
+	}
+	
 
 
 	// OSTREAMS
@@ -367,19 +503,19 @@ namespace MathLib
 	//ostream for vector2
 	std::ostream& operator<<(std::ostream& os , const vec2& inv)
 	{
-		os << '(' << inv.getX() << ',' << inv.getY() << ')';
+		os << '(' << inv.X() << ',' << inv.Y() << ')';
 		return os;
 	}
 
 	//ostream for vector3
 	std::ostream& operator<<(std::ostream& os , const vec3& inv)
 	{
-		os << '(' << inv.getX() << ',' << inv.getY() << ',' << inv.getZ() << ')';
+		os << '(' << inv.X() << ',' << inv.Y() << ',' << inv.Z() << ')';
 		return os;
 	}
 	//ostream for matrix3x3
-	std::ostream& operator<<(std::ostream&, const m3x3&)
+	/*std::ostream& operator<<(std::ostream&, const m3x3&)
 	{
 
-	}
+	}*/
 }

@@ -14,6 +14,11 @@ muhammadrayan.b@digipen.edu
 
 namespace MathLib
 {
+	/******************************************************************************/
+	/*
+		A 2D Vector class with float of x and y.
+	 */
+	 /******************************************************************************/
 	class vec2
 	{
 		private:
@@ -21,201 +26,445 @@ namespace MathLib
 			float m[2];
 
 		public:
-			//default constructor
+			/******************************************************************************/
+			/*
+				A default contructor that initialises the vector as 0,0.
+			 */
+			 /******************************************************************************/
 			vec2() :x{ 0.f }, y{0.f}
 			{
 				m[0] = x;
 				m[1] = y;
 			}
 
-			//constructor with float
+			/******************************************************************************/
+			/*
+				A contructor that takes in 2 floats and initialises the vector with the input.
+			 */
+			 /******************************************************************************/
 			vec2(float inx, float iny) : x{ inx }, y{ iny }
 			{
 				m[0] = x;
 				m[1] = y;
 			}
 
-			//constructor with int
+			/******************************************************************************/
+			/*
+				A contructor that takes in 2 int and converts it to float and initialises the vector with the input.
+			 */
+			 /******************************************************************************/
 			vec2(int inx, int iny) : x{ (float)inx}, y{ (float)iny}
 			{
 				m[0] = x;
 				m[1] = y;
 			}
 
-			//constructor with double
+			/******************************************************************************/
+			/*
+				A contructor that takes in 2 doubles and converts it to float and initialises the vector with the input.
+			 */
+			 /******************************************************************************/
 			vec2(double inx, double iny) : x{ (float)inx }, y{ (float)iny }
 			{
 				m[0] = x;
 				m[1] = y;
 			}
 
-			//copy constructor
-			vec2(vec2&);
+			/******************************************************************************/
+			/*
+				A copy constructor that constructs a vec2 object with another vec2 object.
+			 */
+			 /******************************************************************************/
+			vec2(const vec2&);
 
-			//copy assignment 
+			/******************************************************************************/
+			/*
+				A copy assignment operator that assigns a vec2 object with another vec2 object.
+			 */
+			 /******************************************************************************/
 			vec2 operator=(vec2&);
 
-			//swap
+			/******************************************************************************/
+			/*
+				Swap functions that swaps 2 vec2.
+			 */
+			 /******************************************************************************/
 			void swap(vec2&, vec2&);
+			void swap(vec2&);
 
-			//scale vector
-			vec2 operator*(float);
+			/******************************************************************************/
+			/*
+				Scaling operators that scale a vector by a float or int input.
+			 */
+			 /******************************************************************************/
 			vec2& operator*=(float);
+			vec2& operator*=(const vec2&);
 
-			//scale vector div
-			vec2 operator/(float);
+			/******************************************************************************/
+			/*
+				Scaling operators that scale a vector by a float or int input.
+			 */
+			 /******************************************************************************/
 			vec2& operator/=(float);
+			vec2& operator/=(const vec2&);
 
-			//vector addition
-			vec2 operator+(const vec2&);
+			/******************************************************************************/
+			/*
+				Addition operators that adds 2 vectors together.
+			 */
+			 /******************************************************************************/
 			vec2& operator+=(const vec2&);
 
-			//vector subtraction
-			vec2 operator-(const vec2&);
+			/******************************************************************************/
+			/*
+				Subtraction operators that subtracts a vector from another vector.
+			 */
+			 /******************************************************************************/
 			vec2& operator-=(const vec2&);
 
-			//vector normalising
+			/******************************************************************************/
+			/*
+				Normalise a vector.
+			 */
+			 /******************************************************************************/
 			void normalise(vec2&);
 			float vec2Length(vec2&);
 			float vec2SquareLength(vec2&);
 
-			//distance
+			/******************************************************************************/
+			/*
+				Gets the distance between 2 vectors.
+			 */
+			 /******************************************************************************/
 			float vec2Dist(vec2&, vec2&);
 			float vec2DistSquare(vec2&, vec2&);
 
-			//dot andd cross product
+			/******************************************************************************/
+			/*
+				Dot product operator and function of 2 vectors
+			 */
+			 /******************************************************************************/
 			float operator*(vec2&);
 			float vec2Dot(vec2&);
+
+			/******************************************************************************/
+			/*
+				Cross product operator and function of 2 vectors
+			 */
+			 /******************************************************************************/
 			float operator^(vec2&);
 			float vec2Cross(vec2&);
 
-			//accessor
-			float getX() const;
-			float getY() const;
+			/******************************************************************************/
+			/*
+				Accessors to get the x and y value of a vector.
+			 */
+			 /******************************************************************************/
+			float X() const;
+			float Y() const;
+			const float& operator[](int) const;
 
-			//modifier
-			void setX(float);
-			void setY(float);
+			/******************************************************************************/
+			/*
+				Modifiers to set the x and y value of a vector.
+			 */
+			 /******************************************************************************/
+			void X(float);
+			void Y(float);
+			float& operator[](int);
 
 	};
 
+
+	/******************************************************************************/
+	/*
+		Scaling operators that scale a vector by a float or int input.
+	 */
+	 /******************************************************************************/
+	vec2 operator*(const vec2&,float);
+	vec2 operator*(const vec2&,const vec2&);
+
+	/******************************************************************************/
+	/*
+		Scaling operators that scale a vector by a float or int input.
+	*/
+	/******************************************************************************/
+	vec2 operator/(const vec2&,float);
+	vec2 operator/(const vec2&, const vec2&);
+
+	/******************************************************************************/
+	/*
+		Addition operators that adds 2 vectors together.
+	*/
+	/******************************************************************************/
+	vec2 operator+(const vec2&,const vec2&);
+
+	/******************************************************************************/
+	/*
+		Subtraction operators that subtracts a vector from another vector.
+	*/
+	/******************************************************************************/
+	vec2 operator-(const vec2&, const vec2&);
+
+
+	/******************************************************************************/
+	/*
+		A 3D Vector class with float of x and y.
+	 */
+	 /******************************************************************************/
 	class vec3
 	{
-	private:
-		float x, y,z;
-		float m[3];
+		private:
+			float x, y,z;
+			float m[3];
 
-	public:
-		//default constructor
-		vec3() :x{ 0.f }, y{ 0.f },z{0.f}
-		{
-			m[0] = x;
-			m[1] = y;
-			m[2] = z;
-		}
+		public:
+			/******************************************************************************/
+			/*
+				A default contructor that initialises the vector as 0,0.
+			*/
+			/******************************************************************************/
+			vec3() :x{ 0.f }, y{ 0.f },z{0.f}
+			{
+				m[0] = x;
+				m[1] = y;
+				m[2] = z;
+			}
 
-		//constructor with float
-		vec3(float inx, float iny, float inz) : x{ inx }, y{ iny }, z{ inz }
-		{
-			m[0] = x;
-			m[1] = y;
-			m[2] = z;
-		}
+			/******************************************************************************/
+			/*
+				A contructor that initialises the vector with float inputs.
+			*/
+			/******************************************************************************/
+			vec3(float inx, float iny, float inz) : x{ inx }, y{ iny }, z{ inz }
+			{
+				m[0] = x;
+				m[1] = y;
+				m[2] = z;
+			}
 
-		//constructor with int
-		vec3(int inx, int iny, int inz) : x{ (float)inx }, y{ (float)iny }, z{ (float)inz }
-		{
-			m[0] = x;
-			m[1] = y;
-			m[2] = z;
-		}
+			/******************************************************************************/
+			/*
+				A contructor that initialises the vector with int inputs.
+			*/
+			/******************************************************************************/
+			vec3(int inx, int iny, int inz) : x{ (float)inx }, y{ (float)iny }, z{ (float)inz }
+			{
+				m[0] = x;
+				m[1] = y;
+				m[2] = z;
+			}
 
-		//constructor with double
-		vec3(double inx, double iny, double inz) : x{ (float)inx }, y{ (float)iny }, z{ (float)inz }
-		{
-			m[0] = x;
-			m[1] = y;
-			m[2] = z;
-		}
+			/******************************************************************************/
+			/*
+				A contructor that initialises the vector with double inputs.
+			*/
+			/******************************************************************************/
+			vec3(double inx, double iny, double inz) : x{ (float)inx }, y{ (float)iny }, z{ (float)inz }
+			{
+				m[0] = x;
+				m[1] = y;
+				m[2] = z;
+			}
 
-		//copy constructor
-		vec3(vec3&);
+			/******************************************************************************/
+			/*
+				A copy contructor that initialises the vec3 with another vec3.
+			*/
+			/******************************************************************************/
+			vec3(const vec3&);
 
-		//copy assignment 
-		vec3 operator=(vec3&);
+			/******************************************************************************/
+			/*
+				A copy assignment operator that assigns a vec3 object with another vec3 object.
+			*/
+			/******************************************************************************/
+			vec3 operator=(vec3&);
 
-		//swap
-		void swap(vec3&, vec3&);
+			/******************************************************************************/
+			/*
+				Swap functions that swaps 2 vec3.
+			*/
+			/******************************************************************************/
+			void swap(vec3&, vec3&);
 
-		//scale vector
-		vec3 operator*(float);
-		vec3& operator*=(float);
+			/******************************************************************************/
+			/*
+				Scaling operators that scale a vector by a float or int input.
+			*/
+			/******************************************************************************/
+			vec3& operator*=(float);
+			vec3& operator*=(const vec3&);
 
-		//scale vector div
-		vec3 operator/(float);
-		vec3& operator/=(float);
+			/******************************************************************************/
+			/*
+				Scaling operators that scale a vector by a float or int input.
+			*/
+			/******************************************************************************/
+			vec3& operator/=(float);
+			vec3& operator/=(const vec3&);
 
-		//vector addition
-		vec3 operator+(const vec3&);
-		vec3& operator+=(const vec3&);
+			/******************************************************************************/
+			/*
+				Addition operators that adds 2 vectors together.
+			*/
+			/******************************************************************************/
+			vec3& operator+=(const vec3&);
 
-		//vector subtraction
-		vec3 operator-(const vec3&);
-		vec3& operator-=(const vec3&);
+			/******************************************************************************/
+			/*
+				Subtraction operators that subtract 1 vector from another vector.
+			*/
+			/******************************************************************************/
+			vec3& operator-=(const vec3&);
 
-		//vector normalising
-		void normalise(vec3&);
+			/******************************************************************************/
+			/*
+				Normalise a vector.
+			*/
+			/******************************************************************************/
+			void normalise(vec3&);
 
-		//accessor
-		float getX() const;
-		float getY() const;
-		float getZ() const;
+			/******************************************************************************/
+			/*
+				Accessors to get the x and y and z value of a vector.
+			*/
+			/******************************************************************************/
+			float X() const;
+			float Y() const;
+			float Z() const;
+			const float& operator[](int) const;
 
-		//modifier
-		void setX(float);
-		void setY(float);
-		void setZ(float);
+			/******************************************************************************/
+			/*
+				Modifiers to set the x and y and z value of a vector.
+			*/
+			/******************************************************************************/
+			void X(float);
+			void Y(float);
+			void Z(float);
+			float& operator[](int);
+
+
 
 	};
 
+	/******************************************************************************/
+	/*
+		Scaling operators that scale a vector by a float or int input.
+	*/
+	/******************************************************************************/
+	vec3 operator*(const vec3&,float);
+	vec3 operator*(const vec3&, const vec3&);
+
+
+	/******************************************************************************/
+	/*
+		Scaling operators that scale a vector by a float or int input.
+	*/
+	/******************************************************************************/
+	vec3 operator/(const vec3&, float);
+	vec3 operator/(const vec3&, const vec3&);
+
+	/******************************************************************************/
+	/*
+		Addition operators that adds 2 vectors together.
+	*/
+	/******************************************************************************/
+	vec3 operator+(const vec3&, const vec3&);
+
+	/******************************************************************************/
+	/*
+		Subtraction operators that subtract 1 vector from another vector.
+	*/
+	/******************************************************************************/
+	vec3 operator-(const vec3&, const vec3&);
+
+	/******************************************************************************/
+	/*
+		Convert a 2D vector to a 3D vector.
+	*/
+	/******************************************************************************/
+	vec3 to3D(const vec2&, float z = 0.f);
+
+	/******************************************************************************/
+	/*
+		Convert a 3D vector to a 2D vector by ridding of the z value.
+	*/
+	/******************************************************************************/
+	vec2 to2D(const vec3&);
+
+
+	/******************************************************************************/
+	/*
+		A 3 by 3 Matrix class.
+	 */
+	 /******************************************************************************/
 	class m3x3
 	{
-		float m00, m01, m02;
-		float m10, m11, m12;
-		float m20, m21, m22;
+		private:
+			float m00, m01, m02;
+			float m10, m11, m12;
+			float m20, m21, m22;
 
-		float m[9];
-		float m2[3][3];
-
-		m3x3():m00(0.f), m01(0.f), m02(0.f), m10(0.f), m11(0.f), m12(0.f), m20(0.f), m21(0.f), m22(0.f) 
-		{
-			for (size_t i = 0; i < 9; i++)
+			float m[9];
+			float m2[3][3];
+		public:
+			m3x3():m00(0.f), m01(0.f), m02(0.f), m10(0.f), m11(0.f), m12(0.f), m20(0.f), m21(0.f), m22(0.f) 
 			{
-				m[i] = 0.f;
-			}
-
-			for (size_t i = 0; i < 3; i++)
-			{
-				for (size_t j = 0; j < 3; j++)
+				for (size_t i = 0; i < 9; i++)
 				{
-					m2[i][j] = 0.f;
+					m[i] = 0.f;
+				}
+
+				for (size_t i = 0; i < 3; i++)
+				{
+					for (size_t j = 0; j < 3; j++)
+					{
+						m2[i][j] = 0.f;
+					}
 				}
 			}
-		}
-		m3x3(const float* pArr);
-		m3x3(float _00, float _01, float _02,
-			float _10, float _11, float _12,
-			float _20, float _21, float _22);
-		m3x3& operator=(const m3x3& rhs);
-		m3x3(const m3x3& rhs);
-		void swap(m3x3&, m3x3&);
+			m3x3(const float* pArr);
+			m3x3(float _00, float _01, float _02,
+				float _10, float _11, float _12,
+				float _20, float _21, float _22);
+			m3x3& operator=(const m3x3& rhs);
+			m3x3(const m3x3& rhs);
+			//~m3x3() { delete m; delete m2; }
+			void swap(m3x3&, m3x3&);
+			float* getM();
+
+			m3x3 rot();
 	};
 
-	//ostream vector2
+	/******************************************************************************/
+	/*
+		Converts a 2D vector to an affine m3x3 matrix.
+	 */
+	 /******************************************************************************/
+	m3x3 toMatrix(const vec2&);
+	
+
+	/******************************************************************************/
+	/*
+		A function to print out a 2D vector.
+	 */
+	 /******************************************************************************/
 	std::ostream& operator<<(std::ostream&, const vec2&);
-	//ostream vector3
+	
+	/******************************************************************************/
+	/*
+		A function to print out a 3D vector.
+	 */
+	 /******************************************************************************/
 	std::ostream& operator<<(std::ostream&, const vec3&);
-	//ostream matrix3x3
+	
+	/******************************************************************************/
+	/*
+		A function to print out a3x3 Matrix.
+	 */
+	 /******************************************************************************/
 	std::ostream& operator<<(std::ostream&, const m3x3&);
 }
 
