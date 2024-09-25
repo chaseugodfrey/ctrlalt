@@ -145,7 +145,6 @@
     <ClCompile Include="src\Collision\Collision.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Math\MathLib.cpp" />
-    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="libs\imgui\include\imgui.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_demo.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_draw.cpp" />
@@ -162,6 +161,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
     <ClCompile Include="src\Logger\Logger.h" />
+    <ClCompile Include="src\Systems\Physics.cpp" />
     <ClCompile Include="src\Systems\SMovement.h" />
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +193,7 @@
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Engine\Engine.h" />
+    <ClInclude Include="src\Systems\Physics.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
   </ItemGroup>
   <ItemGroup>

@@ -124,12 +124,12 @@ namespace Collision
 		else
 		{
 			firstTimeOfCollision = 0;
-			float dLast =0;
+			float dLast = 0;
 
 			// relative vel, aabb1 is stationary, aabb2 is moving
 			MathLib::vec2 Vb{};
-			Vb.X(vel2.X() - vel1.X());
-			Vb.Y(vel2.Y() - vel1.Y());
+			Vb.X() = vel2.X() - vel1.X();
+			Vb.Y() = vel2.Y() - vel1.Y();
 
 			if (Vb.X() < 0)
 			{
@@ -230,6 +230,7 @@ namespace Collision
 			{
 				return false;
 			}
+		}
 	}
 
 	//int CheckMovingCircleToLineEdge(bool withinBothLines,

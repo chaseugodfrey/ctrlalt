@@ -7,11 +7,12 @@ muhammadrayan.b@digipen.edu
 */
 
 #include "Physics.h"
+#include "../Render/glhelper.h"
 
 
 namespace Physics
 {
-	float g_dt = delta_time;
+	float g_dt = GLHelper::delta_time;
 
 	void Update()
 	{
