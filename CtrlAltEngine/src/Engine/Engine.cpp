@@ -17,20 +17,20 @@ m.lazaroo@digipen.edu
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
 
-#include "../Editor/Editor.h"
-
 #include "../Render/Render.h"
+
 
 // DEFINITIONS
 // =========================================================================================================
 
 Render::RenderPipeline renderSystem;
+
 namespace Engine{
 
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
+    Engine::Engine() : registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
         Logger::LogInfo("Engine Created");
     }
 
@@ -49,37 +49,13 @@ namespace Engine{
             return;
         }
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // CREATE WINDOWED APPLICATION
+        main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
-        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-        glfwWindowHint(GLFW_DEPTH_BITS, 24);
-        glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
-        glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8); 
-
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        windowWidth = mode->width;
-        windowHeight = mode->height;
-
-        window = glfwCreateWindow(windowWidth, windowHeight, "AxelUnderland", NULL, nullptr);
-        if (!window) {
-
-            glfwTerminate();
-            return;
-        }
-
-        glfwMakeContextCurrent(window);
-
-        glViewport(0, 0, windowWidth, windowHeight);
-        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-            glViewport(0, 0, width, height);
-            });
-
-        GameEditor::Activate(window);
-
+        // INITIALIZE SYSTEMS HERE
         renderSystem.Init();
+        editor = new GameEditor::Editor();
+        editor->Initialize(main_window);
 
         isRunning = true;
     }
@@ -88,7 +64,7 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::ProcessInput() {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
     }
@@ -117,22 +93,22 @@ namespace Engine{
 		registry->GetSystem<System::SMovement>().Update();
 
         registry->Update();
+        editor->Update();
     }
 
     /// <summary>
     /// 
     /// </summary>
     void Engine::Render() {
+
+        // SET BACKGROUND
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        {
-            // IMGUI
-            GameEditor::Run();
-            renderSystem.Draw();
-        }
+        renderSystem.Draw();
+        editor->Draw();
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(main_window);
         glfwPollEvents();
 
     }
@@ -142,7 +118,7 @@ namespace Engine{
     /// </summary>
     void Engine::Run() {
         Setup();
-        while (isRunning && !glfwWindowShouldClose(window) && !GameEditor::GetExitPrompt()) {
+        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
             ProcessInput();
             Update();
             Render();
@@ -153,15 +129,43 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Destroy() {
-
-        {
-            // IMGUI
-            GameEditor::Terminate();
-            renderSystem.Cleanup();
-        }
-
-
-        glfwDestroyWindow(window);
+        renderSystem.Cleanup();
+        glfwDestroyWindow(main_window);
         glfwTerminate();
     }
+
+    // HELPER FUNCTIONS
+    GLFWwindow* Engine::CreateGLFWwindow(int width, int height)
+    {
+
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
+        glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
+        glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        width = mode->width;
+        height = mode->height;
+
+        GLFWwindow* window = glfwCreateWindow(width, height, "AxelUnderland", NULL, nullptr);
+        if (!window) {
+
+            glfwTerminate();
+            return window;
+        }
+
+        glfwMakeContextCurrent(window);
+
+        glViewport(0, 0, width, height);
+        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+            glViewport(0, 0, width, height);
+            });
+
+        return window;
+    }
+
 }
