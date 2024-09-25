@@ -179,22 +179,22 @@ namespace MathLib
 		return this->x * rhs.y - this->y * rhs.x;
 	}
 
-	float vec2::X() const
+	const float& vec2::X() const
 	{
 		return this->x;
 	}
-	float vec2::Y() const
+	const float& vec2::Y() const
 	{
 		return this->y;
 	}
 
-	void vec2::X(float in)
+	float& vec2::X()
 	{
-		this->x = in;
+		return this->x;
 	}
-	void vec2::Y(float in)
+	float& vec2::Y()
 	{
-		this->y = in;
+		return this->y;
 	}
 
 	const float& vec2::operator[](int pos) const

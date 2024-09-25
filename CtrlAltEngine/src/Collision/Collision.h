@@ -59,7 +59,18 @@ namespace Collision
 		MathLib::vec2 max;
 	};
 
+	/******************************************************************************/
+	/*
+		Returns a bool if they are on the same grid tile.
+	 */
+	 /******************************************************************************/
 	bool GridCollision(MathLib::vec2&, MathLib::vec2&);
+
+	/******************************************************************************/
+	/*
+		Returns a bool if they are on the same grid tile.
+	 */
+	 /******************************************************************************/
 	bool GridCollision(MathLib::vec3&, MathLib::vec3&);
 
 

@@ -160,8 +160,8 @@ namespace MathLib
 				Accessors to get the x and y value of a vector.
 			 */
 			 /******************************************************************************/
-			float X() const;
-			float Y() const;
+			const float& X() const;
+			const float& Y() const;
 			const float& operator[](int) const;
 
 			/******************************************************************************/
@@ -169,8 +169,8 @@ namespace MathLib
 				Modifiers to set the x and y value of a vector.
 			 */
 			 /******************************************************************************/
-			void X(float);
-			void Y(float);
+			float& X();
+			float& Y();
 			float& operator[](int);
 
 	};
@@ -465,7 +465,7 @@ namespace MathLib
 		A function to print out a3x3 Matrix.
 	 */
 	 /******************************************************************************/
-	std::ostream& operator<<(std::ostream&, const m3x3&);
+	//std::ostream& operator<<(std::ostream&, const m3x3&);
 }
 
 #endif

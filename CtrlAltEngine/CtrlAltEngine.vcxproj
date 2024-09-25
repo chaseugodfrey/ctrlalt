@@ -143,7 +143,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Collision\Collision.cpp" />
-    <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Math\MathLib.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
@@ -155,7 +154,6 @@
     <ClCompile Include="libs\imgui\include\imgui_tables.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
-    <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Render\glhelper.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />

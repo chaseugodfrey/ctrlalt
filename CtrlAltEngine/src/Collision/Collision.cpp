@@ -182,7 +182,7 @@ namespace Collision
 
 
 
-			if (Vb.y < 0)
+			if (Vb.Y() < 0)
 			{
 				if (aabb1_min_y > aabb2_max_y)
 				{
