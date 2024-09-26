@@ -23,6 +23,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iostream>
 #include <vector>
 
+#include <sstream>
+
 namespace GameEditor
 {
 
@@ -34,14 +36,20 @@ namespace GameEditor
 	void deserialize_string()
 	{
 		std::ifstream ifs{ "Resources/test.txt" };
-		if (!ifs.is_open())
-			assert(false && "no file");
+		if (ifs.is_open())
+		{
+			/*assert(false && "no file");*/
+			ifs >> test_text;
+			std::cout << "deserialized " << test_text << std::endl;
+		}
 		ifs.close();
 	}
 
 	void serialize_string()
 	{
 		std::ofstream ofs{ "Resources/test.txt" };
+		std::cout << "serializing " << test_text << std::endl;
+		ofs << test_text;
 		ofs.close();
 	}
 
