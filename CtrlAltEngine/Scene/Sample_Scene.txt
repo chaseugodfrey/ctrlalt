@@ -1,7 +1,0 @@
-"Object_Name"
-// can hard serialise some data.
-some.json file to create the entity.
-
-"2ndObject_Name"
-some.json file 
-
