@@ -3,6 +3,11 @@
 
 #include  <GLFW/glfw3.h>
 #include "glm/glm.hpp"
+#include <vector>
+
+#include "Editor_Includes.h"
+#include "EditorWindow.h"
+
 
 namespace GameEditor {
 
@@ -15,10 +20,14 @@ namespace GameEditor {
 
 		GLFWwindow* window;
 
+		std::vector<EditorWindow*> gui_windows_list;
+
 		void DisplayMenuBar();
-		void DisplayHierachy();
+		void DisplayFPS();
+		void DisplayHierarchy();
 		void DisplayInspector();
 		void DisplayScene();
+		void DisplayInConsole();
 
 	public:
 		Editor();

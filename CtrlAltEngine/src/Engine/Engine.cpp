@@ -131,6 +131,7 @@ namespace Engine{
     /// </summary>
     void Engine::Destroy() {
 
+        editor->Destroy();
         glfwDestroyWindow(main_window);
         glfwTerminate();
     }

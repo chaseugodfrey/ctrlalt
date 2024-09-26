@@ -120,6 +120,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022;$(SolutionDir)CtrlAltEngine\libs\GLEW\</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i /s "$(ProjectDir)Resources" "$(TargetDir)Resources"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -140,6 +144,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022;$(SolutionDir)CtrlAltEngine\libs\GLEW\</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i /s "$(ProjectDir)Resources" "$(TargetDir)Resources"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libs\imgui\include\imgui.cpp" />
@@ -147,11 +155,14 @@
     <ClCompile Include="libs\imgui\include\imgui_draw.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_impl_glfw.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_stdlib.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_tables.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
+    <ClCompile Include="src\Editor\EditorWindow.cpp" />
+    <ClCompile Include="src\Editor\Editor_Hierarchy.cpp" />
     <ClCompile Include="src\Render\glhelper.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
@@ -174,6 +185,7 @@
     <ClInclude Include="libs\imgui\include\imgui_impl_opengl3.h" />
     <ClInclude Include="libs\imgui\include\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="libs\imgui\include\imgui_internal.h" />
+    <ClInclude Include="libs\imgui\include\imgui_stdlib.h" />
     <ClInclude Include="libs\imgui\include\imstb_rectpack.h" />
     <ClInclude Include="libs\imgui\include\imstb_textedit.h" />
     <ClInclude Include="libs\imgui\include\imstb_truetype.h" />
@@ -184,6 +196,9 @@
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
     <ClInclude Include="src\Editor\Editor.h" />
+    <ClInclude Include="src\Editor\EditorWindow.h" />
+    <ClInclude Include="src\Editor\Editor_Hierarchy.h" />
+    <ClInclude Include="src\Editor\Editor_Includes.h" />
     <ClInclude Include="src\Render\glhelper.h" />
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
@@ -199,6 +214,9 @@
     <Library Include="libs\GLFW\lib-vc2022\glfw3.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3dll.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3_mt.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
