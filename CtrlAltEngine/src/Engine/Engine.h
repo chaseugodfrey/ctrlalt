@@ -43,6 +43,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
+#include "../Scene/Scene.h"
 #include "../Editor/Editor.h"
 
 // DECLARATIONS
@@ -64,7 +65,6 @@ namespace Engine
 
 		std::unique_ptr<ECS::Registry> registry;
 		GameEditor::Editor* editor;
-
 		GLFWwindow* CreateGLFWwindow(int width, int height);
 
 	public:
@@ -85,7 +85,7 @@ namespace Engine
 		void Destroy();
 		int windowWidth;
 		int windowHeight;
-
+		
 	};
 }
 

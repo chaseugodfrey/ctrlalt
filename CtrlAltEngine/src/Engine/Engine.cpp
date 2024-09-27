@@ -16,7 +16,7 @@ m.lazaroo@digipen.edu
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
-
+#include "../Scene/Scene.h"
 #include "../Render/Render.h"
 
 
@@ -24,6 +24,7 @@ m.lazaroo@digipen.edu
 // =========================================================================================================
 
 Render::RenderPipeline renderSystem;
+Scene::Scene* sceneSystem;
 
 namespace Engine{
 
@@ -56,6 +57,7 @@ namespace Engine{
         renderSystem.Init();
         editor = new GameEditor::Editor();
         editor->Initialize(main_window);
+        sceneSystem = new Scene::Scene(registry.get());
 
         isRunning = true;
     }
@@ -74,14 +76,8 @@ namespace Engine{
     /// </summary>
     void Engine::Setup() {
 		// TODO: Create game objects...
-		registry->AddSystem<System::SMovement>();
 
-		ECS::Entity E_Player = registry->CreateEntity();
-		ECS::Entity E_RabbitWhite = registry->CreateEntity();
-		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-
-        E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
-		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
+        sceneSystem->Init();
 
     }
 
