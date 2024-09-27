@@ -78,14 +78,10 @@ namespace Render {
 	}
 
 	void RenderPipeline::SetupDraw() {
-		
 
-		//ImGui::UpdatePlatformWindows();
-		//ImGui::RenderPlatformWindowsDefault();
-
-		/*glfwMakeContextCurrent(target_window);
+		glfwMakeContextCurrent(target_window);
 		glClearColor(1.f,0.f, 1.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);*/
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void RenderPipeline::Draw(CRenderable const& renderable) {
