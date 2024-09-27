@@ -39,6 +39,7 @@ public:
 
   // default ctor required to initialize GLSLShader object to safe state
   GLSLShader() : pgm_handle(0), is_linked(GL_FALSE) { /* empty by design */ }
+  ~GLSLShader() { DeleteShaderProgram(); }
 
   // This function not only compiles individual shader sources but links
   // multiple shader objects to create an exectuable shader program.
