@@ -74,9 +74,10 @@ namespace ECS
 
 	public:
 		//Constructor
-		Entity(int id) : id(id) {}
+        Entity(EntityID id) : id(id), registry(nullptr) { 0; }
 		EntityID GetID() const { return id; }
 		Entity(const Entity& other) = default;
+
 
 		//Operator overloads
 		Entity operator =(const Entity& other) { id = other.id; return *this; } //follows copy and swap idiom
@@ -87,6 +88,14 @@ namespace ECS
 		bool operator < (const Entity& other) const {return id < other.id;}
 		bool operator >= (const Entity& other) const {return id >= other.id;}
 		bool operator <= (const Entity& other) const {return id <= other.id;}
+
+		template <typename TComponent, typename ...TArgs> void AddComponent(TArgs&& ...args);
+		template <typename TComponent> void RemoveComponent();
+		template <typename TComponent> bool HasComponent() const;
+		template <typename TComponent> TComponent& GetComponent() const;
+
+		// Hold a pointer to the entity's registry
+		class Registry* registry;
 	};
 
 
@@ -176,11 +185,11 @@ namespace ECS
 			return data;
 		}
 
-		T& operator[](unsigned int index) {
+		T& operator[](EntityID index) {
 			return data[index];
 		}
 
-		const T& operator[](int index) const {
+		const T& operator[](EntityID index) const {
 			return data[index];
 		}
 
@@ -192,44 +201,12 @@ namespace ECS
 			size = 0;
 		}
 
-		void SetComponent(int entityID, T component) {
-			if (entityIDToIndex.find(entityID) != entityIDToIndex.end())
-			{
-				int index = entityIDToIndex[entityID];
-				data[index] = component;
-			}
-			else
-			{
-				int index = size;
-				entityIDToIndex.emplace(entityID, index);
-				indexToEntityID.emplace(index, entityID);
-			}
-			if (index >= data.capacity())
-			{
-				data.resize(size * 2);
-			}
+		void SetComponent(EntityID index, T component) {
 			data[index] = component;
 			size++
 		}
 
-		void RemoveC(int entityID)
-		{
-			int indexOfRemoved = entityIDToIndex[entityID];
-			int indexOfLast = size - 1;
-			data[indexOfRemoved] = data[indexOfLast];
-
-			int entityIDOfLastElement = indexToEntityID[indexOfLast];
-			entityIDToIndex[entityIDOfLastElement] = indexOfRemoved;
-			indexToEntityID[indexOfRemoved] = entityIDOfLastElement;
-
-			entityIDToIndex.erase(entityID);
-			indexToEntityID.erase(indexOfLast);
-
-			size--;
-		}
-
-		T& GetComponent(int entityID) {
-			int index = entityIDToIndex[entityID];
+		T& GetComponent(EntityID index) {
 			return static_cast<T&>(data[index]);
 		}
 	};
@@ -278,7 +255,7 @@ namespace ECS
 		template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 		template <typename TComponent> void RemoveComponent(Entity entity);
 		template <typename TComponent> bool HasComponent(Entity entity)const;
-
+		template <typename TComponent> TComponent& GetComponent(Entity entity) const;
 
 		//System Management
 		template <typename TSystem,typename ...TArgs> void AddSystem(TArgs&&  ...args);
@@ -334,12 +311,16 @@ namespace ECS
 
 		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
 
+		if (entityID >= componentPool->GetSize())
+		{
+			componentPool->Resize(numEntities);
+		}
+
 		TComponent newComponent(std::forward<TArgs>(args)...);
 
-		componentPools->SetComponent(entityId, newComponent);
-		entityComponentMasks[entityId].set(componentID);
-
-		Logger::LogInfo("Component ID = " + std::to_string(componentID) + "was added to entity ID " + std::to_string(entityId));
+		componentPool->SetComponent(entityID, newComponent);
+		entityComponentMasks[entityID].set(componentID);
+		Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was added to entity ID: " + std::to_string(entityID));
 	}
 
 	template <typename TComponent>
@@ -362,6 +343,7 @@ namespace ECS
 		componentPools->RemoveC(entityID);
 
 		entityComponentMasks[entityID].set(componentID, false);
+		Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was removed from entity ID: " + std::to_string(entityID));
 	}
 
 	template <typename TComponent>
@@ -373,8 +355,45 @@ namespace ECS
 		return entityComponentMasks[entityID].test(componentID);
 	}
 
+	template <typename TComponent> TComponent& Registry::GetComponent(Entity entity) const
+	{
+		const auto componentID = Component<TComponent>::GetId();
+		const auto entityID = entity.GetID();
+		auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
+
+		return componentPool->GetComponent(entityID);
+	}
 	//seperation of templated definitions, will do in future
 	//#include "ECSTemplates.h"
+
+	/******************************************************************************/
+	//Entity Implementation
+	/******************************************************************************/
+
+	template <typename TComponent, typename ...TArgs>
+	void Entity::AddComponent(TArgs&& ...args)
+	{
+		registry->AddComponent<TComponent>(*this, std::forward<TArgs>(args)...);
+	}
+
+	template <typename TComponent> 
+	void Entity::RemoveComponent()
+	{
+		registry->RemoveComponent<TComponent>(*this);
+	}
+
+	template <typename TComponent> 
+	bool Entity::HasComponent() const
+	{
+		return registry->HasComponent<TComponent>(*this);
+	}
+
+	template <typename TComponent>
+	TComponent& Entity::GetComponent() const
+	{
+		return registry->GetComponent<TComponent>(*this);
+	}
+
 }
 
 #endif
