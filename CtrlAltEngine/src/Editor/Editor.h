@@ -23,6 +23,7 @@ namespace GameEditor {
 		std::vector<EditorWindow*> gui_windows_list;
 
 		void DisplayMenuBar();
+		void DisplayPlayState();
 		void DisplayFPS();
 		void DisplayHierarchy();
 		void DisplayInspector();

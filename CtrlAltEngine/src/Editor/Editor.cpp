@@ -98,7 +98,7 @@ namespace GameEditor
 		ImGui::NewFrame();
 
 		DisplayMenuBar();
-
+		DisplayPlayState();
 		DisplayInspector();
 		DisplayScene();
 		DisplayInConsole();
@@ -120,19 +120,33 @@ namespace GameEditor
 
 	// EDITOR WINDOWS
 
+	void Editor::DisplayPlayState()
+	{
+		if (ImGui::Begin("PlayState", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar))
+		{
+
+			ImVec2 btn_size(40, 40);
+			ImGui::Button("A", btn_size); ImGui::SameLine();
+			ImGui::Dummy(btn_size); ImGui::SameLine();
+			ImGui::Button("B", btn_size);
+		}
+
+		ImGui::End();
+	}
+
 	void Editor::DisplayMenuBar()
 	{
 		// Set Menu Bar Size & position
 		// Remember to change size dynamically
-		ImGui::SetNextWindowSize(ImVec2(1920, 40));
+		ImGui::SetNextWindowSize(ImVec2(1920, 50));
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 
 		// Menu Bar Rendering
-		if (ImGui::Begin("AxelUnderland", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
+		if (ImGui::Begin("AxelUnderland", NULL, 
+			ImGuiWindowFlags_NoTitleBar |  ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
 		{
 			if (ImGui::BeginMenuBar())
 			{
-
 				// FILE DROP DOWN MENU
 				if (ImGui::BeginMenu("File"))
 				{
