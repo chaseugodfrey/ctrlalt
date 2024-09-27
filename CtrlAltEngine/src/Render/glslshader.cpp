@@ -39,6 +39,7 @@ GLSLShader::DeleteShaderProgram() {
   if (pgm_handle > 0) {
     glDeleteProgram(pgm_handle);
   }
+  pgm_handle = 0;
 }
 
 GLboolean

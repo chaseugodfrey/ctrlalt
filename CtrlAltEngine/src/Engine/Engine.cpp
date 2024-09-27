@@ -23,7 +23,7 @@ m.lazaroo@digipen.edu
 // DEFINITIONS
 // =========================================================================================================
 
-Render::RenderPipeline renderSystem;
+//Render::RenderPipeline renderSystem;
 
 namespace Engine{
 
@@ -53,7 +53,7 @@ namespace Engine{
         main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
         // INITIALIZE SYSTEMS HERE
-        renderSystem.Init();
+       // renderSystem.Init();
         editor = new GameEditor::Editor();
         editor->Initialize(main_window);
 
@@ -75,6 +75,7 @@ namespace Engine{
     void Engine::Setup() {
 		// TODO: Create game objects...
 		registry->AddSystem<System::SMovement>();
+        registry->AddSystem<System::SRender>();
 
 		ECS::Entity E_Player = registry->CreateEntity();
 		ECS::Entity E_RabbitWhite = registry->CreateEntity();
@@ -102,10 +103,10 @@ namespace Engine{
     void Engine::Render() {
 
         // SET BACKGROUND
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderSystem.Draw();
+        registry->GetSystem<System::SRender>().Render();
         editor->Draw();
 
         glfwSwapBuffers(main_window);
@@ -129,8 +130,6 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Destroy() {
-        renderSystem.Cleanup();
-
         editor->Destroy();
         glfwDestroyWindow(main_window);
         glfwTerminate();
