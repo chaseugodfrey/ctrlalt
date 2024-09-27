@@ -96,15 +96,6 @@ namespace Render {
 		void Draw(CRenderable const&);
 		void Cleanup();
 	};
-
-	//Class that serves as an assetmanager for now
-	class AssetLoader {
-
-		
-		GLModel LoadQuad();	//Example of loading in something, reference for nxt time
-	public:
-		void LoadGraphics(RenderPipeline& render);
-	};
 }
 
 namespace System {
