@@ -163,6 +163,7 @@
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\EditorWindow.cpp" />
     <ClCompile Include="src\Editor\Editor_Hierarchy.cpp" />
+    <ClCompile Include="src\Math\Source.cpp" />
     <ClCompile Include="src\Render\glhelper.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="src\Editor\EditorWindow.h" />
     <ClInclude Include="src\Editor\Editor_Hierarchy.h" />
     <ClInclude Include="src\Editor\Editor_Includes.h" />
+    <ClInclude Include="src\Math\Header.h" />
     <ClInclude Include="src\Render\glhelper.h" />
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
