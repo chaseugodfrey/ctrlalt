@@ -130,6 +130,8 @@ namespace Engine{
     /// </summary>
     void Engine::Destroy() {
         renderSystem.Cleanup();
+
+        editor->Destroy();
         glfwDestroyWindow(main_window);
         glfwTerminate();
     }
