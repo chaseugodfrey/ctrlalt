@@ -1,20 +1,27 @@
 // Fragment shader code goes here...
 #version 450 core
 
-//out vec3 vColor in vert shader is placed in location 0
-//so to get that data here, location and type needs to match
-//here, location index and in out qualifiers are used to identify the 2,
-//else the names need to match
+//---------------Input
+//Get Texture coord
+layout (location=1) in vec2 vInterpolatedTexture;
 
-//layout (location=0) in vec3 vInterpolatedColor;
+//---------------Uniform
+//BlackBox Data structure thata represents a texture
+//Requires that the uniform value that represents the image unit's format fits this sampler's format
+uniform sampler2D uTex2d;
 uniform vec3 uColor;
 
+//---------------Output
 //front buffer is currently drawn
 //back buffer is whr shader's data shld be placed
 //GL_BACK_LEFT's color buffer index by default is 0, so thats where our data will be placed
 layout (location=0) out vec4 fFragColor;
 
 void main(){
-    //Same thing, just convert it to a vec4 for color buffer
-    fFragColor = vec4(uColor, 1.0);
+	//Get Texture Color
+	fFragColor = texture(uTex2d, vInterpolatedTexture);
+	//fFragColor = vec4(uTex2d, 0.0, 1.0);
+	
+	//Modulate texture with color param
+	//fFragColor = fFragColor * vec4(uColor, 1.0);
 }

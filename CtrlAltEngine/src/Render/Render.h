@@ -31,6 +31,11 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../AssetManager/AssetManager.h"
 #include "glslshader.h"
 
+
+void _CheckGLError(const char* file, int line);
+
+#define CheckGLError() _CheckGLError(__FILE__, __LINE__)
+
 //Forward Declaration
 namespace System {
 	class SRender;
@@ -48,6 +53,11 @@ namespace Render {
 		GLuint		draw_cnt{};		//idx_elem_cnt replacement, now represents for both non-indexed and indexed draw methods
 		GLuint		vbo_ID{};
 	};
+	//Structure that represents data in 1 vertex
+	struct GLVertStruct {
+		glm::vec2 pos;
+		glm::vec2 texCoord;
+	};
 
 	//Class that represents something that can be drawn
 	class CRenderable {
@@ -62,6 +72,9 @@ namespace Render {
 		std::string shaderName;
 		bool compiled = false;
 	public:
+		/*
+		* Ctor of CRenderable, Params are texture name, mesh name, shader name
+		*/
 		CRenderable(std::string texture = "default", std::string mesh = "default", std::string shader = "default")
 			:textureName(texture), meshName(mesh), shaderName(shader), compiled(false)
 		{}
@@ -81,19 +94,23 @@ namespace Render {
 		RenderPipeline();
 
 		//Loads Model, and returns a GLModel that draws using triangles
-		GLModel LoadModel_Triangles(std::vector<glm::vec2> const&, std::vector<GLushort> const&);
+		GLModel LoadModel_Triangles(std::vector<GLVertStruct> const&, std::vector<GLushort> const&);
 		//Loads image, and returns a texture handle
 		GLuint LoadTexture(Engine::ImageAsset const& texture);
 		//Release texture from gpu store, can be an array or just individual
 		void ReleaseTexture(GLuint texture_array);
 
-		GLFWwindow* CreateNewWindow(GLint width = 900, GLint height = 480);
-		void SetCurrentWindow(GLFWwindow* window);
+		GLFWwindow* CreateTargetWindow(GLint width = 900, GLint height = 480);
+		void SetTargetWindow(GLFWwindow* window);
+		void SetTargetAsCurrent();
+		GLFWwindow const* GetCurrentWindow();
+		void DeleteCurrentWindow();
 
 		//void Init(GLint width = 900, GLint height = 480, std::string const& window_title = "Hello world");
 		//Draws a single renderable
-		void SetupDraw();
-		void Draw(CRenderable const&);
+		void StartDraw();
+		void Draw(CRenderable const&, glm::mat3 const&);
+		void FinishDraw();
 		void Cleanup();
 	};
 }

@@ -50,6 +50,7 @@ namespace Engine{
         }
 
         // CREATE WINDOWED APPLICATION
+        glClearColor(1.f, 1.f, 0.f, 1.f);
         main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
         // INITIALIZE SYSTEMS HERE
@@ -77,13 +78,18 @@ namespace Engine{
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SRender>();
 
+        CheckGLError();
 		ECS::Entity E_Player = registry->CreateEntity();
-		ECS::Entity E_RabbitWhite = registry->CreateEntity();
 		ECS::Entity E_RabbitBlack = registry->CreateEntity();
 
         E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
 		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
+        CheckGLError();
 
+        ECS::Entity E_RabbitWhite = registry->CreateEntity();
+        CheckGLError();
+        E_RabbitWhite.AddComponent<Render::CRenderable>("test");
+        CheckGLError();
     }
 
     /// <summary>
@@ -92,8 +98,10 @@ namespace Engine{
     void Engine::Update() {
 
 		registry->GetSystem<System::SMovement>().Update();
+        CheckGLError();
 
         registry->Update();
+        CheckGLError();
         editor->Update();
     }
 
@@ -103,14 +111,16 @@ namespace Engine{
     void Engine::Render() {
 
         // SET BACKGROUND
-        //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glfwMakeContextCurrent(main_window);
+        glClearColor(1.f, 1.f, 1.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        registry->GetSystem<System::SRender>().Render();
         editor->Draw();
 
         glfwSwapBuffers(main_window);
         glfwPollEvents();
+
+        registry->GetSystem<System::SRender>().Render();
 
     }
 
@@ -124,6 +134,8 @@ namespace Engine{
             Update();
             Render();
         }
+
+        CheckGLError();
     }
 
     /// <summary>
@@ -132,7 +144,7 @@ namespace Engine{
     void Engine::Destroy() {
         editor->Destroy();
         glfwDestroyWindow(main_window);
-        glfwTerminate();
+//        glfwTerminate();
     }
 
     // HELPER FUNCTIONS
