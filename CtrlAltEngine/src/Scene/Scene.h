@@ -12,7 +12,11 @@ namespace Scene{
 	class Scene {
 
 	private:
-		ECS::Registry* registry;
+		std::vector<ECS::Registry*> registries;	//To store all Scene data
+		ECS::Registry* registry;				//To store 1 Scene data
+		std::vector<std::string> scenePaths{"Assets/scene1.txt", 
+											"Assets/scene2.txt", 
+											"Assets/scene3.txt"};
 
 	public:
 		Scene(ECS::Registry*);

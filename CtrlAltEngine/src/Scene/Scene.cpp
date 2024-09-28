@@ -37,88 +37,98 @@ namespace Scene {
     void Scene::Init() {
         registry->AddSystem<System::SMovement>();
         std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
-        std::string filePath = "Assets/scene1.txt";  // Your file path
-        std::cout << "Attempting to open file at: " << filePath << std::endl;
-        std::ifstream file(filePath);
-        if (!file.is_open()) {
-            std::cerr << "Failed to open file!" << std::endl;
-            return;
+        //std::string filePath = "Assets/scene1.txt";  // Your file path
+        size_t numberOfScenes = scenePaths.size();
+        for (auto elem : scenePaths) {
+            std::ifstream file(elem);
+            if (!file.is_open()) {
+                std::cerr << "Failed to open file!" << std::endl;
+                return;
+            }
+
+            // Read the "Entities:" keyword and entity count
+            std::string keyword;
+            int entityCount = 0;
+
+            file >> keyword; // Extract the "Entities:" keyword
+            if (keyword != "Entities:") {
+                std::cerr << "Invalid format!" << std::endl;
+                return;
+            }
+
+            file >> entityCount; // Extract the number of entities
+
+            for (int i = 0; i < entityCount; ++i) {
+                int id;
+                float posX, posY, scaleX, scaleY, rotation;
+
+                // Read and validate entity data
+                file >> keyword >> id;           // Expecting "ID: <id>"
+                if (keyword != "ID:") {
+                    std::cerr << "Invalid format for ID!" << std::endl;
+                    return;
+                }
+
+                file >> keyword >> posX;         // Expecting "PosX: <posX>"
+                if (keyword != "PosX:") {
+                    std::cerr << "Invalid format for PosX!" << std::endl;
+                    return;
+                }
+
+                file >> keyword >> posY;         // Expecting "PosY: <posY>"
+                if (keyword != "PosY:") {
+                    std::cerr << "Invalid format for PosY!" << std::endl;
+                    return;
+                }
+
+                file >> keyword >> scaleX;       // Expecting "ScaleX: <scaleX>"
+                if (keyword != "ScaleX:") {
+                    std::cerr << "Invalid format for ScaleX!" << std::endl;
+                    return;
+                }
+
+                file >> keyword >> scaleY;       // Expecting "ScaleY: <scaleY>"
+                if (keyword != "ScaleY:") {
+                    std::cerr << "Invalid format for ScaleY!" << std::endl;
+                    return;
+                }
+
+                file >> keyword >> rotation;     // Expecting "Rot: <rotation>"
+                if (keyword != "Rot:") {
+                    std::cerr << "Invalid format for Rot!" << std::endl;
+                    return;
+                }
+
+                // Create entity
+                ECS::Entity entity = registry->CreateEntity();
+
+                // Add Transform component
+                entity.AddComponent<Component::CTransform>(
+                    glm::vec2(posX, posY),
+                    glm::vec2(scaleX, scaleY),
+                    rotation
+                );
+
+                // Add RigidBody component
+                entity.AddComponent<Component::CRigidBody>(glm::vec2(posX, posY));
+
+                std::cout << "ID: " << id << std::endl
+                    << "Pos X: " << posX << std::endl
+                    << "Pos Y: " << posY << std::endl
+                    << "ScaleX: " << scaleX << std::endl
+                    << "ScaleY: " << scaleY << std::endl;
+            }
+
+            file.close();
+            //All Entity to be pushed into a vector of Registries
+            //New Entity to be prepared for next set of Registries
+            Scene::registries.push_back(registry);
+            //Delete current set of registry so that new scene will be created from new registry?
+
+            std::cout << "Total number of entities read: " << entityCount << std::endl;
+            std::cout << "Data read from: "<< elem << std::endl;
+
         }
-
-        // Read the "Entities:" keyword and entity count
-        std::string keyword;
-        int entityCount = 0;
-
-        file >> keyword; // Extract the "Entities:" keyword
-        if (keyword != "Entities:") {
-            std::cerr << "Invalid format!" << std::endl;
-            return;
-        }
-
-        file >> entityCount; // Extract the number of entities
-
-        for (int i = 0; i < entityCount; ++i) {
-            int id;
-            float posX, posY, scaleX, scaleY, rotation;
-
-            // Read and validate entity data
-            file >> keyword >> id;           // Expecting "ID: <id>"
-            if (keyword != "ID:") {
-                std::cerr << "Invalid format for ID!" << std::endl;
-                return;
-            }
-
-            file >> keyword >> posX;         // Expecting "PosX: <posX>"
-            if (keyword != "PosX:") {
-                std::cerr << "Invalid format for PosX!" << std::endl;
-                return;
-            }
-
-            file >> keyword >> posY;         // Expecting "PosY: <posY>"
-            if (keyword != "PosY:") {
-                std::cerr << "Invalid format for PosY!" << std::endl;
-                return;
-            }
-
-            file >> keyword >> scaleX;       // Expecting "ScaleX: <scaleX>"
-            if (keyword != "ScaleX:") {
-                std::cerr << "Invalid format for ScaleX!" << std::endl;
-                return;
-            }
-
-            file >> keyword >> scaleY;       // Expecting "ScaleY: <scaleY>"
-            if (keyword != "ScaleY:") {
-                std::cerr << "Invalid format for ScaleY!" << std::endl;
-                return;
-            }
-
-            file >> keyword >> rotation;     // Expecting "Rot: <rotation>"
-            if (keyword != "Rot:") {
-                std::cerr << "Invalid format for Rot!" << std::endl;
-                return;
-            }
-
-            // Create entity
-            ECS::Entity entity = registry->CreateEntity();
-
-            // Add Transform component
-            entity.AddComponent<Component::CTransform>(
-                glm::vec2(posX, posY),
-                glm::vec2(scaleX, scaleY),
-                rotation
-            );
-
-            // Add RigidBody component
-            entity.AddComponent<Component::CRigidBody>(glm::vec2(posX, posY));
-
-            std::cout << "ID: " << id << std::endl
-                << "Pos X: " << posX << std::endl
-                << "Pos Y: " << posY << std::endl
-                << "ScaleX: " << scaleX << std::endl
-                << "ScaleY: " << scaleY << std::endl;
-        }
-
-        file.close();
     }
 
 	
