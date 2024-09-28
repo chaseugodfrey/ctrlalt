@@ -28,7 +28,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // that can be used as index in associative and unordered associative containers.
 #include <typeindex>
 #include <memory>
-#include <../src/Logger/Logger.h>
+#include "../Logger/Logger.h"
 
 namespace ECS
 {
@@ -233,11 +233,11 @@ namespace ECS
 
 		Registry()
 		{
-			Logger::LogInfo("Registry created");
+			//Logger::LogInfo("Registry created");
 		}
 		~Registry()
 		{
-			Logger::LogInfo("Registry deleted");
+			//Logger::LogInfo("Registry deleted");
 		}
 
 		void Update();
@@ -315,7 +315,7 @@ namespace ECS
 
 		componentPool->SetComponent(entityID, newComponent);
 		entityComponentMasks[entityID].set(componentID);
-		Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was added to entity ID: " + std::to_string(entityID));
+
 	}
 
 	template <typename TComponent>
@@ -335,7 +335,7 @@ namespace ECS
 			return;
 		}
 		entityComponentMasks[entityID].set(componentID, false);
-		Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was removed from entity ID: " + std::to_string(entityID));
+		//Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was removed from entity ID: " + std::to_string(entityID));
 	}
 
 	template <typename TComponent>

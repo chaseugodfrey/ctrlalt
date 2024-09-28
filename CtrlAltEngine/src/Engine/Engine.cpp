@@ -10,7 +10,6 @@ m.lazaroo@digipen.edu
 // INCLUDES
 // =========================================================================================================
 #include "Engine.h"
-#include "../ECS/ECS.h"
 #include <iostream>
 #include "glm/glm.hpp"
 #include "../Components/CTransform.h"
@@ -24,6 +23,7 @@ m.lazaroo@digipen.edu
 // =========================================================================================================
 
 //Render::RenderPipeline renderSystem;
+Input::Input_Container global_input;// definition of the global variable 
 
 namespace Engine{
 
@@ -31,14 +31,14 @@ namespace Engine{
     /// 
     /// </summary>
     Engine::Engine() : registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
-        Logger::LogInfo("Engine Created");
+        //Logger::LogInfo("Engine Created");
     }
 
     /// <summary>
     /// 
     /// </summary>
     Engine::~Engine() {
-        Logger::LogInfo("Engine Deleted");
+        //Logger::LogInfo("Engine Deleted");
     }
 
     /// <summary>
@@ -58,6 +58,13 @@ namespace Engine{
         editor->Initialize(main_window);
 
         isRunning = true;
+
+        //## initialise input systems,
+        // key binds WASD, 1 rot, 2 scale.
+        //## my input system will be a static variable in header.
+        global_input.Init_System(main_window); 
+        
+
     }
 
     /// <summary>
@@ -67,6 +74,7 @@ namespace Engine{
         if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
+        global_input.UpdateActionState(main_window); // able to dynamically change windows for keychecks
     }
 
     /// <summary>
@@ -95,6 +103,14 @@ namespace Engine{
 
         registry->Update();
         editor->Update();
+
+        
+        // if you want to use Input
+        /*
+        if (global_input.Action("action name")) // returns true if you want to do it
+        */
+        global_input.Action("KEY W");
+        //global_input.GetKeyReleased(GLFW_KEY_Z); // this is not trigger
     }
 
     /// <summary>

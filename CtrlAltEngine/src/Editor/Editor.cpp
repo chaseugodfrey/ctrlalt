@@ -18,7 +18,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #include "Editor.h"
 #include <string>
-
+//#include "../ECS/ECS.h" // this should not be in a .cpp
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -55,12 +55,12 @@ namespace GameEditor
 
 	Editor::Editor() : window(nullptr)
 	{
-
+		//Logger::LogInfo("Editor Created");
 	};
 
 	Editor::~Editor()
 	{
-
+		//Logger::LogInfo("Editor Created");
 	}
 
 	void Editor::Initialize(GLFWwindow* _window)

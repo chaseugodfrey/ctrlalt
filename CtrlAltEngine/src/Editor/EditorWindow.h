@@ -1,3 +1,8 @@
+#ifndef EDITORWINDOW_H
+#define EDITORWINDOW_H
+
+
+
 #include "Editor_Includes.h"
 #include <string>
 
@@ -14,3 +19,4 @@ namespace GameEditor
 		virtual ~EditorWindow() = default;
 	};
 }
+#endif // !
