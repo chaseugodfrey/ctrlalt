@@ -129,14 +129,13 @@ namespace System {
 		std::unordered_map<std::string, GLSLShader> shader_map;
 
 		Render::RenderPipeline render_pipeline;
+		//Generate the default quad and default image
+		void LoadDefaults();
 	public:
 		SRender();
 
-		//Generate the default quad and default image
-		void LoadDefaults();
-		
-		~SRender();
 		void Render();
+		void Destroy();
 	};
 }
 

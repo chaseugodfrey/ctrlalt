@@ -84,12 +84,9 @@ namespace Engine{
 
         E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
 		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
-        CheckGLError();
 
         ECS::Entity E_RabbitWhite = registry->CreateEntity();
-        CheckGLError();
         E_RabbitWhite.AddComponent<Render::CRenderable>("test");
-        CheckGLError();
     }
 
     /// <summary>
@@ -144,7 +141,8 @@ namespace Engine{
     void Engine::Destroy() {
         editor->Destroy();
         glfwDestroyWindow(main_window);
-//        glfwTerminate();
+        registry->GetSystem<System::SRender>().Destroy();
+        glfwTerminate();
     }
 
     // HELPER FUNCTIONS

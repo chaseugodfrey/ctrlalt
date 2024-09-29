@@ -343,7 +343,7 @@ namespace System {
 		CheckGLError();
 	}
 
-	SRender::~SRender() {
+	void SRender::Destroy() {
 		//Release Textures
 		Logger::LogInfo("Release Image from GPU...");
 		CheckGLError();
@@ -367,9 +367,6 @@ namespace System {
 		Logger::LogInfo("Shaders Released..");
 
 		render_pipeline.DeleteCurrentWindow();
-		//render_pipeline.DeleteWindow(render_pipeline.GetCurrentWindow());
-
-		glfwTerminate();
 	}
 
 	void SRender::LoadDefaults() {
