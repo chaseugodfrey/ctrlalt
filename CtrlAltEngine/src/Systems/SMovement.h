@@ -25,7 +25,7 @@ namespace System {
 				transform.position.x += rigidBody.vel.x;
 				transform.position.y += rigidBody.vel.y;
 
-				Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.x) + ", " + std::to_string((int)transform.position.y) + ')');
+				//Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.x) + ", " + std::to_string((int)transform.position.y) + ')');
 			}
 		}
 	};
