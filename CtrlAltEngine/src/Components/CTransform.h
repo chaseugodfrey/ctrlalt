@@ -2,17 +2,18 @@
 #define TRANSFORMCOMPONENT_H
 
 #include <../libs/glm/glm.hpp> // implement our own
+#include "../Math/MathLib.h"
 
 namespace Component {
 
 	
 	struct CTransform
 	{
-		glm::vec2 position;
-		glm::vec2 scale;
+		MathLib::vec2 position;
+		MathLib::vec2 scale;
 		double rotation;
 
-		CTransform(glm::vec2 position = glm::vec2(0, 0), glm::vec2 scale = glm::vec2(1, 1), double rotation = 0.0)
+		CTransform(MathLib::vec2 position = MathLib::vec2(0, 0), MathLib::vec2 scale = MathLib::vec2(1, 1), double rotation = 0.0)
 		{
 			this->position = position;
 			this->scale = scale;
