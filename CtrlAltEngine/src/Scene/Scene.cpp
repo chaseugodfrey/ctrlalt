@@ -122,7 +122,7 @@ namespace Scene {
             file.close();
             //All Entity to be pushed into a vector of Registries
             //New Entity to be prepared for next set of Registries
-            Scene::registries.push_back(registry);
+            //Scene::registries.push_back(registry);
             //Delete current set of registry so that new scene will be created from new registry?
 
             std::cout << "Total number of entities read: " << entityCount << std::endl;
