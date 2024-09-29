@@ -44,7 +44,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
 #include "../Editor/Editor.h"
-//#include "../AssetManager/AssetManager.h"
+#include "../AssetManager/AssetManager.h"
 #include "../Input/Input.h"
 
 // DECLARATIONS

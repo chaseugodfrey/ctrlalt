@@ -34,7 +34,7 @@ class Logger {
 
 public:
     static void LogInfo(const std::string& message);
-    inline static std::vector<LogEntry> messages; // make this an inline ?
+    static std::vector<LogEntry> messages; // make this an inline ?
 private:
     static std::string CurrentDateTimeToString();
 };
