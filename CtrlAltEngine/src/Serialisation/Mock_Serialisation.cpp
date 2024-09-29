@@ -87,12 +87,15 @@ void Entity::Deserialise(const char* filename) {
         return;
     }
 
+    // convert this to transform.
     // Check if the JSON has the "My Big Ass" field
     if (!Entity_json.HasMember(this->transformC.get_name())) {
         std::cerr << "'transformT' not found in JSON!" << std::endl;
         fclose(in_file_stream);
         return;
     }
+    
+    // add in rigid body
 
     // I may send in the document to comp deserialisation if I need multiple object values.
     const rapidjson::Value& data_Json = Entity_json[this->transformC.component_name.c_str()];
