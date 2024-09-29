@@ -15,15 +15,17 @@ m.lazaroo@digipen.edu
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
-
+#include "../Scene/Scene.h"
 #include "../Render/Render.h"
 
 
 // DEFINITIONS
 // =========================================================================================================
 
-//Render::RenderPipeline renderSystem;
+
 Input::Input_Container global_input;// definition of the global variable 
+//Render::RenderPipeline renderSystem; // do not need this?
+Scene::Scene* sceneSystem;
 
 namespace Engine{
 
@@ -56,6 +58,7 @@ namespace Engine{
        // renderSystem.Init();
         editor = new GameEditor::Editor();
         editor->Initialize(main_window);
+        sceneSystem = new Scene::Scene(registry.get());
 
         isRunning = true;
 
@@ -85,12 +88,7 @@ namespace Engine{
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SRender>();
 
-		ECS::Entity E_Player = registry->CreateEntity();
-		ECS::Entity E_RabbitWhite = registry->CreateEntity();
-		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-
-        E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
-		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
+        sceneSystem->Init();
 
     }
 

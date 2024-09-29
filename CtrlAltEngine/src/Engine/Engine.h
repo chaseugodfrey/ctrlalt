@@ -43,6 +43,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
+#include "../Scene/Scene.h"
 #include "../Editor/Editor.h"
 #include "../AssetManager/AssetManager.h"
 #include "../Input/Input.h"
@@ -67,7 +68,7 @@ namespace Engine
 		std::unique_ptr<ECS::Registry> registry;
 		GameEditor::Editor* editor;
 
-		AssetManager assetManager;
+		AssetManager assetManager; 
 
 		GLFWwindow* CreateGLFWwindow(int width, int height);
 
@@ -89,7 +90,7 @@ namespace Engine
 		void Destroy();
 		int windowWidth;
 		int windowHeight;
-
+		
 	};
 
 
