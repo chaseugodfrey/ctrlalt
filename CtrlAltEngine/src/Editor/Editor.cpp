@@ -9,6 +9,17 @@
 
 Defines
 
+ ====== Helpful code ======
+
+ For static GUI items that don't move:
+ *		ImGui::SetNextWindowSize(ImVec2(x, y));
+ *		ImGui::SetNextWindowPos(ImVec2(x, y)); 
+
+
+ For padding, use:
+ *		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ...); 
+		/code/
+		ImGui::PopStyleVar()
 
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -18,21 +29,19 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #include "Editor.h"
 #include <string>
-//#include "../ECS/ECS.h" // this should not be in a .cpp
 #include <fstream>
 #include <iostream>
 #include <vector>
-
 #include <sstream>
 
-namespace GameEditor
+namespace Editor
 {
 
 	// TESTING STUFF
 	std::string file_path{ "Resources/test.txt" };
 	std::string test_text{};
 
-	std::vector<std::string> console_logs;
+	std::vector<std::string> console_data;
 	void deserialize_string()
 	{
 		std::ifstream ifs{ "Resources/test.txt" };
@@ -52,6 +61,8 @@ namespace GameEditor
 		ofs << test_text;
 		ofs.close();
 	}
+
+	/////////////////////////////////////////////////////////
 
 	Editor::Editor() : window(nullptr)
 	{
@@ -78,18 +89,33 @@ namespace GameEditor
 		deserialize_string();
 		//gui_windows_list.push_back()
 	}
-	
+
 	void Editor::Update()
 	{
 		glfwPollEvents();
+
+		// =========== TESTING PURPOSES =============
+
+		if (ImGui::IsKeyPressed(ImGuiKey_A))
+		{
+			static int count = 1;
+			ConsoleAddLine(std::to_string(count++));
+
+		}
+
+		if (isCreateEntity)
+		{
+			ConsoleAddLine("Object created.");
+			isCreateEntity = false;
+		}
 
 		if (isPromptedToExit)
 		{
 
 		}
+		// ===========================================
 	}
 
-	// FOR RENDERING
 	void Editor::Draw()
 	{
 		glfwMakeContextCurrent(window);
@@ -97,6 +123,8 @@ namespace GameEditor
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
 
+		// To Do:
+		// Convert into separate window file sub classes
 		DisplayMenuBar();
 		DisplayPlayState();
 		DisplayInspector();
@@ -110,43 +138,32 @@ namespace GameEditor
 
 	void Editor::Destroy()
 	{
-
 		serialize_string();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-
 	}
 
 	// EDITOR WINDOWS
 
-	void Editor::DisplayPlayState()
-	{
-		if (ImGui::Begin("PlayState", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar))
-		{
-
-			ImVec2 btn_size(40, 40);
-			ImGui::Button("A", btn_size); ImGui::SameLine();
-			ImGui::Dummy(btn_size); ImGui::SameLine();
-			ImGui::Button("B", btn_size);
-		}
-
-		ImGui::End();
-	}
 
 	void Editor::DisplayMenuBar()
 	{
 		// Set Menu Bar Size & position
 		// Remember to change size dynamically
-		ImGui::SetNextWindowSize(ImVec2(1920, 50));
+		ImGui::SetNextWindowSize(ImVec2(1920, 40));
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 
+		static ImVec2 frame_padding(5.0f, 10.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, frame_padding);
+
 		// Menu Bar Rendering
-		if (ImGui::Begin("AxelUnderland", NULL, 
-			ImGuiWindowFlags_NoTitleBar |  ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
+		if (ImGui::Begin("AxelUnderland", NULL,
+			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
 		{
 			if (ImGui::BeginMenuBar())
 			{
+				ImGui::SetWindowFontScale(1.2f);
 				// FILE DROP DOWN MENU
 				if (ImGui::BeginMenu("File"))
 				{
@@ -157,6 +174,7 @@ namespace GameEditor
 
 				if (ImGui::BeginMenu("Create"))
 				{
+					ImGui::MenuItem("Entity", NULL, &isCreateEntity);
 					ImGui::EndMenu();
 				}
 
@@ -165,9 +183,29 @@ namespace GameEditor
 
 		};
 
+		ImGui::PopStyleVar();
 		ImGui::End();
 
 	}
+
+	void Editor::DisplayPlayState()
+	{
+
+		ImGui::SetNextWindowSize(ImVec2(1920, 40));
+		ImGui::SetNextWindowPos(ImVec2(0, 40));
+
+		if (ImGui::Begin("PlayState", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar))
+		{
+
+			ImVec2 btn_size(36, 20);
+			ImGui::Button("A", btn_size); ImGui::SameLine();
+			ImGui::Dummy(btn_size); ImGui::SameLine();
+			ImGui::Button("B", btn_size);
+		}
+
+		ImGui::End();
+	}
+
 
 	void Editor::DisplayFPS()
 	{
@@ -180,7 +218,6 @@ namespace GameEditor
 			fps_counter_str = std::to_string(fps_counter++);
 
 			ImGui::Text(fps_counter_str.c_str());
-
 		}
 
 		ImGui::End();
@@ -241,18 +278,23 @@ namespace GameEditor
 		if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse))
 		{
 			int action = 0;
-			/*if (ImGui::Button("Clear"))
-				action = 1;*/
 
-			if (ImGui::BeginTable("Console_Table", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_BordersInner | ImGuiTableRowFlags_Headers))
+			if (ImGui::Button("Clear"))
+			{
+				ConsoleClear();
+			}
+
+			
+			if (ImGui::BeginTable("Console_Table", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_BordersInner | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY))
 			{
 
-				for (size_t i = 0; i < console_logs.size(); i++)
+				for (size_t i = 0; i < console_data.size(); i++)
 				{
-					ImGui::TableNextRow();
+
+					ImGui::TableNextRow(NULL, 25.0f);
 					ImGui::TableNextColumn();
-					//ImGui::Text(console_logs[i].c_str());
-					ImGui::Text("Words");
+					ImGui::Text(console_data[i].c_str());
+					//ImGui::Text("Words");
 				}
 				ImGui::EndTable();
 			}
@@ -266,6 +308,18 @@ namespace GameEditor
 	{
 		return isPromptedToExit;
 	}
+
+	void Editor::ConsoleAddLine(std::string const& str)
+	{
+		console_data.push_back(str);
+	}
+
+	void Editor::ConsoleClear()
+	{
+		console_data.clear();
+	}
+
+
 
 	//}
 }

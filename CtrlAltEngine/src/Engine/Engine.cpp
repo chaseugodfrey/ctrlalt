@@ -54,7 +54,7 @@ namespace Engine{
 
         // INITIALIZE SYSTEMS HERE
        // renderSystem.Init();
-        editor = new GameEditor::Editor();
+        editor = new Editor::Editor();
         editor->Initialize(main_window);
 
         isRunning = true;
@@ -135,7 +135,8 @@ namespace Engine{
     /// </summary>
     void Engine::Run() {
         Setup();
-        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
+        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) 
+        {
             ProcessInput();
             Update();
             Render();

@@ -1,6 +1,9 @@
+#ifndef EDITOR_HIERARCHY_H
+#define EDITOR_HIERARCHY_H
+
 #include "Editor_Hierarchy.h"
 
-namespace GameEditor
+namespace Editor
 {
 	void Hierarchy::Display()
 	{
@@ -15,3 +18,5 @@ namespace GameEditor
 
 	}
 }
+
+#endif

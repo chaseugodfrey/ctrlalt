@@ -9,7 +9,7 @@
 #include "EditorWindow.h"
 
 
-namespace GameEditor {
+namespace Editor {
 
 	class Editor {
 
@@ -17,6 +17,7 @@ namespace GameEditor {
 
 		// bools
 		bool isPromptedToExit{ false };
+		bool isCreateEntity{ false };
 
 		GLFWwindow* window;
 
@@ -39,11 +40,21 @@ namespace GameEditor {
 		void Draw();
 		void Destroy();
 
+		// TEST FUNCTIONS
+		void ConsoleAddLine(std::string const&);
+		void ConsoleClear();
+
 		// Get bools
 		bool GetExitPrompt();
+
 	};
 
 }
+
+
+// GLOBAL TEST FUNCTIONS
+
+
 
 
 

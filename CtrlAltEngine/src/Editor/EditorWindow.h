@@ -1,12 +1,11 @@
-#ifndef EDITORWINDOW_H
-#define EDITORWINDOW_H
-
+#ifndef EDITOR_WINDOW_H
+#define EDITOR_WINDOW_H
 
 
 #include "Editor_Includes.h"
 #include <string>
 
-namespace GameEditor
+namespace Editor
 {
 	class EditorWindow
 	{
@@ -19,4 +18,5 @@ namespace GameEditor
 		virtual ~EditorWindow() = default;
 	};
 }
-#endif // !
+
+#endif
