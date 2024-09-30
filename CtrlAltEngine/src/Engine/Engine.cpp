@@ -47,15 +47,6 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Initialize() {
-
-
-        //sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
-        //sceneManager->AddScene("Scene1", "Assets/scene1.txt");
-        //sceneManager->AddScene("Scene2", "Assets/scene2.txt");
-        //sceneManager->AddScene("Scene3", "Assets/scene3.txt");
-        //sceneManager->SwitchScene("Scene1");
-
-
         if (!glfwInit()) {
             return;
         }
@@ -64,12 +55,17 @@ namespace Engine{
         main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
         // INITIALIZE SYSTEMS HERE
-       // renderSystem.Init();
+        //renderSystem.Init();
         editor = new GameEditor::Editor();
         editor->Initialize(main_window);
         sceneSystem = new Scene::Scene(registry.get());
 
         isRunning = true;
+        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
+        sceneManager->AddScene("Scene1", "Assets/scene1.txt");
+        sceneManager->AddScene("Scene2", "Assets/scene2.txt");
+        sceneManager->AddScene("Scene3", "Assets/scene3.txt");
+        sceneManager->SwitchScene("Scene1");
     }
 
     /// <summary>

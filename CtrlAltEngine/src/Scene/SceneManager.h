@@ -18,7 +18,7 @@ namespace Scene
 		ECS::Registry* registry;
 
 	public:
-		SceneManager(ECS::Registry* registry) : registry(registry) {}
+		SceneManager(ECS::Registry* registry) : registry(registry), currentScene(nullptr) {}
 
 		void AddScene(const std::string& name, const std::string& filePath)
 		{
@@ -36,6 +36,7 @@ namespace Scene
 			auto it = scenes.find(scene);
 			if (it != scenes.end())
 			{
+				if(currentScene)
 				currentScene->Unload();
 				currentScene = it->second.get();
 				currentScene->Load();

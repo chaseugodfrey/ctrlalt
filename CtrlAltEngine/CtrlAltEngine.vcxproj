@@ -174,7 +174,6 @@
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Systems\SKeyboardControl.h" />
     <ClCompile Include="src\Systems\SMovement.h" />
   </ItemGroup>
@@ -214,6 +213,7 @@
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\SceneManager.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
   </ItemGroup>
   <ItemGroup>
