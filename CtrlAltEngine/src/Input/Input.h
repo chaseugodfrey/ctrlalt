@@ -18,7 +18,16 @@ namespace Input {
 
 
 	public:
-		enum InputState;
+		//design InputState
+		enum InputState {
+			RELEASE = GLFW_RELEASE,
+			PRESS = GLFW_PRESS,
+			REPEAT = GLFW_REPEAT,
+			TRIGGER // trigger turns ready when GLFW_RELEASE then can be triggered again.
+			// TOGGLE
+
+		};
+
 
 		Input_Container() = default; // dk if I want to initialise anything here.
 
@@ -49,18 +58,14 @@ namespace Input {
 
 		//ooo I want more special keystates, but it could do more of game logic.
 
-		//design InputState
-		enum InputState {
-			RELEASE = GLFW_RELEASE,
-			PRESS = GLFW_PRESS,
-			REPEAT = GLFW_REPEAT,
-			TRIGGER // trigger turns ready when GLFW_RELEASE then can be triggered again.
-			// TOGGLE
-
-		};
+		
 
 
 	private:
+
+		static void key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod); 
+		static void mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod);
+		static void mousepos_cb(GLFWwindow* pwin, double xpos, double ypos);
 
 
 		struct KeyData {
@@ -76,8 +81,18 @@ namespace Input {
 		using TKeyData = std::unordered_map<std::string, KeyData>::value_type;
 		std::unordered_map<std::string, KeyData> actionMap{};
 		//std::unordered_map<Key, InputState> keyState{};  // this is for the updating to callback. 
+		
 
 		GLFWwindow* currentWindow{};
+
+
+		struct MouseData { 
+			Key keyID;
+			InputState keyState;
+			bool actionState;
+			bool keyStatePrev; // or this can be a secondary boolean    // true pressed, // false released.
+		};
+		static float mouse_device_coord[2]; // mouse.
 
 
 		// or I can combine Key and InputState to be like a pair or a struct.
@@ -86,11 +101,11 @@ namespace Input {
 
 	};// end of container.
 
-	class Mouse {
-		float device_coord[2];
-
-
-	};
+	// better to make lump with the Input_Container.
+	//class Mouse {
+	// // Mouse states keyID are GLFW_MOUSE_BUTTON_LEFT and GLFW_MOUSE_BUTTON_RIGHT
+	//	float device_coord[2];
+	//};
 
 	
 
