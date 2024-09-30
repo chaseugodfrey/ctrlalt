@@ -32,10 +32,20 @@ namespace System
 		void Update();
 
 
-		bool GridCollision(MathLib::vec2& lhs, MathLib::vec2& rhs);
+		bool GridCollision( MathLib::vec2& lhs,  MathLib::vec2& rhs);
 
 
-		bool GridCollision(MathLib::vec3& lhs, MathLib::vec3& rhs);
+		bool GridCollision( MathLib::vec3& lhs,  MathLib::vec3& rhs);
+
+		bool CollisionIntersection_RectRect(const MathLib::vec2& pos1,	//Input position 1
+			const float w1,				//Input width
+			const float h1,				//Input height
+			const MathLib::vec2& vel1,  //Input velocity
+			const MathLib::vec2& pos2,	//Input position 2
+			const float w2,				//Input width
+			const float h2,				//Input height
+			const MathLib::vec2& vel2,	//Input velocity
+			float& firstTimeOfCollision);
 	};
 
 }

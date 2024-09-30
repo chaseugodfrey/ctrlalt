@@ -178,6 +178,7 @@
     <ClCompile Include="src\Render\Render.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Systems\SCollision.cpp" />
     <ClCompile Include="src\Systems\SMovement.h" />
     <ClCompile Include="src\Systems\SPhysics.cpp" />
   </ItemGroup>
@@ -217,6 +218,7 @@
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Engine\Engine.h" />
+    <ClInclude Include="src\Systems\SCollision.h" />
     <ClInclude Include="src\Systems\SPhysics.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
   </ItemGroup>

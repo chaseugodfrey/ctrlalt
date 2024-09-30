@@ -21,6 +21,32 @@ namespace System
 		RequireComponent<Component::AABB>();
 	}
 
+	void SCollision::Update()
+	{
+		for (auto entity : GetEntities())
+		{
+			auto& transform = entity.GetComponent<Component::CTransform>();
+			const auto rigidBody = entity.GetComponent<Component::CRigidBody>();
+			const auto aabb = entity.GetComponent<Component::AABB>();
+
+			bool grid_collided = false;
+
+			for (auto entity2 : GetEntities())
+			{
+				auto& transform2 = entity2.GetComponent<Component::CTransform>();
+				if (entity == entity2)
+				{
+					continue;
+				}
+
+				grid_collided = SCollision::GridCollision(transform.position, transform2.position);
+			}
+
+			//Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.X()) + ", " + std::to_string((int)transform.position.Y()) + ')');
+			//std::cout << transform.position << std::endl;
+		}
+	}
+
 	bool SCollision::GridCollision(MathLib::vec2& lhs, MathLib::vec2& rhs)
 	{
 		if (lhs == rhs)
@@ -39,7 +65,7 @@ namespace System
 
 	//AABB collision
 
-	bool CollisionIntersection_RectRect(const MathLib::vec2& pos1,	//Input position 1
+	bool SCollision::CollisionIntersection_RectRect(const MathLib::vec2& pos1,	//Input position 1
 										const float w1,				//Input width
 										const float h1,				//Input height
 										const MathLib::vec2& vel1,  //Input velocity
