@@ -27,8 +27,19 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <vector>
 #include <set>
 #include <glm/glm.hpp>
+#include "../ECS/ECS.h"
+#include "../AssetManager/AssetManager.h"
+#include "glslshader.h"
+
+//Forward Declaration
+namespace System {
+	class SRender;
+}
 
 namespace Render {
+	//Forward Declaration
+	class RenderPipeline;
+
 	//encapsulates state needed to represent a geometric model
 	struct GLModel {
 		GLenum		primitive_type{};	//which openGL primitive to be rendered
@@ -39,46 +50,76 @@ namespace Render {
 	};
 
 	//Class that represents something that can be drawn
-	class Renderable {
+	class CRenderable {
+		std::unordered_map<std::string, GLuint>::iterator textureHandle;
+		std::unordered_map<std::string, GLModel>::iterator modelHandle;
+		std::unordered_map<std::string, GLSLShader>::iterator shader_handle;
 		/*
 		Render Variables
 		*/
-		GLuint textureHandle;
-		GLuint shaderHandle;
-		GLuint meshHandle;
+		std::string textureName;
+		std::string meshName;
+		std::string shaderName;
+		bool compiled = false;
 	public:
+		CRenderable(std::string texture = "default", std::string mesh = "default", std::string shader = "default")
+			:textureName(texture), meshName(mesh), shaderName(shader), compiled(false)
+		{}
 		//Sorting operation for priority queue
-		friend bool operator < (Renderable const&, Renderable const&);
+		//friend bool operator < (CRenderable const&, CRenderable const&);
+
+		friend System::SRender;
+		friend RenderPipeline;
 	};
 
 	//Class that contains the pipeline to draw something to the window
 	class RenderPipeline {
-		std::map<std::string, GLuint> textures;
-		std::map<std::string, GLModel> meshes;	//For now just init quad
+		GLFWwindow* target_window{};
 
-		GLFWwindow* ptr_window{};
-
-		std::multiset<Renderable> objects;
+		//std::multiset<CRenderable> objects;
 	public:
-		RenderPipeline(GLFWwindow* window = nullptr) : ptr_window(window) {}
+		RenderPipeline();
 
-		void Init(GLint width = 900, GLint height = 480, std::string const& window_title = "Hello world");
-		void Draw();
+		//Loads Model, and returns a GLModel that draws using triangles
+		GLModel LoadModel_Triangles(std::vector<glm::vec2> const&, std::vector<GLushort> const&);
+		//Loads image, and returns a texture handle
+		GLuint LoadTexture(Engine::ImageAsset const& texture);
+		//Release texture from gpu store, can be an array or just individual
+		void ReleaseTexture(GLuint texture_array);
+
+		GLFWwindow* CreateNewWindow(GLint width = 900, GLint height = 480);
+		void SetCurrentWindow(GLFWwindow* window);
+
+		//void Init(GLint width = 900, GLint height = 480, std::string const& window_title = "Hello world");
+		//Draws a single renderable
+		void SetupDraw();
+		void Draw(CRenderable const&);
 		void Cleanup();
-
-		//API to add assets
-		//void AddMesh(std::string name, GLModel&&);
-		void AddMesh(std::string name, GLModel);
-		void AddTexture(std::string name, GLuint);	//temporary func
 	};
+}
 
-	//Class that serves as an assetmanager for now
-	class AssetLoader {
+namespace System {
+	//This is basically my adapter between the rendering system itself, and the ecs system
+	class SRender : public ECS::System
+	{
+		//Mapping string name to texture handle
+		std::unordered_map<std::string, GLuint> texture_map;
 
-		
-		GLModel LoadQuad();	//Example of loading in something, reference for nxt time
+		//Mapping string name to Model
+		std::unordered_map<std::string, Render::GLModel> model_map;
+
+		//Mapping string name to GLSLShader
+		std::unordered_map<std::string, GLSLShader> shader_map;
+
+		Render::RenderPipeline render_pipeline;
 	public:
-		void LoadGraphics(RenderPipeline& render);
+		SRender();
+
+		//Generate the default quad and default image
+		void LoadDefaults();
+		
+		~SRender();
+		void Render();
 	};
 }
 
