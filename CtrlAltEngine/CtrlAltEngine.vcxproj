@@ -199,7 +199,9 @@
     <ClInclude Include="src\Editor\EditorWindow.h" />
     <ClInclude Include="src\Editor\Editor_Hierarchy.h" />
     <ClInclude Include="src\Editor\Editor_Includes.h" />
+    <ClInclude Include="src\EventManager\Event.h" />
     <ClInclude Include="src\EventManager\EventBus.h" />
+    <ClInclude Include="src\Events\KeyPressEvent.h" />
     <ClInclude Include="src\Events\LoggingEvent.h" />
     <ClInclude Include="src\Render\glhelper.h" />
     <ClInclude Include="src\Render\glslshader.h" />

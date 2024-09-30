@@ -203,7 +203,7 @@ namespace ECS
 
 		void SetComponent(EntityID index, T component) {
 			data[index] = component;
-			size++
+			size++;
 		}
 
 		T& GetComponent(EntityID index) {

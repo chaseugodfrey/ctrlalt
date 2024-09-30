@@ -44,6 +44,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
 #include "../Editor/Editor.h"
+#include "../EventManager/EventBus.h"
 
 // DECLARATIONS
 // =========================================================================================================
@@ -63,7 +64,7 @@ namespace Engine
 		GLFWwindow* main_window;
 
 		std::unique_ptr<ECS::Registry> registry;
-		std::unique_ptr<EventSystem::EventBus> eventBus;
+		std::unique_ptr<Event::EventBus> eventBus;
 		GameEditor::Editor* editor;
 
 		GLFWwindow* CreateGLFWwindow(int width, int height);
