@@ -44,6 +44,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
 #include "../Scene/Scene.h"
+//#include "../Scene/SceneManager.h"
 #include "../Editor/Editor.h"
 #include "../EventManager/EventBus.h"
 #include "../AssetManager/AssetManager.h"
@@ -66,6 +67,7 @@ namespace Engine
 
 		std::unique_ptr<ECS::Registry> registry;
 		std::unique_ptr<Event::EventBus> eventBus;
+		//std::unique_ptr<Scene::SceneManager> sceneManager;
 		GameEditor::Editor* editor;
 
 		AssetManager assetManager; 

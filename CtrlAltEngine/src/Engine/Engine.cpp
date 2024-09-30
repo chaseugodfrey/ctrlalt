@@ -47,6 +47,15 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Initialize() {
+
+
+        //sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
+        //sceneManager->AddScene("Scene1", "Assets/scene1.txt");
+        //sceneManager->AddScene("Scene2", "Assets/scene2.txt");
+        //sceneManager->AddScene("Scene3", "Assets/scene3.txt");
+        //sceneManager->SwitchScene("Scene1");
+
+
         if (!glfwInit()) {
             return;
         }
@@ -86,7 +95,7 @@ namespace Engine{
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SRender>();
         registry->AddSystem<System::SKeyboardControl>();
-        sceneSystem->Init();
+        //sceneSystem->Init();
 
     }
 
@@ -100,6 +109,7 @@ namespace Engine{
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         registry->Update();
         editor->Update();
+        //sceneManager->UpdateScene();
     }
 
     /// <summary>

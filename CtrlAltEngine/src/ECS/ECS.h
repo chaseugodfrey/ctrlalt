@@ -234,6 +234,8 @@ namespace ECS
 		std::set<Entity> entitiesAddQueue;
 		std::set<Entity> entitiesRemoveQueue;
 
+		std::deque<int> freeIDs;
+
 	public:
 
 		Registry()
@@ -249,7 +251,7 @@ namespace ECS
 
 		//Entity Management
 		Entity CreateEntity();
-
+		void KillEntity(Entity entity);
 
 		//Component Management
 		template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
@@ -264,6 +266,7 @@ namespace ECS
 		template <typename TSystem> TSystem& GetSystem() const;
 
 		void AddEntityToSystems(Entity entity);
+		void RemoveEntityFromSystems(Entity entity);
 	};
 
 	template <typename TSystem, typename ...TArgs> void Registry::AddSystem(TArgs&&  ...args)
