@@ -132,7 +132,7 @@ namespace Scene {
 
         }
 
-        int totalEntityCount = 1;
+        int totalEntityCount = 0;
         for (auto scene : scenePaths) {
             std::cout << "Checking entities in " << scene << std::endl;
             for (auto elem : sceneMap[scene]) {
