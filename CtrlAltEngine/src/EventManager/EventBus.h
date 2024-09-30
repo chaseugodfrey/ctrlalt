@@ -106,6 +106,12 @@ namespace Event {
 			Logger::LogInfo("EventBus destroyed");
 		}
 
+		//Clears the subscriber list
+		void Reset()
+		{
+			subscribers.clear();
+		}
+
 		/**
 		* @brief Subscribe to an event
 		* @tparam T The event type

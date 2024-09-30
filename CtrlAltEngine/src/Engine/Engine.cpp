@@ -16,6 +16,7 @@ m.lazaroo@digipen.edu
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
+#include "../Systems/SKeyboardControl.h"
 #include "../Scene/Scene.h"
 #include "../Render/Render.h"
 
@@ -31,7 +32,7 @@ namespace Engine{
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
+    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
         Logger::LogInfo("Engine Created");
     }
 
@@ -66,6 +67,12 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::ProcessInput() {
+        for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+            int state = glfwGetKey(main_window, key);
+            if (state == GLFW_PRESS) {
+                eventBus->EmitEvent<KeyPressEvent>(key);
+            }
+        }
         if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
@@ -78,7 +85,7 @@ namespace Engine{
 		// TODO: Create game objects...
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SRender>();
-
+        registry->AddSystem<System::SKeyboardControl>();
         sceneSystem->Init();
 
     }
@@ -88,8 +95,9 @@ namespace Engine{
     /// </summary>
     void Engine::Update() {
 
+        eventBus->Reset();
 		registry->GetSystem<System::SMovement>().Update();
-
+        registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         registry->Update();
         editor->Update();
     }
@@ -117,6 +125,7 @@ namespace Engine{
     void Engine::Run() {
         Setup();
         while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
+            glfwPollEvents();
             ProcessInput();
             Update();
             Render();

@@ -31,7 +31,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // =========================================================================================================
 
 #include <GLEW/GL/glew.h>
-#include <GLFW/glfw3.h>\
+#include <GLFW/glfw3.h>
 
 /// spdlog is a lightweight C++ logging class
 /// usage
@@ -46,7 +46,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../Scene/Scene.h"
 #include "../Editor/Editor.h"
 #include "../EventManager/EventBus.h"
-
+#include "../AssetManager/AssetManager.h"
 // DECLARATIONS
 // =========================================================================================================
 
