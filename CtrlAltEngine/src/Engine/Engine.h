@@ -63,6 +63,7 @@ namespace Engine
 		GLFWwindow* main_window;
 
 		std::unique_ptr<ECS::Registry> registry;
+		std::unique_ptr<EventSystem::EventBus> eventBus;
 		GameEditor::Editor* editor;
 
 		GLFWwindow* CreateGLFWwindow(int width, int height);
