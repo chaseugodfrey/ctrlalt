@@ -117,6 +117,8 @@ namespace Scene {
                     << "Pos Y: " << posY << std::endl
                     << "ScaleX: " << scaleX << std::endl
                     << "ScaleY: " << scaleY << std::endl;
+
+                sceneMap[elem].push_back(entity);
             }
 
             file.close();
@@ -128,6 +130,26 @@ namespace Scene {
             std::cout << "Total number of entities read: " << entityCount << std::endl;
             std::cout << "Data read from: "<< elem << std::endl;
 
+        }
+
+        int totalEntityCount = 1;
+        for (auto scene : scenePaths) {
+            std::cout << "Checking entities in " << scene << std::endl;
+            for (auto elem : sceneMap[scene]) {
+                std::cout << "Entity No.: " << totalEntityCount << std::endl;
+                std::cout << "ID: " << elem.GetID() << std::endl;
+                std::cout << "Pos X: " << elem.GetComponent<Component::CTransform>().position.x << std::endl;
+                std::cout << "Pos Y: " << elem.GetComponent<Component::CTransform>().position.y << std::endl;
+                std::cout << "Scale X: " << elem.GetComponent<Component::CTransform>().scale.x << std::endl;
+                std::cout << "Scale Y: " << elem.GetComponent<Component::CTransform>().scale.y << std::endl;
+                std::cout << "Rot: " << elem.GetComponent<Component::CTransform>().rotation << std::endl;
+
+                //CRigidBody does not exist yet
+                //std::cout << elem.GetComponent<Component::CRigidBody>().position.x << std::endl;
+                //std::cout << elem.GetComponent<Component::CRigidBody>().position.y << std::endl;
+                totalEntityCount++;
+            }
+            std::cout << "End of test for " << scene << std::endl;
         }
     }
 
