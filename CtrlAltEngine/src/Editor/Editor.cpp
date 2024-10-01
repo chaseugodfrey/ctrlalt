@@ -7,11 +7,8 @@
 \date   	Sep 08, 2024
 \brief
 
-Defines
-
-
-
-
+ImGui Editor Interface to wrap engine functionality and display necessary information
+for editing scenes.
 
  ====== Helpful ImGui Code ======
 
@@ -46,7 +43,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 namespace Editor
 {
 
-	Editor* editor = nullptr;;
+	static Editor* editor = nullptr;
+
 	Editor const* GetEditor()
 	{
 		return editor;
@@ -79,7 +77,7 @@ namespace Editor
 
 	/////////////////////////////////////////////////////////
 
-	Editor::Editor() : window(nullptr)
+	Editor::Editor() : window(nullptr), registry(nullptr)
 	{
 		//Logger::LogInfo("Editor Created");
 		editor = this;
@@ -101,7 +99,6 @@ namespace Editor
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // Enable Docking
 		ImGui_ImplOpenGL3_Init("#version 450");
 
-		
 		deserialize_string();
 		registry = reg;
 		//gui_windows_list.push_back()
@@ -117,21 +114,6 @@ namespace Editor
 		{
 			static int count = 1;
 			ConsoleAddLine(std::to_string(count++));
-		}
-
-		if (m1Scene1)
-		{
-
-		}
-
-		if (m1Scene2)
-		{
-
-		}
-
-		if (m1Scene3)
-		{
-
 		}
 
 		if (isPromptedToExit)
@@ -211,9 +193,21 @@ namespace Editor
 				// FOR M1 SUBMISSION PURPOSES
 				if (ImGui::BeginMenu("M1 Scenes"))
 				{
-					ImGui::MenuItem("Scene 1", NULL, &m1Scene1);
-					ImGui::MenuItem("Scene 2", NULL, &m1Scene2);
-					ImGui::MenuItem("Scene 3", NULL, &m1Scene3);
+					if (ImGui::MenuItem("Scene 1"))
+					{
+						LoadScene(1);
+					};
+
+					if (ImGui::MenuItem("Scene 2"))
+					{
+						LoadScene(2);
+					};
+
+					if (ImGui::MenuItem("Scene 3"))
+					{
+						LoadScene(3);
+					};
+
 					ImGui::EndMenu();
 				}
 
@@ -360,7 +354,10 @@ namespace Editor
 		return "FPS + " + std::to_string(fps);
 	}
 
-
+	void Editor::LoadScene(int index)
+	{
+		ConsoleAddLine("Scene Loaded: " + std::to_string(index));
+	}
 
 	//}
 }
