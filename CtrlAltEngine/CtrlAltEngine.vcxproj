@@ -220,10 +220,12 @@
     <ClInclude Include="libs\rapidjson\writer.h" />
     <ClInclude Include="libs\STB_Image\stb_image.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
+    <ClInclude Include="src\Components\CIdentifier.h" />
     <ClInclude Include="src\Components\CRigidBody.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\ECS\ECS.h" />
+    <ClInclude Include="src\ECS\EntityFactory.h" />
     <ClInclude Include="src\ECS\Types.h" />
     <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Editor\EditorWindow.h" />
