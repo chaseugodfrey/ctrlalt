@@ -1,44 +1,45 @@
 #ifndef ENTITYFACTORY_H
 #define ENTITYFACTORY_H
 
-#include "ECS.h"
+#include "../ECS/ECS.h"
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
-#include "../Scene/SceneManager.h"
+#include "../Components/CIdentifier.h"
 #include "../Logger/Logger.h"
 
-namespace ECS
+namespace EntityFactory
 {
 	class EntityFactory
 	{
 	private:
-		Registry* registry;
+		ECS::Registry * registry;
 	public:
-		EntityFactory(Registry* reg) : registry(reg) {}
-
-		Entity CreateBasicEntity()
+		EntityFactory(ECS::Registry* reg) : registry(reg) {}
+		ECS::Entity CreateBasicEntity()
 		{
-			Entity entity = registry->CreateEntity();
+			ECS::Entity entity = registry->CreateEntity();
 			entity.AddComponent<Component::CTransform>();
+			return entity;
 		}
 
-		Entity CreatePlayerEntity()
+		ECS::Entity CreatePlayerEntity()
 		{
-			Entity entity = registry->CreateEntity();
+			ECS::Entity entity = registry->CreateEntity();
 			entity.AddComponent<Component::CTransform>();
 			entity.AddComponent<Component::CRigidBody>();
 			entity.AddComponent<Component::CIdentifier>("Player");
+			return entity;
 		}
 		
-		Entity CreateEnemyEntity()
+		ECS::Entity CreateEnemyEntity()
 		{
-			Entity entity = registry->CreateEntity();
+			ECS::Entity entity = registry->CreateEntity();
 			entity.AddComponent<Component::CTransform>();
 			entity.AddComponent<Component::CRigidBody>();
 			entity.AddComponent<Component::CIdentifier>("Enemy");
+			return entity;
 		}
 	};
 }
-
 
 #endif

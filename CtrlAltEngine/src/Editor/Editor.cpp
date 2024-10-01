@@ -97,7 +97,6 @@ namespace Editor
 		scene_manager = _scene_manager;
 		frame_timer = _frameTimer;
 
-
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -160,6 +159,28 @@ namespace Editor
 
 	// EDITOR WINDOWS
 
+	void Editor::DisplayCreateEntityButton()
+	{
+
+		//std::vector<const char*> entity_type = { "Basic", "Player", "Enemy" };
+		//int selectedEntityType = 0;
+
+		//ImGui::SetNextWindowSize(ImVec2(200, 100));
+		//ImGui::SetNextWindowPos(ImVec2(0, 40));
+		//if (ImGui::Begin("Create Entity"), NULL, ImGuiWindowFlags_NoCollapse)
+		//{
+		//	if (ImGui::Button("Spawn Entity"))
+		//	{
+		//		ImGui::Combo("Entity Type", &selectedEntityType, entity_type.data(), static_cast<int>(entity_type.size()));
+		//		if (ImGui::Button("Create Entity"))
+		//		{
+		//			scene_manager->CreateEntityInScene(entity_type[selectedEntityType]);
+		//		}
+		//	}
+		//	ImGui::End();
+		//}
+
+	}
 
 	void Editor::DisplayMenuBar()
 	{
@@ -190,7 +211,7 @@ namespace Editor
 				{
 					if (ImGui::MenuItem("Entity"))
 					{
-						ConsoleAddLine("Object created.");
+						scene_manager->CreateEntityInScene("Player");
 						//ECS::Entity entity = registry->CreateEntity();
 
 					}
@@ -338,6 +359,7 @@ namespace Editor
 
 		ImGui::End();
 	}
+
 
 	bool Editor::GetExitPrompt()
 	{

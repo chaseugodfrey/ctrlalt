@@ -11,13 +11,14 @@
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
 #include "../Components/CIdentifier.h"
-
+#include "../EntityFactory/EntityFactory.h"
 
 namespace Scene {
 
 class Scene {
 private:
     ECS::Registry* registry;
+	EntityFactory::EntityFactory entityFactory;
     std::vector<ECS::Entity> sceneEntities;
 	std::vector<std::pair<std::string, std::map<std::string, std::string>>> entityData;
     std::string sceneName;
@@ -29,7 +30,7 @@ private:
 
 public:
     Scene(ECS::Registry* reg)
-        : registry(reg), isLoaded(false), isDataLoaded(false) {
+        : registry(reg), isLoaded(false), isDataLoaded(false), entityFactory(reg) {
         RegisterComponentDeserializers();
     }
 
@@ -63,6 +64,28 @@ public:
             });
 
         Logger::LogInfo("Component deserializers registered");
+    }
+
+    void CreateEntity(const std::string& entityType)
+    {
+        if (entityType == "Basic")
+        {
+            ECS::Entity entity = entityFactory.CreateBasicEntity();
+            sceneEntities.push_back(entity);
+            registry->AddEntityToSystems(entity);
+        }
+        else if (entityType == "Player")
+        {
+            ECS::Entity entity = entityFactory.CreatePlayerEntity();
+            sceneEntities.push_back(entity);
+            registry->AddEntityToSystems(entity);
+        }
+        else if (entityType == "Enemy")
+        {
+            ECS::Entity entity = entityFactory.CreateEnemyEntity();
+            sceneEntities.push_back(entity);
+            registry->AddEntityToSystems(entity);
+        }
     }
 
     template<typename T>
@@ -107,7 +130,28 @@ public:
         Logger::LogInfo("Loaded " + std::to_string(sceneEntities.size()) + " entities from " + filePath);
     }
 
+    void SaveDataToFile(const std::string& filePath)
+    {
+        std::ofstream file(filePath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file: " << filePath << std::endl;
+			return;
+		}
 
+        file << entityData.size() << std::endl;
+        for (size_t i = 0; i < entityData.size(); ++i)
+        {
+			std::string entityId = entityData[i].first;
+            std::map<std::string, std::string> components = entityData[i].second;
+            file << "ID: " << entityId << std::endl;
+			for (const auto& componentPair : components)
+			{
+				file << componentPair.first << " " << componentPair.second << std::endl;
+			}
+        }
+        file.close();
+		Logger::LogInfo("Saved " + std::to_string(sceneEntities.size()) + " entities to " + filePath);
+    }
 
     void Load() {
         if (isLoaded) {
@@ -185,11 +229,20 @@ public:
 
         if (entity.HasComponent<Component::CTransform>()) {
             componentList += "CTransform";
+			componentList += ", ";
+			componentList += std::to_string(entity.GetComponent<Component::CTransform>().position.x);
+			componentList += ", ";
+			componentList += std::to_string(entity.GetComponent<Component::CTransform>().position.y);
+    
             first = false;
         }
         if (entity.HasComponent<Component::CRigidBody>()) {
             if (!first) componentList += ", ";
             componentList += "CRigidBody";
+			componentList += ", ";
+			componentList += std::to_string(entity.GetComponent<Component::CRigidBody>().vel.x);
+			componentList += ", ";
+			componentList += std::to_string(entity.GetComponent<Component::CRigidBody>().vel.y);
             first = false;
         }
         if (entity.HasComponent<Component::CIdentifier>()) {
@@ -202,6 +255,8 @@ public:
         componentList += "]";
         return componentList;
     }
+
+    std::string GetCurrentSceneName() const { return sceneName; }
 
     bool IsLoaded() const { return isLoaded; }
     bool IsDataLoaded() const { return isDataLoaded; }

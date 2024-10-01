@@ -225,7 +225,7 @@
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\ECS\ECS.h" />
-    <ClInclude Include="src\ECS\EntityFactory.h" />
+    <ClInclude Include="src\EntityFactory\EntityFactory.h" />
     <ClInclude Include="src\ECS\Types.h" />
     <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Editor\EditorWindow.h" />

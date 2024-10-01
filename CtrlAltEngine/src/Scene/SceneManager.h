@@ -21,7 +21,18 @@ namespace Scene
 		ECS::Registry* registry;
 
 	public:
-		SceneManager(ECS::Registry* registry) : registry(registry), currentScene(nullptr) {}
+		SceneManager(ECS::Registry* registry) : registry(registry), currentScene(nullptr) {
+		
+		}
+
+		void CreateEntityInScene(const std::string& entityType)
+		{
+			if (currentScene)
+			{
+				currentScene->CreateEntity(entityType);
+				currentScene->DebugPrintEntityCount();
+			}
+		}
 
 		void AddScene(const std::string& name, const std::string& filePath)
 		{
@@ -29,6 +40,11 @@ namespace Scene
 			scene->LoadDataFromFile(filePath);
 			scenes[name] = std::move(scene);
 			Logger::LogInfo("Scene added: " + name);
+		}
+
+		void SaveScene(const std::string& scenePath)
+		{
+			currentScene->SaveDataToFile(scenePath);
 		}
 
 		void RemoveScene(const std::string& scene)
