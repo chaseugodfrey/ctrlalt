@@ -1,5 +1,5 @@
-#ifndef FIXED_SCENE_H
-#define FIXED_SCENE_H
+#ifndef SCENE_H
+#define SCENE_H
 
 #include "../ECS/ECS.h"
 #include <map>
@@ -10,6 +10,9 @@
 #include <functional>
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
+#include "../Components/CIdentifier.h"
+
+
 namespace Scene {
 
 class Scene {
@@ -25,7 +28,8 @@ private:
     std::map<std::string, ComponentDeserializer> componentDeserializers;
 
 public:
-    Scene(ECS::Registry* reg) : registry(reg) {
+    Scene(ECS::Registry* reg)
+        : registry(reg), isLoaded(false), isDataLoaded(false) {
         RegisterComponentDeserializers();
     }
 
@@ -48,6 +52,14 @@ public:
                 is >> velX >> velY;
                 entity.AddComponent<Component::CRigidBody>(glm::vec2(velX, velY));
                 Logger::LogInfo("CRigidBody component added");
+            });
+
+        RegisterComponentDeserializer<Component::CIdentifier>("CIdentifier",
+            [](ECS::Entity& entity, std::istream& is) {
+                std::string name;
+                is >> name;
+                entity.AddComponent<Component::CIdentifier>(name);
+                Logger::LogInfo("CIdentifier component added");
             });
 
         Logger::LogInfo("Component deserializers registered");
@@ -180,7 +192,13 @@ public:
             componentList += "CRigidBody";
             first = false;
         }
-
+        if (entity.HasComponent<Component::CIdentifier>()) {
+            if (!first) componentList += ", ";
+            componentList += "CIdentifier";
+			componentList += ", ";
+			componentList += entity.GetComponent<Component::CIdentifier>().name;
+            first = false;
+        }
         componentList += "]";
         return componentList;
     }
@@ -192,4 +210,4 @@ public:
 
 }
 
-#endif // FIXED_SCENE_H
+#endif

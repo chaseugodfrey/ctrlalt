@@ -1,11 +1,11 @@
 3
 ID: 0
 CTransform 0.0 0.0 500 500 0
-CRigidBody 0 0
+CIdentifier "Test"
 
 ID: 1
 CTransform -500 -500 500 500 90
-CRigidBody 10 0
+
 
 ID: 2
 CTransform 500 500 500 500 0

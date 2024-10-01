@@ -9,6 +9,7 @@
 #include "../Logger/Logger.h"
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
+#include "../Components/CIdentifier.h"
 
 namespace Scene
 {
@@ -37,7 +38,15 @@ namespace Scene
 
 		void SwitchScene(const std::string& scene)
 		{
+
 			auto it = scenes.find(scene);
+			
+			if (it->second.get() == currentScene)
+			{
+				Logger::LogInfo("Scene already active: " + scene);
+				return;
+			}
+
 			if (it != scenes.end())
 			{
 				if(currentScene)
@@ -46,6 +55,7 @@ namespace Scene
 				if(!currentScene->IsLoaded())
 				currentScene->Load();
 				Logger::LogInfo("Switched to scene: " + scene);
+				currentScene->DebugPrintEntityCount();
 			}
 			else
 			{
@@ -62,30 +72,6 @@ namespace Scene
 		{
 			return currentScene;
 		}
-
-
-		void RegisterComponentDeserializers(Scene* scene) {
-			for (auto& scene : scenes) {
-				scene.second->RegisterComponentDeserializer<Component::CTransform>("CTransform",
-					[](ECS::Entity& entity, std::istream& is) {
-						float posX, posY, scaleX, scaleY, rotation;
-						is >> posX >> posY >> scaleX >> scaleY >> rotation;
-						entity.AddComponent<Component::CTransform>(
-							glm::vec2(posX, posY),
-							glm::vec2(scaleX, scaleY),
-							rotation
-						);
-					});
-
-				scene.second->RegisterComponentDeserializer<Component::CRigidBody>("CRigidBody",
-					[](ECS::Entity& entity, std::istream& is) {
-						float velX, velY;
-						is >> velX >> velY;
-						entity.AddComponent<Component::CRigidBody>(glm::vec2(velX, velY));
-					});
-			}
-		}
-
 
 		void LoadScene(const std::string& scenePath) {
 			currentScene->LoadDataFromFile(scenePath);

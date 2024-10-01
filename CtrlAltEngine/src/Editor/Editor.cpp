@@ -365,7 +365,6 @@ namespace Editor
 		ConsoleAddLine("Scene Loaded: " + std::to_string(index));
 		std::string this_string = "Scene" + std::to_string(index);
 		scene_manager->SwitchScene(this_string);
-		scene_manager->GetScene()->DebugPrintEntityCount();
 	}
 
 	//}
