@@ -7,6 +7,7 @@
 
 #include "Editor_Includes.h"
 #include "EditorWindow.h"
+#include "../Scene/SceneManager.h"
 #include "../ECS/ECS.h"
 
 namespace Editor {
