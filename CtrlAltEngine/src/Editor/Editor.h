@@ -22,7 +22,7 @@ namespace Editor {
 		GLFWwindow* window;
 
 		std::vector<EditorWindow*> gui_windows_list;
-		ECS::Registry* registry;
+		Scene::SceneManager* scene_manager;
 
 		void DisplayMenuBar();
 		void DisplayPlayState();
@@ -36,7 +36,7 @@ namespace Editor {
 		Editor();
 		~Editor();
 
-		void Initialize(GLFWwindow*, ECS::Registry*);
+		void Initialize(GLFWwindow*, Scene::SceneManager*);
 		void Update();
 		void Draw();
 		void Destroy();

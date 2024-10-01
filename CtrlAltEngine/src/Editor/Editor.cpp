@@ -38,7 +38,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <vector>
 #include <sstream>
 #include "Editor.h"
+#include "../EventManager/EventBus.h"
 #include "../ECS/ECS.h"
+#include "../Scene/SceneManager.h"
 
 namespace Editor
 {
@@ -77,7 +79,7 @@ namespace Editor
 
 	/////////////////////////////////////////////////////////
 
-	Editor::Editor() : window(nullptr), registry(nullptr)
+	Editor::Editor() : window(nullptr)
 	{
 		//Logger::LogInfo("Editor Created");
 		editor = this;
@@ -88,7 +90,7 @@ namespace Editor
 		//Logger::LogInfo("Editor Created");
 	}
 
-	void Editor::Initialize(GLFWwindow* _window, ECS::Registry* reg)
+	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager)
 	{
 		window = _window;
 		IMGUI_CHECKVERSION();
@@ -100,7 +102,7 @@ namespace Editor
 		ImGui_ImplOpenGL3_Init("#version 450");
 
 		deserialize_string();
-		registry = reg;
+		scene_manager = _scene_manager;
 		//gui_windows_list.push_back()
 	}
 
@@ -357,6 +359,7 @@ namespace Editor
 	void Editor::LoadScene(int index)
 	{
 		ConsoleAddLine("Scene Loaded: " + std::to_string(index));
+		//Scene::SceneManager::SwitchScene("Scene" + std::to_string(index));
 	}
 
 	//}
