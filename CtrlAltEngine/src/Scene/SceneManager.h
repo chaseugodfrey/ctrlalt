@@ -42,9 +42,9 @@ namespace Scene
 			Logger::LogInfo("Scene added: " + name);
 		}
 
-		void SaveScene(const std::string& scenePath)
+		void SaveScene()
 		{
-			currentScene->SaveDataToFile(scenePath);
+			currentScene->SaveDataToFile();
 		}
 
 		void RemoveScene(const std::string& scene)
@@ -68,6 +68,7 @@ namespace Scene
 				if(currentScene)
 				currentScene->Unload();
 				currentScene = it->second.get();
+				currentScene->SetSceneName(scene);
 				if(!currentScene->IsLoaded())
 				currentScene->Load();
 				Logger::LogInfo("Switched to scene: " + scene);
@@ -82,6 +83,11 @@ namespace Scene
 		void UpdateScene()
 		{
 			if (currentScene) currentScene->Update();
+		}
+
+		std::string GetSceneNumber()
+		{
+			return currentScene->GetCurrentSceneName();
 		}
 
 		Scene* GetScene()

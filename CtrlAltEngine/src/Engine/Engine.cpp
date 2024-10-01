@@ -77,17 +77,7 @@ namespace Engine{
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
         sceneManager->AddScene("Scene3", "Assets/scene3.txt");
         sceneManager->SwitchScene("Scene2");
-        sceneManager->GetScene()->DebugPrintEntityCount();
-        sceneManager->SwitchScene("Scene1");
-        sceneManager->GetScene()->DebugPrintEntityCount();
-        sceneManager->SwitchScene("Scene3");
-        sceneManager->GetScene()->DebugPrintEntityCount();
-        sceneManager->SwitchScene("Scene2");
-        sceneManager->GetScene()->DebugPrintEntityCount();
-        sceneManager->SwitchScene("Scene1");
-        sceneManager->GetScene()->DebugPrintEntityCount();
-        sceneManager->SwitchScene("Scene3");
-        sceneManager->GetScene()->DebugPrintEntityCount();
+
     }
 
     /// <summary>

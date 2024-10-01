@@ -24,7 +24,7 @@ private:
     std::string sceneName;
     bool isLoaded;
     bool isDataLoaded;
-
+    std::size_t nextEntityID = 0;
     using ComponentDeserializer = std::function<void(ECS::Entity&, std::istream&)>;
     std::map<std::string, ComponentDeserializer> componentDeserializers;
 
@@ -33,6 +33,12 @@ public:
         : registry(reg), isLoaded(false), isDataLoaded(false), entityFactory(reg) {
         RegisterComponentDeserializers();
     }
+
+	std::size_t GetNextEntityID() {
+        return nextEntityID++;
+	}
+
+	void SetSceneName(const std::string& name) { sceneName = name; }
 
     void RegisterComponentDeserializers() {
         RegisterComponentDeserializer<Component::CTransform>("CTransform",
@@ -68,24 +74,64 @@ public:
 
     void CreateEntity(const std::string& entityType)
     {
+        std::map<std::string, std::string> componentData;
+
+		std::size_t entityID = GetNextEntityID();
+
         if (entityType == "Basic")
         {
             ECS::Entity entity = entityFactory.CreateBasicEntity();
+            componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
             sceneEntities.push_back(entity);
+            entityData.push_back({ std::to_string(entityID), componentData });
             registry->AddEntityToSystems(entity);
         }
         else if (entityType == "Player")
         {
             ECS::Entity entity = entityFactory.CreatePlayerEntity();
+            componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
+            componentData["CRigidBody"] = SerializeRigidBody(entity.GetComponent<Component::CRigidBody>());
+            componentData["CIdentifier"] = SerializeIdentifier(entity.GetComponent<Component::CIdentifier>());
             sceneEntities.push_back(entity);
+            entityData.push_back({ std::to_string(entityID), componentData });
             registry->AddEntityToSystems(entity);
         }
         else if (entityType == "Enemy")
         {
             ECS::Entity entity = entityFactory.CreateEnemyEntity();
+            componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
+            componentData["CRigidBody"] = SerializeRigidBody(entity.GetComponent<Component::CRigidBody>());
+            componentData["CIdentifier"] = SerializeIdentifier(entity.GetComponent<Component::CIdentifier>());
             sceneEntities.push_back(entity);
+            entityData.push_back({ std::to_string(entityID), componentData });
             registry->AddEntityToSystems(entity);
         }
+        else
+        {
+            Logger::LogInfo("Unknown entity type: " + entityType);
+            return;
+        }
+    }
+
+    std::string SerializeTransform(const Component::CTransform& transform)
+    {
+        std::stringstream ss;
+        ss << transform.position.x << " " << transform.position.y << " "
+            << transform.scale.x << " " << transform.scale.y << " "
+            << transform.rotation;
+        return ss.str();
+    }
+
+    std::string SerializeRigidBody(const Component::CRigidBody& rigidBody)
+    {
+        std::stringstream ss;
+        ss << rigidBody.vel.x << " " << rigidBody.vel.y;
+        return ss.str();
+    }
+
+    std::string SerializeIdentifier(const Component::CIdentifier& identifier)
+    {
+        return identifier.name;
     }
 
     template<typename T>
@@ -130,8 +176,11 @@ public:
         Logger::LogInfo("Loaded " + std::to_string(sceneEntities.size()) + " entities from " + filePath);
     }
 
-    void SaveDataToFile(const std::string& filePath)
+    void SaveDataToFile()
     {
+		sceneName[0] = std::tolower(sceneName[0]);
+        std::string filePath = "Assets/" + sceneName + ".txt";
+
         std::ofstream file(filePath);
 		if (!file.is_open()) {
 			std::cerr << "Failed to open file: " << filePath << std::endl;
@@ -148,6 +197,7 @@ public:
 			{
 				file << componentPair.first << " " << componentPair.second << std::endl;
 			}
+			file << std::endl;
         }
         file.close();
 		Logger::LogInfo("Saved " + std::to_string(sceneEntities.size()) + " entities to " + filePath);
@@ -203,6 +253,8 @@ public:
             registry->Update();
         }
         sceneEntities.clear();
+        //entityData.clear();
+        nextEntityID = 0;
         isLoaded = false;
         Logger::LogInfo("Unloaded scene: " + sceneName);
     }
@@ -256,7 +308,7 @@ public:
         return componentList;
     }
 
-    std::string GetCurrentSceneName() const { return sceneName; }
+    const std::string& GetCurrentSceneName() const { return sceneName; }
 
     bool IsLoaded() const { return isLoaded; }
     bool IsDataLoaded() const { return isDataLoaded; }

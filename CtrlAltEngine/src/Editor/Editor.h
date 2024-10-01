@@ -26,9 +26,6 @@ namespace Editor {
 		std::vector<EditorWindow*> gui_windows_list;
 		Scene::SceneManager* scene_manager;
 
-		std::vector<const char*> entity_type = { "Basic", "Player", "Enemy" };
-		int selectedEntityType = 0;
-
 		//
 		Debug::FrameTimer* frame_timer;
 
@@ -53,7 +50,6 @@ namespace Editor {
 		void Destroy();
 
 		// TEST FUNCTIONS
-		void SaveScene(int);
 		void LoadScene(int);
 		void ConsoleAddLine(std::string const&) const;
 		void ConsoleClear() const;

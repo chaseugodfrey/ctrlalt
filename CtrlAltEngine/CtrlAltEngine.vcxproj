@@ -257,6 +257,9 @@
     <Library Include="libs\GLFW\lib-vc2022\glfw3_mt.lib" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Assets\scene1.txt" />
+    <Text Include="Assets\scene2.txt" />
+    <Text Include="Assets\scene3.txt" />
     <Text Include="Resources\test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
