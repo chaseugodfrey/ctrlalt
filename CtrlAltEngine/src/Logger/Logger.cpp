@@ -4,7 +4,7 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
-
+#include "../Editor/Editor.h"
 
 //std::vector<LogEntry> Logger::messages{};
 //https://en.cppreference.com/w/c/chrono/localtime 
@@ -26,5 +26,8 @@ void Logger::LogInfo(const std::string& message) {
     std::string color = GREEN;
     logEntry.message = "[" + CurrentDateTimeToString() + "]: " + message;
     std::cout << '[' << GREEN << "info" << RESET <<']' << logEntry.message << std::endl;
+
+    Editor::GetEditor()->ConsoleAddLine(logEntry.message);
+
     messages.push_back(logEntry);
 }

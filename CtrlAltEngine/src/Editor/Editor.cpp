@@ -45,6 +45,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 namespace Editor
 {
 
+	Editor* editor = nullptr;;
+	Editor const* GetEditor()
+	{
+		return editor;
+	}
+
 	// TESTING STUFF
 	std::string file_path{ "Resources/test.txt" };
 	std::string test_text{};
@@ -75,6 +81,7 @@ namespace Editor
 	Editor::Editor() : window(nullptr)
 	{
 		//Logger::LogInfo("Editor Created");
+		editor = this;
 	};
 
 	Editor::~Editor()
@@ -236,12 +243,7 @@ namespace Editor
 		}
 
 		ImGui::SameLine(ImGui::GetWindowWidth() * 0.95f);
-		static int fps_counter = 0;
-		std::string fps_counter_str;
-		fps_counter_str = "FPS: " + std::to_string(fps_counter++);
-
-		
-		ImGui::Text(fps_counter_str.c_str());
+		ImGui::Text(ReadFPS().c_str());
 	
 
 		ImGui::End();
@@ -350,14 +352,21 @@ namespace Editor
 		return isPromptedToExit;
 	}
 
-	void Editor::ConsoleAddLine(std::string const& str)
+	void Editor::ConsoleAddLine(std::string const& str) const
 	{
 		console_data.push_back(str);
 	}
 
-	void Editor::ConsoleClear()
+	void Editor::ConsoleClear() const
 	{
 		console_data.clear();
+	}
+
+	std::string Editor::ReadFPS() const
+	{
+		static double fps = 0;
+		fps++;
+		return "FPS + " + std::to_string(fps);
 	}
 
 

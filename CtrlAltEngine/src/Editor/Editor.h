@@ -20,7 +20,6 @@ namespace Editor {
 		bool isCreateEntity{ false };
 
 		// FOR M1 SUBMISSION PURPOSES
-
 		bool m1Scene1{ false };
 		bool m1Scene2{ false };
 		bool m1Scene3{ false };
@@ -47,13 +46,16 @@ namespace Editor {
 		void Destroy();
 
 		// TEST FUNCTIONS
-		void ConsoleAddLine(std::string const&);
-		void ConsoleClear();
+		void ConsoleAddLine(std::string const&) const;
+		void ConsoleClear() const;
+		std::string ReadFPS() const;
 
 		// Get bools
 		bool GetExitPrompt();
 
 	};
+
+	Editor const* GetEditor();
 
 }
 
