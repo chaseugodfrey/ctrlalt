@@ -72,10 +72,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)</IncludePath>
+    <CopyLocalProjectReference>true</CopyLocalProjectReference>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)</IncludePath>
+    <CopyLocalProjectReference>true</CopyLocalProjectReference>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,23 +111,27 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CtrlAltEngine\libs;$(SolutionDir)CtrlAltEngine\libs\spdlog\include;$(SolutionDir)CtrlAltEngine\libs\GLFW\include;$(SolutionDir)CtrlAltEngine\libs\imgui\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CtrlAltEngine\libs;$(SolutionDir)CtrlAltEngine\libs\spdlog\include;$(SolutionDir)CtrlAltEngine\libs\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022;$(SolutionDir)CtrlAltEngine\libs\GLEW\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i /s "$(ProjectDir)Resources" "$(TargetDir)Resources"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -137,9 +145,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CtrlAltEngine\libs\GLFW\lib-vc2022;$(SolutionDir)CtrlAltEngine\libs\GLEW\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i /s "$(ProjectDir)Resources" "$(TargetDir)Resources"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libs\imgui\include\imgui.cpp" />
@@ -147,18 +159,31 @@
     <ClCompile Include="libs\imgui\include\imgui_draw.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_impl_glfw.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="libs\imgui\include\imgui_stdlib.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_tables.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
+    <ClCompile Include="src\AssetManager\AssetManager.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
     <ClCompile Include="src\Debug\Debugger.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
-    <ClCompile Include="src\Scene\Scene.cpp" />
-    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Editor\EditorWindow.cpp" />
+    <ClCompile Include="src\Editor\Editor_Hierarchy.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
-    <ClCompile Include="src\Logger\Logger.h" />
+    <ClCompile Include="src\Input\Input.cpp" />
+    <ClCompile Include="src\Render\glhelper.cpp" />
+    <ClCompile Include="src\Render\glslshader.cpp" />
+    <ClCompile Include="src\Render\Render.cpp" />
+    <ClCompile Include="src\Engine\Engine.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Serialisation\Mock_Serialisation.cpp" />
+    <ClCompile Include="src\Systems\SMovement.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libs\GLEW\GL\eglew.h" />
+    <ClInclude Include="libs\GLEW\GL\glew.h" />
+    <ClInclude Include="libs\GLEW\GL\glxew.h" />
+    <ClInclude Include="libs\GLEW\GL\wglew.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="libs\imgui\include\imconfig.h" />
@@ -167,26 +192,64 @@
     <ClInclude Include="libs\imgui\include\imgui_impl_opengl3.h" />
     <ClInclude Include="libs\imgui\include\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="libs\imgui\include\imgui_internal.h" />
+    <ClInclude Include="libs\imgui\include\imgui_stdlib.h" />
     <ClInclude Include="libs\imgui\include\imstb_rectpack.h" />
     <ClInclude Include="libs\imgui\include\imstb_textedit.h" />
     <ClInclude Include="libs\imgui\include\imstb_truetype.h" />
+    <ClInclude Include="libs\rapidjson\allocators.h" />
+    <ClInclude Include="libs\rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="libs\rapidjson\document.h" />
+    <ClInclude Include="libs\rapidjson\encodedstream.h" />
+    <ClInclude Include="libs\rapidjson\encodings.h" />
+    <ClInclude Include="libs\rapidjson\filereadstream.h" />
+    <ClInclude Include="libs\rapidjson\filewritestream.h" />
+    <ClInclude Include="libs\rapidjson\fwd.h" />
+    <ClInclude Include="libs\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="libs\rapidjson\memorybuffer.h" />
+    <ClInclude Include="libs\rapidjson\memorystream.h" />
+    <ClInclude Include="libs\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="libs\rapidjson\pointer.h" />
+    <ClInclude Include="libs\rapidjson\prettywriter.h" />
+    <ClInclude Include="libs\rapidjson\rapidjson.h" />
+    <ClInclude Include="libs\rapidjson\reader.h" />
+    <ClInclude Include="libs\rapidjson\schema.h" />
+    <ClInclude Include="libs\rapidjson\stream.h" />
+    <ClInclude Include="libs\rapidjson\stringbuffer.h" />
+    <ClInclude Include="libs\rapidjson\uri.h" />
+    <ClInclude Include="libs\rapidjson\writer.h" />
+    <ClInclude Include="libs\STB_Image\stb_image.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
+    <ClInclude Include="src\Components\CRigidBody.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
     <ClInclude Include="src\Editor\Editor.h" />
+    <ClInclude Include="src\Editor\EditorWindow.h" />
+    <ClInclude Include="src\Editor\Editor_Hierarchy.h" />
+    <ClInclude Include="src\Editor\Editor_Includes.h" />
+    <ClInclude Include="src\Logger\Logger.h" />
+    <ClInclude Include="src\Input\Input.h" />
+    <ClInclude Include="src\Render\glhelper.h" />
+    <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
-    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Engine\Engine.h" />
+    <ClInclude Include="src\Serialisation\Mock_Serialisation.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\GLFW\lib-vc2022\glfw3.dll" />
+    <None Include="Scene\Mock_Entity.json" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="libs\GLEW\glew32.lib" />
+    <Library Include="libs\GLEW\glew32s.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3dll.lib" />
     <Library Include="libs\GLFW\lib-vc2022\glfw3_mt.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

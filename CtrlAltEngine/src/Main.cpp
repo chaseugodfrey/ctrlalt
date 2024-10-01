@@ -1,9 +1,9 @@
-#include "Scene/Scene.h"
+#include "Engine/Engine.h"
 
 int main() {
-    Scene::Scene game;
-    game.Initialize();
-    game.Run();
-    game.Destroy();
+    Engine::Engine engine;
+    engine.Initialize();
+    engine.Run();
+    engine.Destroy();
     return 0;
 }

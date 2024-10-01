@@ -3,53 +3,64 @@
 
 #include  <GLFW/glfw3.h>
 #include "glm/glm.hpp"
+#include <vector>
 
-namespace GameEditor
-{
-	class Editor
-	{
+#include "Editor_Includes.h"
+#include "EditorWindow.h"
+
+
+namespace Editor {
+
+	class Editor {
 
 	private:
 
 		// bools
-		bool isRunning{ true };
 		bool isPromptedToExit{ false };
+		bool isCreateEntity{ false };
 
-		
+		// FOR M1 SUBMISSION PURPOSES
+
+		bool m1Scene1{ false };
+		bool m1Scene2{ false };
+		bool m1Scene3{ false };
+
 		GLFWwindow* window;
 
+		std::vector<EditorWindow*> gui_windows_list;
+
 		void DisplayMenuBar();
-		void DisplayHierachy();
+		void DisplayPlayState();
+		void DisplayFPS();
+		void DisplayHierarchy();
 		void DisplayInspector();
 		void DisplayScene();
-
-		// Constructor
-		// Requires window to be referenced for creation of editor for imgui purposes
-		// Deleted Constructors
-
+		void DisplayInConsole();
 
 	public:
 		Editor();
 		~Editor();
 
-		void Load(GLFWwindow* _window);
-		void Initialize();
+		void Initialize(GLFWwindow* window);
 		void Update();
-		void Render();
+		void Draw();
 		void Destroy();
+
+		// TEST FUNCTIONS
+		void ConsoleAddLine(std::string const&);
+		void ConsoleClear();
 
 		// Get bools
 		bool GetExitPrompt();
+
 	};
 
-	static Editor editor;
-
-	void Activate(GLFWwindow* _window);
-	void Run();
-	void Terminate();
-	bool GetExitPrompt();
-
 }
+
+
+// GLOBAL TEST FUNCTIONS
+
+
 
 
 

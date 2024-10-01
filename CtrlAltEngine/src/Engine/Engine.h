@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 \group  	CtrlAlt
-\file		Scene.h
+\file		Engine.h
 \author 	Michael Lazaroo
 \par    	m.lazaroo@digipen.edu
 \date   	Sep 08, 2024
@@ -16,8 +16,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 // PREPROCESSOR DIRECTIVES
 // =========================================================================================================
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 // This is here because= GLFW uses the APIENTRY macro to declare the same name function, both have windows.h  files
 #ifdef _WIN32
@@ -30,9 +30,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // INCLUDES
 // =========================================================================================================
 
-
-
-#include  <GLFW/glfw3.h>
+#include <GLEW/GL/glew.h>
+#include <GLFW/glfw3.h>\
 
 /// spdlog is a lightweight C++ logging class
 /// usage
@@ -44,27 +43,38 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
+#include "../Editor/Editor.h"
+#include "../AssetManager/AssetManager.h"
+#include "../Input/Input.h"
 
 // DECLARATIONS
 // =========================================================================================================
 
-namespace Scene
+namespace Engine
 {
 	/// <summary>
 	/// Uber game class that contains all relevant render and gameplay code
 	/// </summary>
-	class Scene
+	/// 
+
+
+	class Engine
 	{
 	private:
 		bool isRunning;
-		GLFWwindow* window;
+		GLFWwindow* main_window;
 
 		std::unique_ptr<ECS::Registry> registry;
+		Editor::Editor* editor;
+
+		AssetManager assetManager;
+
+		GLFWwindow* CreateGLFWwindow(int width, int height);
 
 	public:
 		//constructor/destructor
-		Scene();
-		~Scene();
+		Engine();
+		~Engine();
 
 		// initialize the game state, load all textures and levels
 		void Initialize();
@@ -79,7 +89,10 @@ namespace Scene
 		void Destroy();
 		int windowWidth;
 		int windowHeight;
+
 	};
+
+
 }
 
 #endif
