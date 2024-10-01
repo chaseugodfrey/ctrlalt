@@ -138,19 +138,19 @@ namespace MathLib
 	}
 
 	//vector normalising
-	void vec2::normalise(vec2& inv)
+	void vec2::normalise()
 	{
-		inv.x /= vec2Length(inv);
-		inv.y /= vec2Length(inv);
+		x /= this->vec2Length();
+		y /= this->vec2Length();
 	}
-	float vec2::vec2Length(vec2& inv)
+	float vec2::vec2Length()
 	{
-		return sqrt(inv.x * inv.x + inv.y * inv.y);
+		return sqrt(x * x + y * y);
 
 	}
-	float vec2::vec2SquareLength(vec2& inv)
+	float vec2::vec2SquareLength()
 	{
-		return (inv.x * inv.x + inv.y * inv.y);
+		return (x * x + y * y);
 	}
 
 	float vec2::vec2Dist(vec2& p0, vec2& p1)
@@ -229,6 +229,10 @@ namespace MathLib
 		if (x != rhs.x && y != rhs.y)
 			return true;
 		return false;
+	}
+
+	vec2 vec2::operator-() const {
+		return vec2(-x, -y);
 	}
 
 
@@ -428,6 +432,10 @@ namespace MathLib
 		if (x != rhs.x && y != rhs.y && z != rhs.z)
 			return true;
 		return false;
+	}
+
+	vec3 vec3::operator-() const {
+		return vec3(-x, -y,-z);
 	}
 
 	vec3 to3D(const vec2& inv, float z)

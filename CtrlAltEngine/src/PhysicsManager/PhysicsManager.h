@@ -22,6 +22,14 @@ namespace PhysicsManager
 	/******************************************************************************/
 	void Move_over_time(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& time);
 
+	/******************************************************************************/
+	/*
+		Moves the starting point to the end point.
+	*/
+	/******************************************************************************/
+	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& velocity);
+
+
 }
 	
 

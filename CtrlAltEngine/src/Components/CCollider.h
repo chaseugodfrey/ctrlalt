@@ -24,7 +24,7 @@ namespace Component
 		MathLib::vec2 p1;
 		MathLib::vec2 normal;
 
-		Line(MathLib::vec2 p0 = MathLib::vec2(), MathLib::vec2 p1 = MathLib::vec2(), MathLib::vec2 normal = MathLib::vec2());
+		Line(MathLib::vec2 p0 = MathLib::vec2{}, MathLib::vec2 p1 = MathLib::vec2{}, MathLib::vec2 normal = MathLib::vec2{});
 	};
 
 	/******************************************************************************/
@@ -37,15 +37,23 @@ namespace Component
 		MathLib::vec2 centre;
 		float radius;
 
-		Circle(MathLib::vec2 centre = MathLib::vec2(), float radius =0.f);
+		Circle(MathLib::vec2 centre = MathLib::vec2{}, float radius = 0.f);
 	};
 
+	/******************************************************************************/
+	/*
+		A class to represent a AABB of an object.
+	 */
+	 /******************************************************************************/
 	struct AABB
 	{
+		// Bottom left point of object
 		MathLib::vec2 min;
+
+		// Top right point of object
 		MathLib::vec2 max;
 
-		AABB(MathLib::vec2 min = MathLib::vec2(), MathLib::vec2 max = MathLib::vec2());
+		AABB(MathLib::vec2 pos = MathLib::vec2{}, float width = 0.f, float height = 0.f);
 	};
 
 }

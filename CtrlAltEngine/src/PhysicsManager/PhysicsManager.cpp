@@ -31,5 +31,14 @@ namespace PhysicsManager
 			time.Y() -= g_dt;
 		}
 	}
+
+	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& velocity)
+	{
+		if (start.X() != end.X() && start.Y() != end.Y())
+		{
+			start.X() += velocity.X() * g_dt;
+			start.Y() += velocity.Y() * g_dt;
+		}
+	}
 }
 

@@ -19,6 +19,8 @@ namespace System
 		RequireComponent<Component::CTransform>();
 		RequireComponent<Component::CRigidBody>();
 		RequireComponent<Component::AABB>();
+		RequireComponent<Component::Circle>();
+		RequireComponent<Component::Line>();
 	}
 
 	void SCollision::Update()
@@ -66,14 +68,14 @@ namespace System
 	//AABB collision
 
 	bool SCollision::CollisionIntersection_RectRect(const MathLib::vec2& pos1,	//Input position 1
-										const float w1,				//Input width
-										const float h1,				//Input height
-										const MathLib::vec2& vel1,  //Input velocity
-										const MathLib::vec2& pos2,	//Input position 2
-										const float w2,				//Input width
-										const float h2,				//Input height
-										const MathLib::vec2& vel2,	//Input velocity
-										float& firstTimeOfCollision) //Output: the calculated value of tFirst, below, must be returned here
+													const float w1,				//Input width
+													const float h1,				//Input height
+													const MathLib::vec2& vel1,  //Input velocity
+													const MathLib::vec2& pos2,	//Input position 2
+													const float w2,				//Input width
+													const float h2,				//Input height
+													const MathLib::vec2& vel2,	//Input velocity
+													float& firstTimeOfCollision) //Output: the calculated value of tFirst, below, must be returned here
 	{
 
 		float aabb1_min_x = pos1.X() - w1 / 2;
@@ -202,5 +204,132 @@ namespace System
 				return false;
 			}
 		}
+	}
+
+	bool SCollision::CollisionIntersection_CircleLineSegment(const Component::Circle& circle,			//Circle data - input
+												const MathLib::vec2& ptEnd,					//End circle position - input
+												const Component::Line& lineSeg,				//Line segment - input
+												MathLib::vec2& interPt,						//Intersection point - output
+												MathLib::vec2& normalAtCollision,			//Normal vector at collision time - output
+												float& interTime)
+	{
+		//N^
+		MathLib::vec2 normalizedNormal = lineSeg.normal;
+		normalizedNormal.normalise();
+
+		MathLib::vec2 P0 = lineSeg.p0;
+		MathLib::vec2 P1 = lineSeg.p1;
+		MathLib::vec2 Bs = circle.centre;
+		MathLib::vec2 Be = ptEnd;
+		MathLib::vec2 V = Be - Bs;
+		MathLib::vec2 M{};
+		M.X() = V.Y();
+		M.Y() = -V.X();
+
+		//N^.Bs
+		float startingPointCircle = normalizedNormal*Bs;
+
+		//N^.P0
+		float startingPointLine = normalizedNormal* P0;
+
+		//N^.Bs - N^.P0 <= -R
+		if (startingPointCircle - startingPointLine <= -circle.radius) /// weird not -R
+		{
+			//P0 - R*N^
+			MathLib::vec2 P0PrimeVec = P0 - (normalizedNormal * circle.radius);
+
+			//P1 - R*N^
+			MathLib::vec2 P1PrimeVec = P1 - (normalizedNormal * circle.radius);
+
+			//BsP0'
+			MathLib::vec2 BsP0Prime = P0PrimeVec - Bs;
+
+			//BsP1'
+			MathLib::vec2 BsP1Prime = P1PrimeVec - Bs;
+
+			//M.BsP0'
+			float normalPoint0 = M * BsP0Prime;
+
+			//M.BsP1'
+			float normalPoint1 = M * BsP1Prime;
+
+			//N^.V
+			float normalBVector = normalizedNormal * V;
+
+			//M.BsP0' * M.BsP1' < 0
+			if (normalPoint0 * normalPoint1 < 0)
+			{
+				//(N^.P0 - N^.Bs - R)/(N^.V)
+				float Ti = (startingPointLine - startingPointCircle - circle.radius) / (normalBVector);
+				if (Ti >= 0 && Ti <= 1)
+				{
+					//V*Ti
+					MathLib::vec2 VScaleTi = normalizedNormal * Ti;
+
+					//Bi = Bs + V*Ti
+					MathLib::vec2 Bi = Bs + VScaleTi;
+
+					//Apply reflection
+
+					interTime = Ti;
+					interPt = Bi;
+					normalAtCollision = -normalizedNormal;
+					return true;
+				}
+			}
+		}
+		//N^.Bs - N^.P0 >= R
+		else if (startingPointCircle - startingPointLine >= circle.radius)
+		{
+			//P0 + R*N^
+			MathLib::vec2 P0PrimeVec = P0 + (normalizedNormal * circle.radius);
+
+			//P1 + R*N^
+			MathLib::vec2 P1PrimeVec = P1 + (normalizedNormal * circle.radius);
+
+			//BsP0'
+			MathLib::vec2 BsP0Prime = P0PrimeVec - Bs;
+
+			//BsP1'
+			MathLib::vec2 BsP1Prime = P1PrimeVec - Bs;
+
+			//M.BsP0'
+			float normalPoint0 = M * BsP0Prime;
+
+			//M.BsP1'
+			float normalPoint1 = M * BsP1Prime;
+
+			//N^.V
+			float normalBVector = normalizedNormal * V;
+
+			//M.BsP0' * M.BsP1' < 0
+			if (normalPoint0 * normalPoint1 < 0)
+			{
+				//N^.P0 - N^.Bs + R/(N^.V)
+				float Ti = (startingPointLine - startingPointCircle + circle.radius) / (normalBVector);
+
+				if (Ti >= 0 && Ti <= 1)
+				{
+					//V*Ti
+					MathLib::vec2 VScaleTi = normalizedNormal * Ti;
+
+					//Bi = Bs + V*Ti
+					MathLib::vec2 Bi = Bs + VScaleTi;
+
+					//BiBe
+					MathLib::vec2 BiBeVector = Be - Bi;
+
+					//Be' = Applyreflection(-N^,BiBe)
+
+					interTime = Ti;
+					interPt = Bi;
+					normalAtCollision = normalizedNormal;
+					return true;
+				}
+			}
+
+		}
+		
+		return false; // no intersection
 	}
 }
