@@ -164,6 +164,7 @@
     <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
     <ClCompile Include="src\AssetManager\AssetManager.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
+    <ClCompile Include="src\Debug\Debugger.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\EditorWindow.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\AssetManager\AssetManager.h" />
     <ClInclude Include="src\Components\CRigidBody.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
+    <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\Types.h" />
     <ClInclude Include="src\Editor\Editor.h" />
