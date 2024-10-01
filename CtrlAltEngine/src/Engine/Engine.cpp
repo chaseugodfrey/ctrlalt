@@ -15,6 +15,7 @@ m.lazaroo@digipen.edu
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
+#include "../Debug/Debugger.h"
 
 #include "../Render/Render.h"
 
@@ -24,6 +25,7 @@ m.lazaroo@digipen.edu
 
 //Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 
+Debug::FrameTimer frameTimer; //Defining frameTimer for fps
 
 namespace Engine{
 
@@ -104,6 +106,9 @@ namespace Engine{
         registry->Update();
         editor->Update();
 
+        frameTimer.update();
+        if(frameTimer.GetFrameCount() == 59)
+            std::cout << frameTimer.ReadFPS() << std::endl; //This is what's suppose to be on Editor huhu
         
         // if you want to use Input
         /*

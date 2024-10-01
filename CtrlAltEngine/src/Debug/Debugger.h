@@ -36,7 +36,23 @@
 namespace Debug {
     extern double deltaTime;
 
-    void fpsUpdate(std::string* fps_string);
+    class FrameTimer
+    {
+    public:
+        FrameTimer();
+        ~FrameTimer();
+
+        void update();
+        std::string ReadFPS();
+        int GetFrameCount();
+
+    private:
+        int frameCount;  // Number of frames counted
+        double elapsedDuration;  // Accumulated time between frames
+        double fps; //Current system's Framerate
+        double deltaTime; //DeltaTime, fps/elapsedDuration
+        std::chrono::time_point<std::chrono::high_resolution_clock> endFrameTime;  // End time of the last frame
+    };
 }
 
 #endif
