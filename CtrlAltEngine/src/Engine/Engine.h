@@ -49,6 +49,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../EventManager/EventBus.h"
 #include "../AssetManager/AssetManager.h"
 #include "../Input/Input.h"
+#include "../Debug/Debugger.h"
 
 // DECLARATIONS
 // =========================================================================================================
@@ -67,12 +68,19 @@ namespace Engine
 		bool isRunning;
 		GLFWwindow* main_window;
 
+		//ECS
 		std::unique_ptr<ECS::Registry> registry;
 		std::unique_ptr<Event::EventBus> eventBus;
 		std::unique_ptr<Scene::SceneManager> sceneManager;
+		
+		//Editor
 		Editor::Editor* editor;
 
+		//Asset
 		AssetManager assetManager; 
+
+		//FrameTimer
+		Debug::FrameTimer frameTimer;
 
 		GLFWwindow* CreateGLFWwindow(int width, int height);
 

@@ -90,9 +90,14 @@ namespace Editor
 		//Logger::LogInfo("Editor Created");
 	}
 
-	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager)
+	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
 	{
+		//Dependencies
 		window = _window;
+		scene_manager = _scene_manager;
+		frame_timer = _frameTimer;
+
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -102,7 +107,7 @@ namespace Editor
 		ImGui_ImplOpenGL3_Init("#version 450");
 
 		deserialize_string();
-		scene_manager = _scene_manager;
+
 		//gui_windows_list.push_back()
 	}
 
@@ -351,9 +356,8 @@ namespace Editor
 
 	std::string Editor::ReadFPS() const
 	{
-		static double fps = 0;
-		fps++;
-		return "FPS + " + std::to_string(fps);
+		std::string FPSCOUNT = "FPS + " + frame_timer->ReadFPS();
+		return FPSCOUNT;
 	}
 
 	void Editor::LoadScene(int index)
@@ -361,6 +365,7 @@ namespace Editor
 		ConsoleAddLine("Scene Loaded: " + std::to_string(index));
 		std::string this_string = "Scene" + std::to_string(index);
 		scene_manager->SwitchScene(this_string);
+		scene_manager->GetScene()->DebugPrintEntityCount();
 	}
 
 	//}

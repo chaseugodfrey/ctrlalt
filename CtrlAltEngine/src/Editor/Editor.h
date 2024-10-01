@@ -9,6 +9,7 @@
 #include "EditorWindow.h"
 #include "../Scene/SceneManager.h"
 #include "../ECS/ECS.h"
+#include "../Debug/Debugger.h"
 
 namespace Editor {
 
@@ -25,6 +26,11 @@ namespace Editor {
 		std::vector<EditorWindow*> gui_windows_list;
 		Scene::SceneManager* scene_manager;
 
+		//
+		Debug::FrameTimer* frame_timer;
+
+		// TEST FUNCTIONS
+
 		void DisplayMenuBar();
 		void DisplayPlayState();
 		void DisplayFPS();
@@ -37,7 +43,7 @@ namespace Editor {
 		Editor();
 		~Editor();
 
-		void Initialize(GLFWwindow*, Scene::SceneManager*);
+		void Initialize(GLFWwindow*, Scene::SceneManager*, Debug::FrameTimer*);
 		void Update();
 		void Draw();
 		void Destroy();

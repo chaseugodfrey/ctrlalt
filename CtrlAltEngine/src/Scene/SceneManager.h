@@ -25,7 +25,7 @@ namespace Scene
 		void AddScene(const std::string& name, const std::string& filePath)
 		{
 			auto scene = std::make_unique<Scene>(registry);
-			scene->LoadFromFile(filePath);
+			scene->LoadDataFromFile(filePath);
 			scenes[name] = std::move(scene);
 			Logger::LogInfo("Scene added: " + name);
 		}
@@ -43,7 +43,9 @@ namespace Scene
 				if(currentScene)
 				currentScene->Unload();
 				currentScene = it->second.get();
+				if(!currentScene->IsLoaded())
 				currentScene->Load();
+				Logger::LogInfo("Switched to scene: " + scene);
 			}
 			else
 			{
@@ -86,7 +88,7 @@ namespace Scene
 
 
 		void LoadScene(const std::string& scenePath) {
-			currentScene->LoadFromFile(scenePath);
+			currentScene->LoadDataFromFile(scenePath);
 			currentScene->Load(); // This adds entities to systems
 		}
 

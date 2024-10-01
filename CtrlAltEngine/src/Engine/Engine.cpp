@@ -29,7 +29,7 @@ m.lazaroo@digipen.edu
 Input::Input_Container global_input;// definition of the global variable 
 //Render::RenderPipeline renderSystem; // do not need this?
 Scene::Scene* sceneSystem;
-Debug::FrameTimer frameTimer; //Defining frameTimer for fps
+Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
 namespace Engine{
 
@@ -68,10 +68,9 @@ namespace Engine{
         isRunning = true;
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
 
-
-
+		
         editor = new Editor::Editor();
-        editor->Initialize(main_window, sceneManager.get());
+        editor->Initialize(main_window, sceneManager.get(),&frameTimer);
 
 
         sceneManager->AddScene("Scene1", "Assets/scene1.txt");
@@ -166,7 +165,13 @@ namespace Engine{
     void Engine::Run() {
         Setup();
         while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
+			//Frame Timer
+            frameTimer.update();
+			
+            //Keyboard Input
             glfwPollEvents();
+            
+			//Engine Update
             ProcessInput();
             Update();
             Render();
