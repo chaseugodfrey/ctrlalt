@@ -1,6 +1,6 @@
 /*
 @group	CTRL ALT
-@file	Collision.h
+@file	SCollision.h
 @brief	Collision Functions to check if objects collide.
 Created by Muhammad Rayan
 muhammadrayan.b@digipen.edu

@@ -1,6 +1,6 @@
 /*
 @group	CTRL ALT
-@file	Physics.h
+@file	SPhysics.h
 @brief	Physics of the game.
 Created by Muhammad Rayan
 muhammadrayan.b@digipen.edu

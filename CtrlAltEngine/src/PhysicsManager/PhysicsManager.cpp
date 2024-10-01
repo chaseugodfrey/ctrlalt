@@ -1,6 +1,6 @@
 /*
 @group	CTRL ALT
-@file	Physics.cpp
+@file	PhysicsManager.cpp
 @brief	Physics of the game.
 Created by Muhammad Rayan
 muhammadrayan.b@digipen.edu

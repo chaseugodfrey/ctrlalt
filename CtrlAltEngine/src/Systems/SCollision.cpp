@@ -1,6 +1,6 @@
 /*
 @group	CTRL ALT
-@file	Collsion.cpp
+@file	SCollsion.cpp
 @brief	Collsion of the game.
 Created by Muhammad Rayan
 muhammadrayan.b@digipen.edu
