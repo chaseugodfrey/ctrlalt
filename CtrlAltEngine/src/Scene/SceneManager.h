@@ -7,6 +7,8 @@
 #include "Scene.h"
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
+#include "../Components/CRigidBody.h"
+#include "../Components/CTransform.h"
 
 namespace Scene
 {
@@ -22,8 +24,10 @@ namespace Scene
 
 		void AddScene(const std::string& name, const std::string& filePath)
 		{
-			scenes[name] = std::make_unique<Scene>(registry);
-			scenes[name]->LoadFromFile(filePath);
+			auto scene = std::make_unique<Scene>(registry);
+			scene->LoadFromFile(filePath);
+			scenes[name] = std::move(scene);
+			Logger::LogInfo("Scene added: " + name);
 		}
 
 		void RemoveScene(const std::string& scene)
@@ -56,6 +60,36 @@ namespace Scene
 		{
 			return currentScene;
 		}
+
+
+		void RegisterComponentDeserializers(Scene* scene) {
+			for (auto& scene : scenes) {
+				scene.second->RegisterComponentDeserializer<Component::CTransform>("CTransform",
+					[](ECS::Entity& entity, std::istream& is) {
+						float posX, posY, scaleX, scaleY, rotation;
+						is >> posX >> posY >> scaleX >> scaleY >> rotation;
+						entity.AddComponent<Component::CTransform>(
+							glm::vec2(posX, posY),
+							glm::vec2(scaleX, scaleY),
+							rotation
+						);
+					});
+
+				scene.second->RegisterComponentDeserializer<Component::CRigidBody>("CRigidBody",
+					[](ECS::Entity& entity, std::istream& is) {
+						float velX, velY;
+						is >> velX >> velY;
+						entity.AddComponent<Component::CRigidBody>(glm::vec2(velX, velY));
+					});
+			}
+		}
+
+
+		void LoadScene(const std::string& scenePath) {
+			currentScene->LoadFromFile(scenePath);
+			currentScene->Load(); // This adds entities to systems
+		}
+
 	};
 }
 

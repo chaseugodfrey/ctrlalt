@@ -1,42 +1,11 @@
-Entities: 6
+3
 ID: 0
-PosX: 0.0
-PosY: 0.0
-ScaleX: 500
-ScaleY: 500
-Rot: 0
+CTransform 0.0 0.0 500 500 0
+CRigidBody 0 0
 
 ID: 1
-PosX: -500
-PosY: -500
-ScaleX: 500
-ScaleY: 500
-Rot: 90
+CTransform -500 -500 500 500 90
+CRigidBody 10 0
 
 ID: 2
-PosX: 500
-PosY: 500
-ScaleX: 500
-ScaleY: 500
-Rot: 0
-
-ID: 0
-PosX: 0.0
-PosY: 0.0
-ScaleX: 500
-ScaleY: 500
-Rot: 0
-
-ID: 1
-PosX: -500
-PosY: -500
-ScaleX: 500
-ScaleY: 500
-Rot: 90
-
-ID: 2
-PosX: 500
-PosY: 500
-ScaleX: 500
-ScaleY: 500
-Rot: 0
+CTransform 500 500 500 500 0
