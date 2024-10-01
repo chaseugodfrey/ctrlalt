@@ -25,7 +25,7 @@ private:
     std::map<std::string, ComponentDeserializer> componentDeserializers;
 
 public:
-    Scene(ECS::Registry* reg) : registry(reg), isLoaded(false) {
+    Scene(ECS::Registry* reg) : registry(reg) {
         RegisterComponentDeserializers();
     }
 
@@ -121,10 +121,10 @@ public:
                 const std::string& componentType = componentPair.first;
                 const std::string& componentData = componentPair.second;
 
-                auto deserializerIt = componentDeserializers.find(componentType);
-                if (deserializerIt != componentDeserializers.end()) {
+                auto it = componentDeserializers.find(componentType);
+                if (it != componentDeserializers.end()) {
                     std::istringstream dataStream(componentData);
-                    deserializerIt->second(entity, dataStream);
+                    it->second(entity, dataStream);
                     Logger::LogInfo("Added component " + componentType + " to entity " + entityId);
                 }
                 else {
@@ -162,8 +162,6 @@ public:
         std::cout << "Total entities in scene: " << sceneEntities.size() << std::endl;
         for (const auto& entity : sceneEntities) {
             Logger::LogInfo("Entity " + std::to_string(entity.GetID()));
-            // Need to implement a way to get component names from the registry
-            // This is just a placeholder
             std::string componentList = GetComponentList(entity);
             Logger::LogInfo("Entity " + std::to_string(entity.GetID())+ " components:" + componentList);
         }
@@ -173,7 +171,6 @@ public:
         std::string componentList = "[";
         bool first = true;
 
-        // Check for each component type
         if (entity.HasComponent<Component::CTransform>()) {
             componentList += "CTransform";
             first = false;
@@ -183,7 +180,6 @@ public:
             componentList += "CRigidBody";
             first = false;
         }
-        // Add more component checks here as needed
 
         componentList += "]";
         return componentList;
