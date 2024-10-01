@@ -55,10 +55,6 @@ namespace Engine{
         // CREATE WINDOWED APPLICATION
         main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
-        // INITIALIZE SYSTEMS HERE
-       // renderSystem.Init();
-        editor = new Editor::Editor();
-        editor->Initialize(main_window, sceneManager.get());
 
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
@@ -69,9 +65,15 @@ namespace Engine{
         isRunning = true;
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
 
-        sceneManager->AddScene("Scene1", "Assets/Scene1.txt");
-        sceneManager->AddScene("Scene2", "Assets/Scene2.txt");
-        sceneManager->AddScene("Scene3", "Assets/Scene3.txt");
+
+
+        editor = new Editor::Editor();
+        editor->Initialize(main_window, sceneManager.get());
+
+
+        sceneManager->AddScene("Scene1", "Assets/scene1.txt");
+        sceneManager->AddScene("Scene2", "Assets/scene2.txt");
+        sceneManager->AddScene("Scene3", "Assets/scene3.txt");
         sceneManager->SwitchScene("Scene2");
         sceneManager->GetScene()->DebugPrintEntityCount();
         sceneManager->SwitchScene("Scene1");
