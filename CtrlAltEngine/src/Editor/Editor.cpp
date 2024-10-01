@@ -9,7 +9,11 @@
 
 Defines
 
- ====== Helpful code ======
+
+
+
+
+ ====== Helpful ImGui Code ======
 
  For static GUI items that don't move:
  *		ImGui::SetNextWindowSize(ImVec2(x, y));
@@ -20,6 +24,10 @@ Defines
  *		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ...); 
 		/code/
 		ImGui::PopStyleVar()
+
+For layout
+*		ImGui::Dummy();
+*		ImGui::SameLine(); -> can input window positions for offset as well
 
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -100,6 +108,20 @@ namespace Editor
 		{
 			static int count = 1;
 			ConsoleAddLine(std::to_string(count++));
+		}
+
+		if (m1Scene1)
+		{
+
+		}
+
+		if (m1Scene2)
+		{
+
+		}
+
+		if (m1Scene3)
+		{
 
 		}
 
@@ -178,6 +200,15 @@ namespace Editor
 					ImGui::EndMenu();
 				}
 
+				// FOR M1 SUBMISSION PURPOSES
+				if (ImGui::BeginMenu("M1 Scenes"))
+				{
+					ImGui::MenuItem("Scene 1", NULL, &m1Scene1);
+					ImGui::MenuItem("Scene 2", NULL, &m1Scene2);
+					ImGui::MenuItem("Scene 3", NULL, &m1Scene3);
+					ImGui::EndMenu();
+				}
+
 				ImGui::EndMenuBar();
 			}
 
@@ -198,10 +229,20 @@ namespace Editor
 		{
 
 			ImVec2 btn_size(36, 20);
-			ImGui::Button("A", btn_size); ImGui::SameLine();
+			ImGui::SameLine(ImGui::GetWindowWidth() * 0.5f);
+			ImGui::Button("Play", btn_size); ImGui::SameLine();
 			ImGui::Dummy(btn_size); ImGui::SameLine();
-			ImGui::Button("B", btn_size);
+			ImGui::Button("Stop", btn_size);
 		}
+
+		ImGui::SameLine(ImGui::GetWindowWidth() * 0.95f);
+		static int fps_counter = 0;
+		std::string fps_counter_str;
+		fps_counter_str = "FPS: " + std::to_string(fps_counter++);
+
+		
+		ImGui::Text(fps_counter_str.c_str());
+	
 
 		ImGui::End();
 	}
@@ -211,16 +252,16 @@ namespace Editor
 	{
 		//ImGui::SetNextWindowSize(ImVec2(100, 100));
 
-		if (ImGui::Begin("FPS", NULL, ImGuiWindowFlags_NoCollapse))
-		{
-			static int fps_counter = 0;
-			std::string fps_counter_str;
-			fps_counter_str = std::to_string(fps_counter++);
+		//if (ImGui::Begin("FPS", NULL, ImGuiWindowFlags_NoCollapse))
+		//{
+		//	//static int fps_counter = 0;
+		//	//std::string fps_counter_str;
+		//	//fps_counter_str = std::to_string(fps_counter++);
 
-			ImGui::Text(fps_counter_str.c_str());
-		}
+		//	//ImGui::Text(fps_counter_str.c_str());
+		//}
 
-		ImGui::End();
+		//ImGui::End();
 
 	}
 	void Editor::DisplayInspector()

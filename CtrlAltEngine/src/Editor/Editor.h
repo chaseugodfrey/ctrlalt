@@ -19,6 +19,12 @@ namespace Editor {
 		bool isPromptedToExit{ false };
 		bool isCreateEntity{ false };
 
+		// FOR M1 SUBMISSION PURPOSES
+
+		bool m1Scene1{ false };
+		bool m1Scene2{ false };
+		bool m1Scene3{ false };
+
 		GLFWwindow* window;
 
 		std::vector<EditorWindow*> gui_windows_list;
