@@ -13,9 +13,8 @@ namespace ECS
 	{
 	private:
 		Registry* registry;
-		Scene::SceneManager* sceneManager;
 	public:
-		EntityFactory(Registry* reg, Scene::SceneManager* sm) : registry(reg), sceneManager(sm) {}
+		EntityFactory(Registry* reg) : registry(reg) {}
 
 		Entity CreateBasicEntity()
 		{
