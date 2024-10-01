@@ -150,23 +150,27 @@ namespace ECS
 	class Pool :public InterfacePool {
 	private: 
 		std::vector<T> data;
+		int size;
 
+		std::unordered_map<int, int> entityIDToIndex;
+		std::unordered_map<int, int> indexToEntityID;
 		// Have to clear some of these functions, as they wont be used for now some are just
 		// interfaces to the std::vector functions
 	public:
 		virtual ~Pool() = default;
 
-		Pool(int size = 100)
+		Pool(int capacity = 100)
 		{
-			data.reserve(size);
+			size = 0;
+			data.reserve(capacity);
 		}	
 
-		bool isEmpty() const {
-			return data.empty();
+		bool IsEmpty() const {
+			return size == 0;
 		}
 
 		NumEntities GetSize() const {
-			return data.size();
+			return size;
 		}
 
 		void AddComponent(T component) {
@@ -194,11 +198,12 @@ namespace ECS
 		}
 
 		void Clear() {
-			data.clear();
+			size = 0;
 		}
 
 		void SetComponent(EntityID index, T component) {
 			data[index] = component;
+			size++;
 		}
 
 		T& GetComponent(EntityID index) {
@@ -229,6 +234,8 @@ namespace ECS
 		std::set<Entity> entitiesAddQueue;
 		std::set<Entity> entitiesRemoveQueue;
 
+		std::deque<int> freeIDs;
+
 	public:
 
 		Registry()
@@ -244,7 +251,7 @@ namespace ECS
 
 		//Entity Management
 		Entity CreateEntity();
-
+		void KillEntity(Entity entity);
 
 		//Component Management
 		template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
@@ -259,6 +266,7 @@ namespace ECS
 		template <typename TSystem> TSystem& GetSystem() const;
 
 		void AddEntityToSystems(Entity entity);
+		void RemoveEntityFromSystems(Entity entity);
 	};
 
 	template <typename TSystem, typename ...TArgs> void Registry::AddSystem(TArgs&&  ...args)
@@ -334,6 +342,9 @@ namespace ECS
 		{
 			return;
 		}
+		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
+		componentPools->RemoveC(entityID);
+
 		entityComponentMasks[entityID].set(componentID, false);
 		//Logger::LogInfo("Component ID: " + std::to_string(componentID) + " was removed from entity ID: " + std::to_string(entityID));
 	}

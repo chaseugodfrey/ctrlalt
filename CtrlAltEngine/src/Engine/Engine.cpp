@@ -15,7 +15,8 @@ m.lazaroo@digipen.edu
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
-
+#include "../Systems/SKeyboardControl.h"
+#include "../Scene/Scene.h"
 #include "../Render/Render.h"
 
 
@@ -24,14 +25,16 @@ m.lazaroo@digipen.edu
 
 //Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 
+//Render::RenderPipeline renderSystem; // do not need this?
+Scene::Scene* sceneSystem;
 
 namespace Engine{
 
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
-        //Logger::LogInfo("Engine Created");
+    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
+        Logger::LogInfo("Engine Created");
     }
 
     /// <summary>
@@ -57,20 +60,42 @@ namespace Engine{
         editor = new Editor::Editor();
         editor->Initialize(main_window, registry.get());
 
-        isRunning = true;
-
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
         //## my input system will be a static variable in header.
         global_input.Init_System(main_window); 
-        
+    
 
+        isRunning = true;
+        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
+
+        sceneManager->AddScene("Scene1", "Assets/scene1.txt");
+        sceneManager->AddScene("Scene2", "Assets/scene2.txt");
+        sceneManager->AddScene("Scene3", "Assets/scene3.txt");
+        sceneManager->SwitchScene("Scene2");
+        sceneManager->GetScene()->DebugPrintEntityCount();
+        sceneManager->SwitchScene("Scene1");
+        sceneManager->GetScene()->DebugPrintEntityCount();
+        sceneManager->SwitchScene("Scene3");
+        sceneManager->GetScene()->DebugPrintEntityCount();
+        sceneManager->SwitchScene("Scene2");
+        sceneManager->GetScene()->DebugPrintEntityCount();
+        sceneManager->SwitchScene("Scene1");
+        sceneManager->GetScene()->DebugPrintEntityCount();
+        sceneManager->SwitchScene("Scene3");
+        sceneManager->GetScene()->DebugPrintEntityCount();
     }
 
     /// <summary>
     /// 
     /// </summary>
     void Engine::ProcessInput() {
+        for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+            int state = glfwGetKey(main_window, key);
+            if (state == GLFW_PRESS) {
+                eventBus->EmitEvent<KeyPressEvent>(key);
+            }
+        }
         if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
@@ -84,13 +109,8 @@ namespace Engine{
 		// TODO: Create game objects...
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SRender>();
-
-		ECS::Entity E_Player = registry->CreateEntity();
-		ECS::Entity E_RabbitWhite = registry->CreateEntity();
-		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-
-        E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
-		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
+        registry->AddSystem<System::SKeyboardControl>();
+        //sceneSystem->Init();
 
     }
 
@@ -99,8 +119,9 @@ namespace Engine{
     /// </summary>
     void Engine::Update() {
 
+        eventBus->Reset();
 		registry->GetSystem<System::SMovement>().Update();
-
+        registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         registry->Update();
         editor->Update();
 
@@ -111,6 +132,7 @@ namespace Engine{
         */
         global_input.Action("KEY W");
         //global_input.GetKeyReleased(GLFW_KEY_Z); // this is not trigger
+        //sceneManager->UpdateScene();
     }
 
     /// <summary>
@@ -135,8 +157,8 @@ namespace Engine{
     /// </summary>
     void Engine::Run() {
         Setup();
-        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) 
-        {
+        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
+            glfwPollEvents();
             ProcessInput();
             Update();
             Render();
