@@ -35,12 +35,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
  /******************************************************************************/
 
-#include "Editor.h"
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include "Editor.h"
+#include "../ECS/ECS.h"
 
 namespace Editor
 {
@@ -89,7 +90,7 @@ namespace Editor
 		//Logger::LogInfo("Editor Created");
 	}
 
-	void Editor::Initialize(GLFWwindow* _window)
+	void Editor::Initialize(GLFWwindow* _window, ECS::Registry* reg)
 	{
 		window = _window;
 		IMGUI_CHECKVERSION();
@@ -102,6 +103,7 @@ namespace Editor
 
 		
 		deserialize_string();
+		registry = reg;
 		//gui_windows_list.push_back()
 	}
 
@@ -130,12 +132,6 @@ namespace Editor
 		if (m1Scene3)
 		{
 
-		}
-
-		if (isCreateEntity)
-		{
-			ConsoleAddLine("Object created.");
-			isCreateEntity = false;
 		}
 
 		if (isPromptedToExit)
@@ -203,7 +199,12 @@ namespace Editor
 
 				if (ImGui::BeginMenu("Create"))
 				{
-					ImGui::MenuItem("Entity", NULL, &isCreateEntity);
+					if (ImGui::MenuItem("Entity"))
+					{
+						ConsoleAddLine("Object created.");
+						//ECS::Entity entity = registry->CreateEntity();
+
+					}
 					ImGui::EndMenu();
 				}
 
@@ -249,23 +250,13 @@ namespace Editor
 		ImGui::End();
 	}
 
-
+	// To Do:
+	// Delete as function has been relocated
 	void Editor::DisplayFPS()
 	{
-		//ImGui::SetNextWindowSize(ImVec2(100, 100));
-
-		//if (ImGui::Begin("FPS", NULL, ImGuiWindowFlags_NoCollapse))
-		//{
-		//	//static int fps_counter = 0;
-		//	//std::string fps_counter_str;
-		//	//fps_counter_str = std::to_string(fps_counter++);
-
-		//	//ImGui::Text(fps_counter_str.c_str());
-		//}
-
-		//ImGui::End();
 
 	}
+
 	void Editor::DisplayInspector()
 	{
 		//ImGui::SetNextWindowSize(ImVec2(400, 500));
@@ -337,8 +328,8 @@ namespace Editor
 					ImGui::TableNextRow(NULL, 25.0f);
 					ImGui::TableNextColumn();
 					ImGui::Text(console_data[i].c_str());
-					//ImGui::Text("Words");
 				}
+
 				ImGui::EndTable();
 			}
 

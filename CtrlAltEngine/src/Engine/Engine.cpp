@@ -55,7 +55,7 @@ namespace Engine{
         // INITIALIZE SYSTEMS HERE
        // renderSystem.Init();
         editor = new Editor::Editor();
-        editor->Initialize(main_window);
+        editor->Initialize(main_window, registry.get());
 
         isRunning = true;
 

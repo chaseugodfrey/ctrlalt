@@ -7,7 +7,7 @@
 
 #include "Editor_Includes.h"
 #include "EditorWindow.h"
-
+#include "../ECS/ECS.h"
 
 namespace Editor {
 
@@ -27,6 +27,7 @@ namespace Editor {
 		GLFWwindow* window;
 
 		std::vector<EditorWindow*> gui_windows_list;
+		ECS::Registry* registry;
 
 		void DisplayMenuBar();
 		void DisplayPlayState();
@@ -40,7 +41,7 @@ namespace Editor {
 		Editor();
 		~Editor();
 
-		void Initialize(GLFWwindow* window);
+		void Initialize(GLFWwindow*, ECS::Registry*);
 		void Update();
 		void Draw();
 		void Destroy();
