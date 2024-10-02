@@ -61,35 +61,56 @@ namespace Render {
 
 	//Class that represents something that can be drawn
 	class CRenderable {
+	public:
+		//Quick render layer for now
+		enum RenderLayer{
+			R_BACKGROUND = 0,
+			R_WORLD,
+			R_UI,
+			R_TOTAL
+		};
+	private:
 		std::unordered_map<std::string, GLuint>::iterator textureHandle;
 		std::unordered_map<std::string, GLModel>::iterator modelHandle;
 		std::unordered_map<std::string, GLSLShader>::iterator shader_handle;
 		/*
 		Render Variables
 		*/
-		std::string textureName;
-		std::string meshName;
-		std::string shaderName;
+		std::string textureName{ "default" };
+		std::string meshName{ "default" };
+		std::string shaderName{ "default" };
 		bool compiled = false;
+		glm::vec4 color{1.f,1.f,1.f,1.f};
+		RenderLayer render_layer{ R_WORLD };
 	public:
-		/*
-		* Ctor of CRenderable, Params are texture name, mesh name, shader name
-		*/
-		CRenderable(std::string texture = "default", std::string mesh = "default", std::string shader = "default")
-			:textureName(texture), meshName(mesh), shaderName(shader), compiled(false)
-		{}
 		//Sorting operation for priority queue
 		//friend bool operator < (CRenderable const&, CRenderable const&);
+		void SetTexture(std::string);
+		void SetMesh(std::string);
+		void SetShader(std::string);
+		void SetColor(glm::vec4);
+		void SetRenderLayer(RenderLayer);
+		RenderLayer GetRenderLayer() const;
 
 		friend System::SRender;
 		friend RenderPipeline;
 	};
+	struct {
+		bool operator()(ECS::Entity const& lhs, ECS::Entity const& rhs) {
+			return lhs.GetComponent<CRenderable>().GetRenderLayer() < rhs.GetComponent<CRenderable>().GetRenderLayer();
+		}
+	} RenderSort;
+
+	//Forward
+	class Camera2d;
 
 	//Class that contains the pipeline to draw something to the window
 	class RenderPipeline {
 		GLFWwindow* target_window{};
-
+		Camera2d* camera{};
+		GLint view_width{}, view_height{};
 		//std::multiset<CRenderable> objects;
+		void FB_callback(GLFWwindow* window, int width, int height);
 	public:
 		RenderPipeline();
 
@@ -106,12 +127,50 @@ namespace Render {
 		GLFWwindow const* GetCurrentWindow();
 		void DeleteCurrentWindow();
 
+		void SetCamera(Camera2d*);
+
 		//void Init(GLint width = 900, GLint height = 480, std::string const& window_title = "Hello world");
 		//Draws a single renderable
 		void StartDraw();
 		void Draw(CRenderable const&, glm::mat3 const&);
 		void FinishDraw();
 		void Cleanup();
+	};
+
+	//For now just assume only 1 camera and its not a component
+	class Camera2d {
+		glm::vec2 right{}, up{};
+		glm::mat3 view_xform{};
+
+		//------------TEMPORARY!!!!!!!
+		glm::vec2 position;
+
+		//height of cam
+		GLint height{ 1000 };
+		//zoom limits
+		GLint min_height;
+		GLint max_height;
+		//1 if zooming in, -1 if zooming out
+		GLint height_chng_dir{ 1 };
+
+		//Zoom speed
+		GLint height_chng_speed{ 100 };
+
+		//aespect ration
+		GLfloat ar{};
+		glm::mat3 camwin_to_ndc_xform{};
+		glm::mat3 world_to_ndc_xform{};
+
+		//speed for the camera to move
+		GLfloat linear_speed{ 2.f };
+
+		//Could be viewport or something else, not sure yet
+		//GLFWwindow const* target_window;
+	public:
+		void SetPosition(GLfloat, GLfloat);
+		void Init(GLint view_width, GLint view_height);
+		void UpdateViewtoNDC(GLint view_width, GLint view_height);
+		glm::mat3 GetWorldtoNDC();
 	};
 }
 
@@ -128,7 +187,12 @@ namespace System {
 		//Mapping string name to GLSLShader
 		std::unordered_map<std::string, GLSLShader> shader_map;
 
+		//Render pipeline
 		Render::RenderPipeline render_pipeline;
+
+		//Assume only 1 camera for now
+		Render::Camera2d camera;
+
 		//Generate the default quad and default image
 		void LoadDefaults();
 	public:

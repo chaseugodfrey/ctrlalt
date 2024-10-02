@@ -9,7 +9,7 @@ layout (location=1) in vec2 vInterpolatedTexture;
 //BlackBox Data structure thata represents a texture
 //Requires that the uniform value that represents the image unit's format fits this sampler's format
 uniform sampler2D uTex2d;
-uniform vec3 uColor;
+uniform vec4 uColor;
 
 //---------------Output
 //front buffer is currently drawn
@@ -23,5 +23,5 @@ void main(){
 	//fFragColor = vec4(uTex2d, 0.0, 1.0);
 	
 	//Modulate texture with color param
-	//fFragColor = fFragColor * vec4(uColor, 1.0);
+	fFragColor = fFragColor * uColor;
 }

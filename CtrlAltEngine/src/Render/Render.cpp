@@ -27,7 +27,29 @@ namespace Render {
 	/************************************/
 	//Renderable
 	/************************************/
-	
+	void CRenderable::SetTexture(std::string name) {
+		textureName = name;
+		compiled = false;
+	}
+	void CRenderable::SetMesh(std::string name) {
+		meshName = name;
+		compiled = false;
+	}
+	void CRenderable::SetShader(std::string name) {
+		shaderName = name;
+		compiled = false;
+	}
+	void CRenderable::SetColor(glm::vec4 col) {
+		color = col;
+	}
+
+	void CRenderable::SetRenderLayer(RenderLayer layer) {
+		render_layer = layer;
+	}
+
+	CRenderable::RenderLayer CRenderable::GetRenderLayer() const {
+		return render_layer;
+	}
 	//Sorting operation for priority queue
 	//bool operator < (CRenderable const& lhs, CRenderable const& rhs) {
 	//	if (lhs.textureHandle < rhs.textureHandle) {
@@ -51,6 +73,9 @@ namespace Render {
 	}
 
 	GLFWwindow* RenderPipeline::CreateTargetWindow(GLint width, GLint height) {
+		view_width = width;
+		view_height = height;
+
 		//Create window hints
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
@@ -72,10 +97,15 @@ namespace Render {
 		}
 		glfwMakeContextCurrent(target_window);
 		glViewport(0, 0, width, height);
+
+		//Workaround no static function
+		glfwSetWindowUserPointer(target_window, this);
 		glfwSetFramebufferSizeCallback(target_window, [](GLFWwindow* window, int width, int height) {
-			glViewport(0, 0, width, height);
+			static_cast<RenderPipeline*>(glfwGetWindowUserPointer(window))->FB_callback(window, width, height);
 			});
 		//glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND); 
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glewInit();
 		glClearColor(1.f, 0.f, 1.f, 1.f);
@@ -83,6 +113,19 @@ namespace Render {
 		CheckGLError();
 		return target_window;
 	}
+
+
+	void RenderPipeline::SetCamera(Camera2d* cam) {
+		camera = cam;
+	}
+
+	void RenderPipeline::FB_callback(GLFWwindow* window, int width, int height) {
+		glViewport(0, 0, width, height);
+		view_width = width;
+		view_height = height;
+		camera->UpdateViewtoNDC(width, height);
+	}
+
 	void RenderPipeline::SetTargetWindow(GLFWwindow* window) {
 		CheckGLError();
 		if (window) {
@@ -97,14 +140,12 @@ namespace Render {
 		}
 		CheckGLError();
 	}
-
 	void RenderPipeline::DeleteCurrentWindow() {
 		if (target_window) {
 			glfwDestroyWindow(target_window);
 		}
 		target_window = nullptr;
 	}
-
 	GLFWwindow const* RenderPipeline::GetCurrentWindow() {
 		return target_window;
 	}
@@ -153,7 +194,7 @@ namespace Render {
 		uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uColor");
 		CheckGLError();
 		if (uniform_var_loc >= 0) {
-			glUniform3f(uniform_var_loc, 1.f, 1.f, 1.f);
+			glUniform4f(uniform_var_loc, renderable.color[0], renderable.color[1], renderable.color[2], renderable.color[3]);
 			CheckGLError();
 		}
 		else {
@@ -267,6 +308,55 @@ namespace Render {
 		CheckGLError();
 	}
 
+	//Everything here should be data driven for camera default values - todo next
+	void Camera2d::Init(GLint vp_width, GLint vp_height) {
+		//For now just set normal orientation
+		right = { 1.f,0.f };
+		up = { 0.f,1.f };
+
+		//an object of scale 1, 1 will take up 1/10 of the height screen
+		height = 10;
+		/*min_height = 500;
+		max_height = 2000;
+
+		height_chng_speed = 100;*/
+		
+		UpdateViewtoNDC(vp_width, vp_height);
+		SetPosition(0.f, 0.f);
+	}
+
+	//Updates view to ndc mtx
+	void Camera2d::UpdateViewtoNDC(GLint view_width, GLint view_height) {
+		ar = static_cast<GLfloat>(view_width) / static_cast<GLfloat>(view_height);
+		GLint width = (GLint)(ar * height);
+		camwin_to_ndc_xform = glm::mat3{
+			glm::vec3(2.f / width, 0, 0),
+			glm::vec3(0, 2.f / height, 0),
+			glm::vec3(0.f, 0.f, 1.f)
+		};
+		camwin_to_ndc_xform = glm::transpose(camwin_to_ndc_xform);
+		world_to_ndc_xform = camwin_to_ndc_xform * view_xform;
+	}
+
+	void Camera2d::SetPosition(GLfloat x, GLfloat y) {
+		position = { x, y };
+
+		//Update world to view mtx
+		GLfloat transX = glm::dot(right, position);
+		GLfloat transY = glm::dot(up, position);
+		glm::mat3 first_person_view{
+			glm::vec3(right.x, right.y, -transX),
+			glm::vec3(up.x, up.y, -transY),
+			glm::vec3(0.f, 0.f, 1.f)
+		};
+		view_xform = glm::transpose(first_person_view);
+
+		world_to_ndc_xform = camwin_to_ndc_xform * view_xform;
+	}
+
+	glm::mat3 Camera2d::GetWorldtoNDC() {
+		return world_to_ndc_xform;
+	}
 }
 
 namespace System {
@@ -275,7 +365,9 @@ namespace System {
 		RequireComponent<Render::CRenderable>();
 
 		//Setup Render pipeline
-		render_pipeline.CreateTargetWindow();
+		render_pipeline.CreateTargetWindow(900, 480);
+		camera.Init(900, 480);
+
 		//render_pipeline.SetT(render_pipeline.CreateNewWindow());
 		CheckGLError();
 		//Load Assets
@@ -344,6 +436,7 @@ namespace System {
 	}
 
 	void SRender::Destroy() {
+		render_pipeline.SetTargetAsCurrent();
 		//Release Textures
 		Logger::LogInfo("Release Image from GPU...");
 		CheckGLError();
@@ -359,12 +452,14 @@ namespace System {
 			glDeleteVertexArrays(1, &kvp.second.vao_ID);
 		}
 		Logger::LogInfo("GPU Buffer done..");
+		CheckGLError();
 
 		Logger::LogInfo("Releasing Shaders..");
 		for (auto it = shader_map.begin(); it != shader_map.end(); ++it) {
 			it->second.DeleteShaderProgram();
 		}
 		Logger::LogInfo("Shaders Released..");
+		CheckGLError();
 
 		render_pipeline.DeleteCurrentWindow();
 	}
@@ -403,22 +498,25 @@ namespace System {
 	{
 		CheckGLError();
 		render_pipeline.StartDraw();
-		for (ECS::Entity const& entity : GetEntities())
+		//Create a copy of the array because entity vector is used for ecs indexing
+		std::vector<ECS::Entity> entity_copy = GetEntities();
+		std::sort(entity_copy.begin(), entity_copy.end(), Render::RenderSort);
+		for (ECS::Entity const& entity : entity_copy)
 		{
 			Render::CRenderable& renderable = entity.GetComponent<Render::CRenderable>();
 
-			glm::mat3 tform_mtx{
-				glm::vec3(1.f,0.f,0.f),
-				glm::vec3(0.f,1.f,0.f),
-				glm::vec3(0.f,0.f,1.f)
-			};
+			glm::mat3 tform_mtx = glm::identity<glm::mat3>();
+
+			//Scale, Rotate, Translate
+			glm::mat3 scale = glm::identity<glm::mat3>();
+			glm::mat3 rotate = glm::identity<glm::mat3>();
+			glm::mat3 translate = glm::identity<glm::mat3>();
 
 			//Check if have transform comp
 			if (entity.HasComponent<Component::CTransform>()) {
 				Component::CTransform& transform = entity.GetComponent<Component::CTransform>();
 
 				//Scale, Rotate, Translate
-				glm::mat3 scale{}, rotate{}, translate{};
 				scale = {
 					glm::vec3(transform.scale.x, 0 ,0),
 					glm::vec3(0, transform.scale.y, 0),
@@ -441,9 +539,9 @@ namespace System {
 				translate = glm::transpose(translate);
 
 				
-				tform_mtx =/* camera2d.world_to_ndc_xform **/ translate * rotate * scale * tform_mtx;
 			}
 
+			tform_mtx = camera.GetWorldtoNDC() * translate * rotate * scale * tform_mtx;
 			//Setup component if not setup yet
 			if (!renderable.compiled) {
 				renderable.textureHandle = texture_map.find(renderable.textureName) != texture_map.end() 
@@ -474,6 +572,10 @@ namespace System {
 
 	void _CheckGLError(const char* file, int line)
 	{
+#ifndef DEBUG
+		return;
+#endif // only do this on debug
+
 		GLenum err(glGetError());
 
 		while (err != GL_NO_ERROR)
