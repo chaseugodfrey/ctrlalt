@@ -67,7 +67,7 @@ namespace ECS
 	void Registry::KillEntity(Entity entity)
 	{
 		entitiesRemoveQueue.insert(entity);
-		Logger::LogInfo("Entity " + std::to_string(entity.GetID()) + " was killed");
+		Logger::LogInfo("Entity " + std::to_string(entity.GetID()) + " was ");
 	}
 
 	void Registry::AddEntityToSystems(Entity entity)

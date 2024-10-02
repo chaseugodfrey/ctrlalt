@@ -12,6 +12,7 @@ m.lazaroo@digipen.edu
 #include "Engine.h"
 #include <iostream>
 #include "glm/glm.hpp"
+#include "../Render/Render.h"
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
@@ -21,7 +22,6 @@ m.lazaroo@digipen.edu
 #include "../Scene/Scene.h"
 #include "../Debug/Debugger.h"
 
-#include "../Render/Render.h"
 
 using namespace MathLib;
 
@@ -34,12 +34,19 @@ Input::Input_Container global_input;// definition of the global variable
 Scene::Scene* sceneSystem;
 Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
+namespace {
+
+    GLFWwindow* CreateGLFWwindow(int width, int height);
+}
+
+GLFWwindow* main_window;
 namespace Engine{
 
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
+    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false) {
+        main_window = (nullptr);
         Logger::LogInfo("Engine Created");
     }
 
@@ -76,7 +83,6 @@ namespace Engine{
         editor = new Editor::Editor();
         editor->Initialize(main_window, sceneManager.get(),&frameTimer);
 
-
         sceneManager->AddScene("Scene1", "Assets/scene1.txt");
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
         sceneManager->AddScene("Scene3", "Assets/scene3.txt");
@@ -111,30 +117,32 @@ namespace Engine{
         registry->AddSystem<System::SKeyboardControl>();
         //sceneSystem->Init();
 
-        ECS::Entity E_RabbitWhite = registry->CreateEntity();
-        E_RabbitWhite.AddComponent<Render::CRenderable>();
-        E_RabbitWhite.AddComponent<Component::CTransform>(vec2(1.f, 1.f), vec2(2.f, 2.f), 60.f);
-        Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
-        rComp.SetTexture("test");
-        rComp.SetRenderLayer(Render::CRenderable::R_UI);
+        //ECS::Entity E_RabbitWhite = registry->CreateEntity();
+        //E_RabbitWhite.AddComponent<Render::CRenderable>();
+        //E_RabbitWhite.AddComponent<Component::CTransform>(vec2(1.f, 1.f), vec2(2.f, 2.f), 60.f);
+        //Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
+        //rComp.SetTexture("test");
+        //rComp.SetRenderLayer(Render::CRenderable::R_UI);
 
-        ECS::Entity E_RabbitTest2 = registry->CreateEntity();
-        E_RabbitTest2.AddComponent<Render::CRenderable>();
-        E_RabbitTest2.AddComponent<Component::CTransform>(vec2(-1.f, -1.f), vec2(2.f, 2.f), 60.f);
-        Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
-        rComp3.SetTexture("test");
-        rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
+        //ECS::Entity E_RabbitTest2 = registry->CreateEntity();
+        //E_RabbitTest2.AddComponent<Render::CRenderable>();
+        //E_RabbitTest2.AddComponent<Component::CTransform>(vec2(-1.f, -1.f), vec2(2.f, 2.f), 60.f);
+        //Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
+        //rComp3.SetTexture("test");
+        //rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
 
-        ECS::Entity E_RabbitTest = registry->CreateEntity();
-        E_RabbitTest.AddComponent<Render::CRenderable>();
-        Render::CRenderable& rComp2 = E_RabbitTest.GetComponent<Render::CRenderable>();
-        rComp2.SetColor({ 1.f,0.f,0.f,0.5f });
+        //ECS::Entity E_RabbitTest = registry->CreateEntity();
+        //E_RabbitTest.AddComponent<Render::CRenderable>();
+        //Render::CRenderable& rComp2 = E_RabbitTest.GetComponent<Render::CRenderable>();
+        //rComp2.SetColor({ 1.f,0.f,0.f,0.5f });
     }
 
     /// <summary>
     /// 
     /// </summary>
     void Engine::Update() {
+
+        sceneManager->UpdateScene();
 
         eventBus->Reset();
 		//registry->GetSystem<System::SMovement>().Update();
@@ -209,8 +217,12 @@ namespace Engine{
      //   CheckGLError();
     }
 
+   
+
+}
+namespace {
     // HELPER FUNCTIONS
-    GLFWwindow* Engine::CreateGLFWwindow(int width, int height)
+    GLFWwindow* CreateGLFWwindow(int width, int height)
     {
 
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -242,5 +254,4 @@ namespace Engine{
 
         return window;
     }
-
 }

@@ -29,9 +29,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 // INCLUDES
 // =========================================================================================================
-
-#include <GLEW/GL/glew.h>
-#include <GLFW/glfw3.h>
+//
+//#include <GLEW/GL/glew.h>
+//#include <GLFW/glfw3.h>
 
 /// spdlog is a lightweight C++ logging class
 /// usage
@@ -45,6 +45,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../ECS/ECS.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneManager.h"
+#include "../Render/Render.h"
 #include "../Editor/Editor.h"
 #include "../EventManager/EventBus.h"
 #include "../AssetManager/AssetManager.h"
@@ -66,7 +67,6 @@ namespace Engine
 	{
 	private:
 		bool isRunning;
-		GLFWwindow* main_window;
 
 		//ECS
 		std::unique_ptr<ECS::Registry> registry;
@@ -82,7 +82,7 @@ namespace Engine
 		//FrameTimer
 		Debug::FrameTimer frameTimer;
 
-		GLFWwindow* CreateGLFWwindow(int width, int height);
+		//GLFWwindow* CreateGLFWwindow(int width, int height);
 
 	public:
 		//constructor/destructor

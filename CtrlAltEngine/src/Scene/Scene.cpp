@@ -1,159 +1,286 @@
-/** 
-@group CTRL ALT
-@file Scene.cpp
-@brief Implementation of the Game class
-Created by Michael Lazaroo
-m.lazaroo@digipen.edu
-*/ 
-
-
-// INCLUDES
-// =========================================================================================================
 #include "Scene.h"
-#include "../ECS/ECS.h"
-#include <iostream>
-#include "glm/glm.hpp"
+
+#include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
-#include "../Debug/Debugger.h" //To be added into Logger
-#include "../Logger/Logger.h" //Dont need Debugger if this correct
+#include "../Components/CIdentifier.h"
+#include "../Render/Render.h"
 
-#include "../Editor/Editor.h"
+namespace Scene {
 
-// DEFINITIONS
-// =========================================================================================================
+    void Scene::RegisterComponentDeserializers() {
+        RegisterComponentDeserializer<Component::CTransform>("CTransform",
+            [](ECS::Entity& entity, std::istream& is) {
+                float posX, posY, scaleX, scaleY, rotation;
+                is >> posX >> posY >> scaleX >> scaleY >> rotation;
+                entity.AddComponent<Component::CTransform>(
+                    vec2(posX, posY),
+                    vec2(scaleX, scaleY),
+                    rotation
+                );
+                Logger::LogInfo("CTransform component added");
+            });
 
+        RegisterComponentDeserializer<Component::CRigidBody>("CRigidBody",
+            [](ECS::Entity& entity, std::istream& is) {
+                float velX, velY;
+                is >> velX >> velY;
+                entity.AddComponent<Component::CRigidBody>(vec2(velX, velY));
+                Logger::LogInfo("CRigidBody component added");
+            });
 
-namespace Scene{
-    //Definitions for Scene namespace
-    std::string fps_string[1]; //For fps
-    int fpsDisplayDelay = 0;
+        RegisterComponentDeserializer<Component::CIdentifier>("CIdentifier",
+            [](ECS::Entity& entity, std::istream& is) {
+                std::string name;
+                is >> name;
+                entity.AddComponent<Component::CIdentifier>(name);
+                Logger::LogInfo("CIdentifier component added");
+            });
 
-    /// <summary>
-    /// 
-    /// </summary>
-    Scene::Scene() : registry(std::make_unique<ECS::Registry>()), isRunning(false), window(nullptr) {
-        Logger::LogMessage(LOG_INFO, "Scene Created");
+        Logger::LogInfo("Component deserializers registered");
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    Scene::~Scene() {
-        Logger::LogMessage(LOG_INFO, "Scene Deleted");
+
+    void Scene::CreateEntity(const std::string& entityType)
+    {
+        std::map<std::string, std::string> componentData;
+
+        std::size_t entityID = GetNextEntityID();
+
+        if (entityType == "Basic")
+        {
+            ECS::Entity entity = entityFactory.CreateBasicEntity();
+            componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
+            sceneEntities.push_back(entity);
+            entityData.push_back({ std::to_string(entityID), componentData });
+            //    registry->AddEntityToSystems(entity);
+        }
+        else if (entityType == "Player")
+        {
+            ECS::Entity entity = entityFactory.CreatePlayerEntity();
+            componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
+            componentData["CRigidBody"] = SerializeRigidBody(entity.GetComponent<Component::CRigidBody>());
+            componentData["CIdentifier"] = SerializeIdentifier(entity.GetComponent<Component::CIdentifier>());
+            sceneEntities.push_back(entity);
+            entityData.push_back({ std::to_string(entityID), componentData });
+            registry->AddEntityToSystems(entity);
+        }
+        else if (entityType == "Enemy")
+        {
+            ECS::Entity entity = entityFactory.CreateEnemyEntity();
+            componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
+            componentData["CRigidBody"] = SerializeRigidBody(entity.GetComponent<Component::CRigidBody>());
+            componentData["CIdentifier"] = SerializeIdentifier(entity.GetComponent<Component::CIdentifier>());
+            sceneEntities.push_back(entity);
+            entityData.push_back({ std::to_string(entityID), componentData });
+            registry->AddEntityToSystems(entity);
+        }
+
+        else
+        {
+            Logger::LogInfo("Unknown entity type: " + entityType);
+            return;
+        }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::Initialize() {
-        if (!glfwInit()) {
+    void Scene::LoadEntityData() {
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open file: " << filePath << std::endl;
             return;
         }
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        entityData.clear();
 
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        windowWidth = mode->width;
-        windowHeight = mode->height;
+        std::string line;
+        int entityCount;
+        file >> entityCount;
+        std::getline(file, line); // Consume the newline
 
-        //window = glfwCreateWindow(windowWidth, windowHeight, "AxelUnderland", glfwGetPrimaryMonitor(), nullptr); //Fullscreen
-        window = glfwCreateWindow(windowWidth, windowHeight, "AxelUnderland", NULL, nullptr); //Windowed
-        if (!window) {
+        for (int i = 0; i < entityCount; ++i) {
+            std::string entityId;
+            file >> line >> entityId;
+            std::getline(file, line); // Consume the newline
 
-            glfwTerminate();
+            std::map<std::string, std::string> componentData;
+
+            while (std::getline(file, line) && !line.empty()) {
+                std::istringstream iss(line);
+                std::string componentType;
+                iss >> componentType;
+                std::string data = line.substr(componentType.length() + 1); // +1 for the space
+                componentData[componentType] = data;
+            }
+
+            entityData.push_back({ entityId, componentData });
+            nextEntityID = std::max(nextEntityID, std::stoull(entityId) + 1);
+        }
+
+        file.close();
+        Logger::LogInfo("Loaded data for " + std::to_string(entityData.size()) + " entities from " + filePath);
+    }
+
+    void Scene::Load() {
+        if (isLoaded) {
+            Logger::LogInfo("Scene already loaded: " + sceneName);
             return;
         }
 
-        glfwMakeContextCurrent(window);
+        for (const auto& [entityId, components] : entityData) {
+            ECS::Entity entity = registry->CreateEntity();
+            //Updating in scene does not imply updating in Registry
 
-        glViewport(0, 0, windowWidth, windowHeight);
-        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-            glViewport(0, 0, width, height);
-            }); 
+            for (const auto& [componentType, componentData] : components) {
+                auto it = componentDeserializers.find(componentType);
+                if (it != componentDeserializers.end()) {
+                    std::istringstream iss(componentData);
+                    it->second(entity, iss); // this updates component data
+                }
+                else {
+                    Logger::LogInfo("Unknown component type: " + componentType);
+                }
+            }
 
-        GameEditor::Activate(window);
-
-        isRunning = true;
-        //endFrameTime = std::chrono::high_resolution_clock::now(); //FPS related, not needed
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::ProcessInput() {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            isRunning = false;
+            entity.AddComponent<Render::CRenderable>();
+            Render::CRenderable& rComp = entity.GetComponent<Render::CRenderable>();
+            rComp.SetTexture("test");
+            sceneEntities.push_back(entity);
+          //  registry->AddEntityToSystems(entity);
         }
+
+   //     registry->Update();
+        isLoaded = true;
+        Logger::LogInfo("Created " + std::to_string(sceneEntities.size()) + " entities for scene: " + sceneName);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::Setup() {
-		// TODO: Create game objects...
-		ECS::Entity E_Player = registry->CreateEntity();
-		ECS::Entity E_RabbitWhite = registry->CreateEntity();
-		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-        registry->AddComponent<Component::CTransform>(E_Player, glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
+    void Scene::Unload()
+    {
+        if (!isLoaded) return;
 
-   
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::Update() {
-        Debug::fpsUpdate(fps_string); //FPS tracker to be implemmeneted into LogMessage
-        if (fpsDisplayDelay == 60) {
-            Logger::LogMessage(LOG_INFO, "FPS: " + *fps_string); //FPS Tracker implemented onto logger, need to reformat texts //TBA toggling
-            fpsDisplayDelay = 0;
+        for (auto& entity : sceneEntities) {
+            registry->KillEntity(entity); // does it decrement the counter
+            registry->Update();
         }
-        fpsDisplayDelay++;
+        sceneEntities.clear();
+        nextEntityID = 0; // this is meant for things to reset and count up
+        // I think this scene's entity counter is different from Registry's entity counter
+
+        isLoaded = false;
+        Logger::LogInfo("Unloaded scene: " + sceneName);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::Render() {
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    void Scene::SaveDataToFile()
+    {
+        sceneName[0] = static_cast<char>(std::tolower(sceneName[0]));
+        std::string _path = "Assets/" + sceneName + ".txt";
 
+        std::ofstream file(_path);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open file: " << _path << std::endl;
+            return;
+        }
+
+        file << entityData.size() << std::endl;
+        for (size_t i = 0; i < entityData.size(); ++i)
         {
-            // IMGUI
-            GameEditor::Run();
+            std::string entityId = entityData[i].first;
+            std::map<std::string, std::string> components = entityData[i].second;
+            file << "ID: " << entityId << std::endl;
+            for (const auto& componentPair : components)
+            {
+                file << componentPair.first << " " << componentPair.second << std::endl;
+            }
+            file << std::endl;
         }
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-
+        file.close();
+        Logger::LogInfo("Saved " + std::to_string(sceneEntities.size()) + " entities to " + _path);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::Run() {
-        Setup();
-        while (isRunning && !glfwWindowShouldClose(window) && !GameEditor::GetExitPrompt()) {
-            ProcessInput();
-            Update();
-            Render();
+    std::string Scene::GetComponentList(const ECS::Entity& entity) const {
+        std::string componentList = "[";
+        bool first = true;
+
+        if (entity.HasComponent<Component::CTransform>()) {
+            componentList += "CTransform";
+            componentList += ", ";
+            componentList += std::to_string(entity.GetComponent<Component::CTransform>().position.x);
+            componentList += ", ";
+            componentList += std::to_string(entity.GetComponent<Component::CTransform>().position.y);
+
+            first = false;
         }
+        if (entity.HasComponent<Component::CRigidBody>()) {
+            if (!first) componentList += ", ";
+            componentList += "CRigidBody";
+            componentList += ", ";
+            componentList += std::to_string(entity.GetComponent<Component::CRigidBody>().vel.x);
+            componentList += ", ";
+            componentList += std::to_string(entity.GetComponent<Component::CRigidBody>().vel.y);
+            first = false;
+        }
+        if (entity.HasComponent<Component::CIdentifier>()) {
+            if (!first) componentList += ", ";
+            componentList += "CIdentifier";
+            componentList += ", ";
+            componentList += entity.GetComponent<Component::CIdentifier>().name;
+            first = false;
+        }
+        componentList += "]";
+        return componentList;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Scene::Destroy() {
+    void Scene::Update()
+    {
+        // SCENE 1
+        std::cout << sceneName << std::endl;
 
+        if (sceneName == "Scene1")
         {
-            // IMGUI
-            GameEditor::Terminate();
+            std::cout << "im in scene 1" << std::endl;
         }
 
+        else if (sceneName == "Scene2")
+        {
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
+        }
+
+        else if (sceneName == "Scene3")
+        {
+            Scene3_PopulateScene();
+        }
+
+    }
+
+    void Scene::DebugPrintEntityCount() const
+    {
+        std::cout << "Total entities in scene: " << sceneEntities.size() << std::endl;
+        for (const auto& entity : sceneEntities) {
+            Logger::LogInfo("Entity " + std::to_string(entity.GetID()));
+            std::string componentList = GetComponentList(entity);
+            Logger::LogInfo("Entity " + std::to_string(entity.GetID()) + " components:" + componentList);
+        }
+    }
+
+    void Scene::Scene3_PopulateScene()
+    {
+        static bool spawned = false;
+        if (spawned)
+            return;
+
+        std::cout << "test" << std::endl;
+        double max_obj = 4;
+        for (size_t i = 0; i < max_obj; i++)
+        {
+             ECS::Entity E_RabbitWhite = registry->CreateEntity();
+             E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
+             //E_RabbitWhite.AddComponent<Render::CRenderable>();
+             //Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
+             //rComp.SetTexture("test");
+             //rComp.SetRenderLayer(Render::CRenderable::R_UI);
+
+            //auto& transform = sceneEntities[i].GetComponent<Component::CTransform>();
+            //transform.position = MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5);
+            if (i == max_obj - 1)
+                spawned = true;
+        }
     }
 }
