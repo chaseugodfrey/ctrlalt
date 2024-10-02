@@ -240,7 +240,7 @@ namespace GameEditor
 
 		if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse))
 		{
-			int action = 0;
+			//int action = 0;
 			/*if (ImGui::Button("Clear"))
 				action = 1;*/
 

@@ -16,6 +16,8 @@ m.lazaroo@digipen.edu
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
 #include "../Systems/SMovement.h"
+#include "../Systems/SPhysics.h"
+#include "../Math/MathLib.h"
 
 #include "../Render/Render.h"
 
@@ -76,14 +78,17 @@ namespace Engine{
     void Engine::Setup() {
 		// TODO: Create game objects...
 		registry->AddSystem<System::SMovement>();
+        //change this
+        registry->AddSystem<System::SPhysics>();
         registry->AddSystem<System::SRender>();
 
         CheckGLError();
 		ECS::Entity E_Player = registry->CreateEntity();
 		ECS::Entity E_RabbitBlack = registry->CreateEntity();
 
-        E_Player.AddComponent<Component::CTransform>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 60.0);
-		E_Player.AddComponent<Component::CRigidBody>(glm::vec2(10.0, 30.0));
+        //change this
+        E_Player.AddComponent<Component::CTransform>(MathLib::vec2(10.0, 30.0), MathLib::vec2(1.0, 1.0), 60.0);
+		E_Player.AddComponent<Component::CRigidBody>(MathLib::vec2(10.0, 30.0));
 
         ECS::Entity E_RabbitWhite = registry->CreateEntity();
         E_RabbitWhite.AddComponent<Render::CRenderable>();
@@ -190,7 +195,7 @@ namespace Engine{
         glfwMakeContextCurrent(window);
 
         glViewport(0, 0, width, height);
-        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* /*window*/, int width, int height) {
             glViewport(0, 0, width, height);
             });
 

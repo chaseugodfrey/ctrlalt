@@ -166,7 +166,7 @@ namespace ECS
 		}
 
 		NumEntities GetSize() const {
-			return data.size();
+			return (ECS::NumEntities)data.size();
 		}
 
 		void AddComponent(T component) {
