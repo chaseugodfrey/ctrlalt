@@ -92,14 +92,14 @@ namespace Engine{
 
         ECS::Entity E_RabbitWhite = registry->CreateEntity();
         E_RabbitWhite.AddComponent<Render::CRenderable>();
-        E_RabbitWhite.AddComponent<Component::CTransform>(glm::vec2(1.f, 1.f), glm::vec2(2.f, 2.f), 60.f);
+        E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2(1.f, 1.f), MathLib::vec2(2.f, 2.f), 60.f);
         Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
         rComp.SetTexture("test");
         rComp.SetRenderLayer(Render::CRenderable::R_UI);
 
         ECS::Entity E_RabbitTest2 = registry->CreateEntity();
         E_RabbitTest2.AddComponent<Render::CRenderable>();
-        E_RabbitTest2.AddComponent<Component::CTransform>(glm::vec2(-1.f, -1.f), glm::vec2(2.f, 2.f), 60.f);
+        E_RabbitTest2.AddComponent<Component::CTransform>(MathLib::vec2(-1.f, -1.f), MathLib::vec2(2.f, 2.f), 60.f);
         Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
         rComp3.SetTexture("test");
         rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
