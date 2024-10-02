@@ -31,7 +31,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // =========================================================================================================
 
 #include <GLEW/GL/glew.h>
-#include <GLFW/glfw3.h>\
+#include <GLFW/glfw3.h>
 
 /// spdlog is a lightweight C++ logging class
 /// usage
@@ -43,8 +43,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /// spdlog::error("ERROR") Loglevel: Error
 /// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
+#include "../Scene/Scene.h"
+#include "../Scene/SceneManager.h"
 #include "../Editor/Editor.h"
+#include "../EventManager/EventBus.h"
 #include "../AssetManager/AssetManager.h"
+#include "../Input/Input.h"
+#include "../Debug/Debugger.h"
 
 // DECLARATIONS
 // =========================================================================================================
@@ -63,10 +68,19 @@ namespace Engine
 		bool isRunning;
 		GLFWwindow* main_window;
 
+		//ECS
 		std::unique_ptr<ECS::Registry> registry;
-		GameEditor::Editor* editor;
+		std::unique_ptr<Event::EventBus> eventBus;
+		std::unique_ptr<Scene::SceneManager> sceneManager;
+		
+		//Editor
+		Editor::Editor* editor;
 
-		AssetManager assetManager;
+		//Asset
+		AssetManager assetManager; 
+
+		//FrameTimer
+		Debug::FrameTimer frameTimer;
 
 		GLFWwindow* CreateGLFWwindow(int width, int height);
 
@@ -88,8 +102,10 @@ namespace Engine
 		void Destroy();
 		int windowWidth;
 		int windowHeight;
-
+		
 	};
+
+
 }
 
 #endif

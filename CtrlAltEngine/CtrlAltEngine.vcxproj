@@ -168,19 +168,23 @@
     <ClCompile Include="src\Components\CCollider.cpp" />
     <ClCompile Include="src\Components\CGrid.cpp" />
     <ClCompile Include="src\Components\CTransform.h" />
+    <ClCompile Include="src\Debug\Debugger.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\EditorWindow.cpp" />
     <ClCompile Include="src\Editor\Editor_Hierarchy.cpp" />
+    <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
     <ClCompile Include="src\Math\MathLib.cpp" />
     <ClCompile Include="src\PhysicsManager\PhysicsManager.cpp" />
+    <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Render\glhelper.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
-    <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Systems\SCollision.cpp" />
+    <ClCompile Include="src\Serialisation\Mock_Serialisation.cpp" />
+    <ClCompile Include="src\Systems\SKeyboardControl.h" />
     <ClCompile Include="src\Systems\SMovement.h" />
     <ClCompile Include="src\Systems\SPhysics.cpp" />
   </ItemGroup>
@@ -201,13 +205,37 @@
     <ClInclude Include="libs\imgui\include\imstb_rectpack.h" />
     <ClInclude Include="libs\imgui\include\imstb_textedit.h" />
     <ClInclude Include="libs\imgui\include\imstb_truetype.h" />
+    <ClInclude Include="libs\rapidjson\allocators.h" />
+    <ClInclude Include="libs\rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="libs\rapidjson\document.h" />
+    <ClInclude Include="libs\rapidjson\encodedstream.h" />
+    <ClInclude Include="libs\rapidjson\encodings.h" />
+    <ClInclude Include="libs\rapidjson\filereadstream.h" />
+    <ClInclude Include="libs\rapidjson\filewritestream.h" />
+    <ClInclude Include="libs\rapidjson\fwd.h" />
+    <ClInclude Include="libs\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="libs\rapidjson\memorybuffer.h" />
+    <ClInclude Include="libs\rapidjson\memorystream.h" />
+    <ClInclude Include="libs\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="libs\rapidjson\pointer.h" />
+    <ClInclude Include="libs\rapidjson\prettywriter.h" />
+    <ClInclude Include="libs\rapidjson\rapidjson.h" />
+    <ClInclude Include="libs\rapidjson\reader.h" />
+    <ClInclude Include="libs\rapidjson\schema.h" />
+    <ClInclude Include="libs\rapidjson\stream.h" />
+    <ClInclude Include="libs\rapidjson\stringbuffer.h" />
+    <ClInclude Include="libs\rapidjson\uri.h" />
+    <ClInclude Include="libs\rapidjson\writer.h" />
     <ClInclude Include="libs\STB_Image\stb_image.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
     <ClInclude Include="src\Components\CCollider.h" />
     <ClInclude Include="src\Components\CGrid.h" />
+    <ClInclude Include="src\Components\CIdentifier.h" />
     <ClInclude Include="src\Components\CRigidBody.h" />
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
+    <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\ECS\ECS.h" />
+    <ClInclude Include="src\EntityFactory\EntityFactory.h" />
     <ClInclude Include="src\ECS\Types.h" />
     <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Editor\EditorWindow.h" />
@@ -216,16 +244,24 @@
     <ClInclude Include="src\Math\MathLib.h" />
     <ClInclude Include="src\Logger\Logger.h" />
     <ClInclude Include="src\PhysicsManager\PhysicsManager.h" />
+    <ClInclude Include="src\EventManager\Event.h" />
+    <ClInclude Include="src\EventManager\EventBus.h" />
+    <ClInclude Include="src\Events\KeyPressEvent.h" />
+    <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\Render\glhelper.h" />
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Systems\SCollision.h" />
     <ClInclude Include="src\Systems\SPhysics.h" />
+    <ClInclude Include="src\Serialisation\Mock_Serialisation.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\SceneManager.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\GLFW\lib-vc2022\glfw3.dll" />
+    <None Include="Scene\Mock_Entity.json" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\GLEW\glew32.lib" />
@@ -235,6 +271,9 @@
     <Library Include="libs\GLFW\lib-vc2022\glfw3_mt.lib" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Assets\scene1.txt" />
+    <Text Include="Assets\scene2.txt" />
+    <Text Include="Assets\scene3.txt" />
     <Text Include="Resources\test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

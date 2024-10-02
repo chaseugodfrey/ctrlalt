@@ -1,6 +1,6 @@
 #include "EditorWindow.h"
 
-namespace GameEditor
+namespace Editor
 {
 
 }
