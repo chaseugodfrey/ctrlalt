@@ -169,7 +169,7 @@ namespace Engine{
         glfwMakeContextCurrent(window);
 
         glViewport(0, 0, width, height);
-        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* /*window*/, int width, int height) {
             glViewport(0, 0, width, height);
             });
 
