@@ -13,6 +13,8 @@
 #include "../Components/CIdentifier.h"
 #include "../EntityFactory/EntityFactory.h"
 
+using namespace MathLib;
+
 namespace Scene {
 
 class Scene {
@@ -47,8 +49,8 @@ public:
                 float posX, posY, scaleX, scaleY, rotation;
                 is >> posX >> posY >> scaleX >> scaleY >> rotation;
                 entity.AddComponent<Component::CTransform>(
-                    glm::vec2(posX, posY),
-                    glm::vec2(scaleX, scaleY),
+                    vec2(posX, posY),
+                    vec2(scaleX, scaleY),
                     rotation
                 );
                 Logger::LogInfo("CTransform component added");
@@ -58,7 +60,7 @@ public:
             [](ECS::Entity& entity, std::istream& is) {
                 float velX, velY;
                 is >> velX >> velY;
-                entity.AddComponent<Component::CRigidBody>(glm::vec2(velX, velY));
+                entity.AddComponent<Component::CRigidBody>(vec2(velX, velY));
                 Logger::LogInfo("CRigidBody component added");
             });
 
@@ -246,12 +248,12 @@ public:
 
     void SaveDataToFile()
     {
-		sceneName[0] = std::tolower(sceneName[0]);
-        std::string filePath = "Assets/" + sceneName + ".txt";
+		sceneName[0] =  static_cast<char>(std::tolower(sceneName[0]));
+        std::string _path = "Assets/" + sceneName + ".txt";
 
-        std::ofstream file(filePath);
+        std::ofstream file(_path);
 		if (!file.is_open()) {
-			std::cerr << "Failed to open file: " << filePath << std::endl;
+			std::cerr << "Failed to open file: " << _path << std::endl;
 			return;
 		}
 
@@ -268,7 +270,7 @@ public:
 			file << std::endl;
         }
         file.close();
-		Logger::LogInfo("Saved " + std::to_string(sceneEntities.size()) + " entities to " + filePath);
+		Logger::LogInfo("Saved " + std::to_string(sceneEntities.size()) + " entities to " + _path);
     }
 
     //void Load() {

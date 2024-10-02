@@ -4,16 +4,18 @@
 #include <../libs/glm/glm.hpp> // implement our own
 #include "../Math/MathLib.h"
 
+using namespace MathLib;
+
 namespace Component {
 
 	
 	struct CTransform
 	{
-		MathLib::vec2 position;
-		MathLib::vec2 scale;
+		vec2 position;
+		vec2 scale;
 		double rotation;
 
-		CTransform(MathLib::vec2 position = MathLib::vec2(0, 0), MathLib::vec2 scale = MathLib::vec2(1, 1), double rotation = 0.0)
+		CTransform(vec2 position = vec2(0, 0), vec2 scale = vec2(1, 1), double rotation = 0.0)
 		{
 			this->position = position;
 			this->scale = scale;

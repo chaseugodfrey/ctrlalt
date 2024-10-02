@@ -18,7 +18,15 @@ namespace Input {
 
 
 	public:
-		enum InputState;
+
+		enum InputState {
+			RELEASE = GLFW_RELEASE,
+			PRESS = GLFW_PRESS,
+			REPEAT = GLFW_REPEAT,
+			TRIGGER // trigger turns ready when GLFW_RELEASE then can be triggered again.
+			// TOGGLE
+
+		};
 
 		Input_Container() = default; // dk if I want to initialise anything here.
 
@@ -50,14 +58,7 @@ namespace Input {
 		//ooo I want more special keystates, but it could do more of game logic.
 
 		//design InputState
-		enum InputState {
-			RELEASE = GLFW_RELEASE,
-			PRESS = GLFW_PRESS,
-			REPEAT = GLFW_REPEAT,
-			TRIGGER // trigger turns ready when GLFW_RELEASE then can be triggered again.
-			// TOGGLE
 
-		};
 
 
 	private:

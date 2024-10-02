@@ -305,7 +305,6 @@ namespace Render {
 		mdl.primitive_cnt = static_cast<GLuint>(idx_data.size() / 3);
 
 		return mdl;
-		CheckGLError();
 	}
 
 	//Everything here should be data driven for camera default values - todo next

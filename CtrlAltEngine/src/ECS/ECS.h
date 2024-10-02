@@ -193,8 +193,8 @@ namespace ECS
 			return data[index];
 		}
 
-		void Resize(int size) {
-			data.resize(size);
+		void Resize(int _size) {
+			data.resize(_size);
 		}
 
 		void Clear() {

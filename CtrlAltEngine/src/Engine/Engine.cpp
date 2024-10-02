@@ -23,6 +23,7 @@ m.lazaroo@digipen.edu
 
 #include "../Render/Render.h"
 
+using namespace MathLib;
 
 // DEFINITIONS
 // =========================================================================================================
@@ -105,7 +106,6 @@ namespace Engine{
     void Engine::Setup() {
 		// TODO: Create game objects...
 		registry->AddSystem<System::SMovement>();
-        //change this
         registry->AddSystem<System::SPhysics>();
         registry->AddSystem<System::SRender>();
         registry->AddSystem<System::SKeyboardControl>();
@@ -113,14 +113,14 @@ namespace Engine{
 
         ECS::Entity E_RabbitWhite = registry->CreateEntity();
         E_RabbitWhite.AddComponent<Render::CRenderable>();
-        E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2(1.f, 1.f), MathLib::vec2(2.f, 2.f), 60.f);
+        E_RabbitWhite.AddComponent<Component::CTransform>(vec2(1.f, 1.f), vec2(2.f, 2.f), 60.f);
         Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
         rComp.SetTexture("test");
         rComp.SetRenderLayer(Render::CRenderable::R_UI);
 
         ECS::Entity E_RabbitTest2 = registry->CreateEntity();
         E_RabbitTest2.AddComponent<Render::CRenderable>();
-        E_RabbitTest2.AddComponent<Component::CTransform>(MathLib::vec2(-1.f, -1.f), MathLib::vec2(2.f, 2.f), 60.f);
+        E_RabbitTest2.AddComponent<Component::CTransform>(vec2(-1.f, -1.f), vec2(2.f, 2.f), 60.f);
         Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
         rComp3.SetTexture("test");
         rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
@@ -137,9 +137,8 @@ namespace Engine{
     void Engine::Update() {
 
         eventBus->Reset();
-		registry->GetSystem<System::SMovement>().Update();
-        // CheckGLError();
-
+		//registry->GetSystem<System::SMovement>().Update();
+        registry->GetSystem<System::SPhysics>().Update();
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         registry->Update();
         CheckGLError();

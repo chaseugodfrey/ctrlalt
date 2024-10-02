@@ -22,9 +22,9 @@ namespace MathLib
 	class vec2
 	{
 	private:
-		float x, y;
 
 	public:
+		float x, y;
 		/******************************************************************************/
 		/*
 			A default contructor that initialises the vector as 0,0.
