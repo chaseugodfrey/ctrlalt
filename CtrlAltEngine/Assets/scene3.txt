@@ -1,4 +1,4 @@
-3
+7
 ID: 0
 CIdentifier Player
 CRigidBody 0 0
@@ -10,6 +10,26 @@ CRigidBody 0 0
 CTransform 0 0 1 1 0
 
 ID: 2
+CIdentifier Player
+CRigidBody 0 0
+CTransform 0 0 1 1 0
+
+ID: 3
+CIdentifier Player
+CRigidBody 0 0
+CTransform 0 0 1 1 0
+
+ID: 4
+CIdentifier Player
+CRigidBody 0 0
+CTransform 0 0 1 1 0
+
+ID: 5
+CIdentifier Player
+CRigidBody 0 0
+CTransform 0 0 1 1 0
+
+ID: 6
 CIdentifier Player
 CRigidBody 0 0
 CTransform 0 0 1 1 0

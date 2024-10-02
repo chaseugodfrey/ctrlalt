@@ -18,7 +18,8 @@ namespace Scene {
 class Scene {
 private:
     ECS::Registry* registry;
-	EntityFactory::EntityFactory entityFactory;
+    std::string filePath;
+    EntityFactory::EntityFactory entityFactory;
     std::vector<ECS::Entity> sceneEntities;
 	std::vector<std::pair<std::string, std::map<std::string, std::string>>> entityData;
     std::string sceneName;
@@ -29,8 +30,8 @@ private:
     std::map<std::string, ComponentDeserializer> componentDeserializers;
 
 public:
-    Scene(ECS::Registry* reg)
-        : registry(reg), isLoaded(false), isDataLoaded(false), entityFactory(reg) {
+    Scene(ECS::Registry* reg, const std::string& name, const std::string& path)
+        : registry(reg), isLoaded(false), filePath(path), sceneName(name),isDataLoaded(false), entityFactory(reg) {
         RegisterComponentDeserializers();
     }
 
@@ -139,42 +140,108 @@ public:
         componentDeserializers[typeName] = std::move(deserializer);
     }
 
-    void LoadDataFromFile(const std::string& filePath) {
-        if (isDataLoaded) return;
-
+    void LoadEntityData() {
         std::ifstream file(filePath);
         if (!file.is_open()) {
             std::cerr << "Failed to open file: " << filePath << std::endl;
             return;
         }
 
-        sceneEntities.clear();
+        entityData.clear();
+
         std::string line;
         int entityCount;
-        file >> entityCount; // Read the number of entities
+        file >> entityCount;
         std::getline(file, line); // Consume the newline
 
         for (int i = 0; i < entityCount; ++i) {
-            std::map<std::string, std::string> components;
             std::string entityId;
-            file >> line >> entityId; // Read "ID:" and the entity ID
+            file >> line >> entityId;
             std::getline(file, line); // Consume the newline
 
+            std::map<std::string, std::string> componentData;
 
             while (std::getline(file, line) && !line.empty()) {
                 std::istringstream iss(line);
-                std::string componentType, componentData;
+                std::string componentType;
                 iss >> componentType;
-                std::getline(iss, componentData);
-                components[componentType] = componentData;
+                std::string data = line.substr(componentType.length() + 1); // +1 for the space
+                componentData[componentType] = data;
             }
-            entityData.push_back({ entityId, components });
+
+            entityData.push_back({ entityId, componentData });
+            nextEntityID = std::max(nextEntityID, std::stoull(entityId) + 1);
         }
 
         file.close();
-        isDataLoaded = true;
-        Logger::LogInfo("Loaded " + std::to_string(sceneEntities.size()) + " entities from " + filePath);
+        Logger::LogInfo("Loaded data for " + std::to_string(entityData.size()) + " entities from " + filePath);
     }
+
+    void Load() {
+        if (isLoaded) {
+            Logger::LogInfo("Scene already loaded: " + sceneName);
+            return;
+        }
+
+        for (const auto& [entityId, components] : entityData) {
+            ECS::Entity entity = registry->CreateEntity();
+            sceneEntities.push_back(entity);
+
+            for (const auto& [componentType, componentData] : components) {
+                auto it = componentDeserializers.find(componentType);
+                if (it != componentDeserializers.end()) {
+                    std::istringstream iss(componentData);
+                    it->second(entity, iss);
+                }
+                else {
+                    Logger::LogInfo("Unknown component type: " + componentType);
+                }
+            }
+
+            registry->AddEntityToSystems(entity);
+        }
+
+        isLoaded = true;
+        Logger::LogInfo("Created " + std::to_string(sceneEntities.size()) + " entities for scene: " + sceneName);
+    }
+
+
+    //void LoadDataFromFile(const std::string& filePath) {
+    //    if (isDataLoaded) return;
+
+    //    std::ifstream file(filePath);
+    //    if (!file.is_open()) {
+    //        std::cerr << "Failed to open file: " << filePath << std::endl;
+    //        return;
+    //    }
+
+    //    sceneEntities.clear();
+    //    std::string line;
+    //    int entityCount;
+    //    file >> entityCount; // Read the number of entities
+    //    std::getline(file, line); // Consume the newline
+
+    //    for (int i = 0; i < entityCount; ++i) {
+    //        std::map<std::string, std::string> components;
+    //        std::string entityId;
+    //        file >> line >> entityId; // Read "ID:" and the entity ID
+    //        std::getline(file, line); // Consume the newline
+
+
+    //        while (std::getline(file, line) && !line.empty()) {
+    //            std::istringstream iss(line);
+    //            std::string componentType, componentData;
+    //            iss >> componentType;
+    //            std::getline(iss, componentData);
+    //            components[componentType] = componentData;
+    //        }
+    //        entityData.push_back({ entityId, components });
+    //    }
+
+    //    file.close();
+    //    isDataLoaded = true;
+    //    Logger::LogInfo("Loaded " + std::to_string(sceneEntities.size()) + " entities from " + filePath);
+    //}
 
     void SaveDataToFile()
     {
@@ -203,47 +270,47 @@ public:
 		Logger::LogInfo("Saved " + std::to_string(sceneEntities.size()) + " entities to " + filePath);
     }
 
-    void Load() {
-        if (isLoaded) {
-            Logger::LogInfo("Scene already loaded: " + sceneName);
-            return;
-        }
+    //void Load() {
+    //    if (isLoaded) {
+    //        Logger::LogInfo("Scene already loaded: " + sceneName);
+    //        return;
+    //    }
 
-        if (!isDataLoaded) {
-            Logger::LogInfo("Data not preloaded for scene: " + sceneName);
-            return;
-        }
+    //    if (!isDataLoaded) {
+    //        Logger::LogInfo("Data not preloaded for scene: " + sceneName);
+    //        return;
+    //    }
 
-        for (size_t i = 0; i < entityData.size(); ++i) {
-            const std::string& entityId = entityData[i].first;
-            const std::map<std::string, std::string>& components = entityData[i].second;
+    //    for (size_t i = 0; i < entityData.size(); ++i) {
+    //        const std::string& entityId = entityData[i].first;
+    //        const std::map<std::string, std::string>& components = entityData[i].second;
 
-            ECS::Entity entity = registry->CreateEntity();
-            sceneEntities.push_back(entity);
+    //        ECS::Entity entity = registry->CreateEntity();
+    //        sceneEntities.push_back(entity);
 
-            Logger::LogInfo("Creating entity " + entityId + " for scene: " + sceneName);
+    //        Logger::LogInfo("Creating entity " + entityId + " for scene: " + sceneName);
 
-            for (const auto& componentPair : components) {
-                const std::string& componentType = componentPair.first;
-                const std::string& componentData = componentPair.second;
+    //        for (const auto& componentPair : components) {
+    //            const std::string& componentType = componentPair.first;
+    //            const std::string& componentData = componentPair.second;
 
-                auto it = componentDeserializers.find(componentType);
-                if (it != componentDeserializers.end()) {
-                    std::istringstream dataStream(componentData);
-                    it->second(entity, dataStream);
-                    Logger::LogInfo("Added component " + componentType + " to entity " + entityId);
-                }
-                else {
-                    Logger::LogInfo("No deserializer found for component type: " + componentType);
-                }
-            }
+    //            auto it = componentDeserializers.find(componentType);
+    //            if (it != componentDeserializers.end()) {
+    //                std::istringstream dataStream(componentData);
+    //                it->second(entity, dataStream);
+    //                Logger::LogInfo("Added component " + componentType + " to entity " + entityId);
+    //            }
+    //            else {
+    //                Logger::LogInfo("No deserializer found for component type: " + componentType);
+    //            }
+    //        }
 
-            registry->AddEntityToSystems(entity);
-        }
+    //        registry->AddEntityToSystems(entity);
+    //    }
 
-        isLoaded = true;
-        Logger::LogInfo("Created " + std::to_string(sceneEntities.size()) + " entities for scene: " + sceneName);
-    }
+    //    isLoaded = true;
+    //    Logger::LogInfo("Created " + std::to_string(sceneEntities.size()) + " entities for scene: " + sceneName);
+    //}
 
     void Unload() {
         if (!isLoaded) return;
@@ -253,8 +320,6 @@ public:
             registry->Update();
         }
         sceneEntities.clear();
-        //entityData.clear();
-        nextEntityID = 0;
         isLoaded = false;
         Logger::LogInfo("Unloaded scene: " + sceneName);
     }

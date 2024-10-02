@@ -36,8 +36,8 @@ namespace Scene
 
 		void AddScene(const std::string& name, const std::string& filePath)
 		{
-			auto scene = std::make_unique<Scene>(registry);
-			scene->LoadDataFromFile(filePath);
+			auto scene = std::make_unique<Scene>(registry, name, filePath);
+			scene->LoadEntityData();
 			scenes[name] = std::move(scene);
 			Logger::LogInfo("Scene added: " + name);
 		}
@@ -52,33 +52,48 @@ namespace Scene
 			scenes.erase(scene);
 		}
 
-		void SwitchScene(const std::string& scene)
-		{
-
-			auto it = scenes.find(scene);
-			
-			if (it->second.get() == currentScene)
-			{
-				Logger::LogInfo("Scene already active: " + scene);
-				return;
-			}
-
-			if (it != scenes.end())
-			{
-				if(currentScene)
-				currentScene->Unload();
+		void SwitchScene(const std::string& sceneName) {
+			auto it = scenes.find(sceneName);
+			if (it != scenes.end()) {
+				if (currentScene)
+					currentScene->Unload();
 				currentScene = it->second.get();
-				currentScene->SetSceneName(scene);
-				if(!currentScene->IsLoaded())
 				currentScene->Load();
-				Logger::LogInfo("Switched to scene: " + scene);
+				Logger::LogInfo("Switched to scene: " + sceneName);
 				currentScene->DebugPrintEntityCount();
 			}
-			else
-			{
-				Logger::LogInfo("Error, no scene:" + scene);
+			else {
+				Logger::LogInfo("Error, no scene: " + sceneName);
 			}
 		}
+
+		//void SwitchScene(const std::string& scene)
+		//{
+
+		//	auto it = scenes.find(scene);
+		//	
+		//	if (it->second.get() == currentScene)
+		//	{
+		//		Logger::LogInfo("Scene already active: " + scene);
+		//		return;
+		//	}
+
+		//	if (it != scenes.end())
+		//	{
+		//		if(currentScene)
+		//		currentScene->Unload();
+		//		currentScene = it->second.get();
+		//		currentScene->SetSceneName(scene);
+		//		if(!currentScene->IsLoaded())
+		//		currentScene->LoadFromFile("Assets/" + scene + ".txt");
+		//		Logger::LogInfo("Switched to scene: " + scene);
+		//		currentScene->DebugPrintEntityCount();
+		//	}
+		//	else
+		//	{
+		//		Logger::LogInfo("Error, no scene:" + scene);
+		//	}
+		//}
 
 		void UpdateScene()
 		{
@@ -95,10 +110,6 @@ namespace Scene
 			return currentScene;
 		}
 
-		void LoadScene(const std::string& scenePath) {
-			currentScene->LoadDataFromFile(scenePath);
-			currentScene->Load(); // This adds entities to systems
-		}
 
 	};
 }
