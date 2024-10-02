@@ -14,7 +14,7 @@ muhammadrayan.b@digipen.edu
 namespace PhysicsManager
 {
 	//float g_dt = GLHelper::delta_time;
-	float g_dt = 0.001;
+	float g_dt = 0.001f;
 
 	void Move_over_time(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& time)
 	{
@@ -25,7 +25,7 @@ namespace PhysicsManager
 			float x_speed = dist.X() / time.X();
 
 			start.X() += x_speed * g_dt;
-			start.Y() += x_speed * g_dt;
+			start.Y() += y_speed * g_dt;
 
 			time.X() -= g_dt;
 			time.Y() -= g_dt;

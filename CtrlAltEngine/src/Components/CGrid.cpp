@@ -22,6 +22,7 @@ namespace Component
 		this->cell_height = cell_height;
 		this->num_row = num_row;
 		this->num_col = num_col;
+		this->align = align;
 	}
 
 

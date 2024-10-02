@@ -87,7 +87,7 @@ namespace MathLib
 	vec2 operator/(const vec2& lhs, int scalar)
 	{
 		vec2 tmp{ lhs };
-		tmp /= scalar;
+		tmp /= (float)scalar;
 		return tmp;
 	}
 	vec2& vec2::operator/=(const vec2& inv)
@@ -199,36 +199,32 @@ namespace MathLib
 
 	const float& vec2::operator[](int pos) const
 	{
-		if (pos < 0 || pos > 2)
+		if (pos < 0 || pos >= 2)
 			throw std::out_of_range("Index out of range");
 
 		if (pos == 0)
 			return x;
-		if (pos == 1)
-			return y;
+
+		return y;
 	}
 	float& vec2::operator[](int pos)
 	{
-		if (pos < 0 || pos > 2)
+		if (pos < 0 || pos >= 2)
 			throw std::out_of_range("Index out of range");
 
 		if (pos == 0)
 			return x;
-		if (pos == 1)
-			return y;
+
+		return y;
 	}
 
 	bool vec2::operator==(const vec2& rhs)
 	{
-		if (x == rhs.x && y == rhs.y)
-			return true;
-		return false;
+		return (x == rhs.x && y == rhs.y);
 	}
 	bool vec2::operator!=(const vec2& rhs)
 	{
-		if (x != rhs.x && y != rhs.y)
-			return true;
-		return false;
+		return (x != rhs.x && y != rhs.y);
 	}
 
 	vec2 vec2::operator-() const {
@@ -384,27 +380,27 @@ namespace MathLib
 
 	const float& vec3::operator[](int pos) const
 	{
-		if (pos < 0 || pos > 3)
+		if (pos < 0 || pos >= 3)
 			throw std::out_of_range("Index out of range");
 
 		if (pos == 0)
 			return x;
 		else if (pos == 1)
 			return y;
-		else if (pos == 2)
-			return z;
+
+		return z;
 	}
 	float& vec3::operator[](int pos)
 	{
-		if (pos < 0 || pos > 3)
+		if (pos < 0 || pos >= 3)
 			throw std::out_of_range("Index out of range");
 
 		if (pos == 0)
 			return x;
 		else if (pos == 1)
 			return y;
-		else if (pos == 2)
-			return z;
+
+		return z;
 	}
 
 	//modifier

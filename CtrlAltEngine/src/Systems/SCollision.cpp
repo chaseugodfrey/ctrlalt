@@ -204,6 +204,7 @@ namespace System
 				return false;
 			}
 		}
+		return true;
 	}
 
 	bool SCollision::CollisionIntersection_CircleLineSegment(const Component::Circle& circle,			//Circle data - input
