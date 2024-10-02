@@ -39,7 +39,7 @@ namespace System
 
 			PhysicsManager::Move_over_time(transform.position,end , time);
 
-			Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.X()) + ", " + std::to_string((int)transform.position.Y()) + ')');
+			Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.x) + ", " + std::to_string((int)transform.position.y) + ')');
 			//std::cout << transform.position << std::endl;
 		}
 	}

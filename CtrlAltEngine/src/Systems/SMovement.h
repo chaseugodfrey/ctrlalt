@@ -22,8 +22,8 @@ namespace System {
 				auto& transform = entity.GetComponent<Component::CTransform>();
 				const auto rigidBody = entity.GetComponent<Component::CRigidBody>();
 
-				transform.position.X() += rigidBody.vel.X();
-				transform.position.Y() += rigidBody.vel.Y();
+				transform.position.x += rigidBody.vel.x;
+				transform.position.y += rigidBody.vel.y;
 
 				//Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.x) + ", " + std::to_string((int)transform.position.y) + ')');
 			}

@@ -21,8 +21,6 @@ namespace MathLib
 	 /******************************************************************************/
 	class vec2
 	{
-	private:
-
 	public:
 		float x, y;
 		/******************************************************************************/
@@ -151,8 +149,6 @@ namespace MathLib
 			Accessors to get the x and y value of a vector.
 		 */
 		 /******************************************************************************/
-		const float& X() const;
-		const float& Y() const;
 		const float& operator[](int) const;
 
 		/******************************************************************************/
@@ -160,8 +156,6 @@ namespace MathLib
 			Modifiers to set the x and y value of a vector.
 		 */
 		 /******************************************************************************/
-		float& X();
-		float& Y();
 		float& operator[](int);
 
 		/******************************************************************************/
@@ -220,10 +214,9 @@ namespace MathLib
 	 /******************************************************************************/
 	class vec3
 	{
-	private:
+	public:
 		float x, y, z;
 
-	public:
 		/******************************************************************************/
 		/*
 			A default contructor that initialises the vector as 0,0.
@@ -323,9 +316,6 @@ namespace MathLib
 			Accessors to get the x and y and z value of a vector.
 		*/
 		/******************************************************************************/
-		float X() const;
-		float Y() const;
-		float Z() const;
 		const float& operator[](int) const;
 
 		/******************************************************************************/
@@ -333,9 +323,6 @@ namespace MathLib
 			Modifiers to set the x and y and z value of a vector.
 		*/
 		/******************************************************************************/
-		void X(float);
-		void Y(float);
-		void Z(float);
 		float& operator[](int);
 
 		/******************************************************************************/
