@@ -144,7 +144,7 @@ namespace Scene {
             Render::CRenderable& rComp = entity.GetComponent<Render::CRenderable>();
             rComp.SetTexture("test");
             sceneEntities.push_back(entity);
-          //  registry->AddEntityToSystems(entity);
+            registry->AddEntityToSystems(entity);
         }
 
    //     registry->Update();
@@ -157,9 +157,10 @@ namespace Scene {
         if (!isLoaded) return;
 
         for (auto& entity : sceneEntities) {
-            registry->KillEntity(entity); // does it decrement the counter
-            registry->Update();
+            /*registry->RemoveEntityFromSystems(entity)*/; // does it decrement the counter
+            //registry->Update();
         }
+        registry->ClearEntities();
         sceneEntities.clear();
         nextEntityID = 0; // this is meant for things to reset and count up
         // I think this scene's entity counter is different from Registry's entity counter
@@ -231,11 +232,11 @@ namespace Scene {
     void Scene::Update()
     {
         // SCENE 1
-        std::cout << sceneName << std::endl;
+        //std::cout << sceneName << std::endl;
 
         if (sceneName == "Scene1")
         {
-            std::cout << "im in scene 1" << std::endl;
+            //std::cout << "im in scene 1" << std::endl;
         }
 
         else if (sceneName == "Scene2")
@@ -266,19 +267,22 @@ namespace Scene {
         if (spawned)
             return;
 
-        std::cout << "test" << std::endl;
-        double max_obj = 4;
-        for (size_t i = 0; i < max_obj; i++)
+        ////std::cout << "test" << std::endl;
+        double max_obj = 2500;
+        for (double i = 0.0; i < max_obj; i++)
         {
-             ECS::Entity E_RabbitWhite = registry->CreateEntity();
-             E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
-             //E_RabbitWhite.AddComponent<Render::CRenderable>();
-             //Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
-             //rComp.SetTexture("test");
-             //rComp.SetRenderLayer(Render::CRenderable::R_UI);
+            //CreateEntity("Basic");
+            ECS::Entity E_RabbitWhite = registry->CreateEntity();
+            E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
+            //E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2(i, i), MathLib::vec2(1, 1), 0);
+            //std::cout << i << std::endl;
+            E_RabbitWhite.AddComponent<Render::CRenderable>();
+            Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
+            rComp.SetTexture("test");
+            rComp.SetRenderLayer(Render::CRenderable::R_UI);
 
-            //auto& transform = sceneEntities[i].GetComponent<Component::CTransform>();
-            //transform.position = MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5);
+
+            //DebugPrintEntityCount();
             if (i == max_obj - 1)
                 spawned = true;
         }

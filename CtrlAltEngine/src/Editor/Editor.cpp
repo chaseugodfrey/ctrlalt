@@ -192,7 +192,7 @@ namespace Editor
 
 				if (ImGui::BeginMenu("Create"))
 				{
-					ImGui::BeginDisabled();
+					//ImGui::BeginDisabled();
 
 					if (ImGui::MenuItem("Entity (WIP)"))
 					{
@@ -200,7 +200,7 @@ namespace Editor
 						//ECS::Entity entity = registry->CreateEntity();
 
 					}
-					ImGui::EndDisabled();
+					//ImGui::EndDisabled();
 					ImGui::EndMenu();
 				}
 
