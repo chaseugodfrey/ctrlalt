@@ -76,7 +76,7 @@ namespace Engine{
         sceneManager->AddScene("Scene1", "Assets/scene1.txt");
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
         sceneManager->AddScene("Scene3", "Assets/scene3.txt");
-        sceneManager->SwitchScene("Scene2");
+        sceneManager->SwitchScene("Scene1");
 
     }
 

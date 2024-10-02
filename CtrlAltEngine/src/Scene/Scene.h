@@ -185,19 +185,20 @@ public:
 
         for (const auto& [entityId, components] : entityData) {
             ECS::Entity entity = registry->CreateEntity();
-            sceneEntities.push_back(entity);
+            //Updating in scene does not imply updating in Registry
+            registry->Update();
 
             for (const auto& [componentType, componentData] : components) {
                 auto it = componentDeserializers.find(componentType);
                 if (it != componentDeserializers.end()) {
                     std::istringstream iss(componentData);
-                    it->second(entity, iss);
+                    it->second(entity, iss); // this updates component data
                 }
                 else {
                     Logger::LogInfo("Unknown component type: " + componentType);
                 }
             }
-
+            sceneEntities.push_back(entity);
             registry->AddEntityToSystems(entity);
         }
 
@@ -316,10 +317,13 @@ public:
         if (!isLoaded) return;
 
         for (auto& entity : sceneEntities) {
-            registry->KillEntity(entity);
+            registry->KillEntity(entity); // does it decrement the counter
             registry->Update();
         }
         sceneEntities.clear();
+        nextEntityID = 0; // this is meant for things to reset and count up
+        // I think this scene's entity counter is different from Registry's entity counter
+        
         isLoaded = false;
         Logger::LogInfo("Unloaded scene: " + sceneName);
     }

@@ -56,7 +56,7 @@ namespace Scene
 			auto it = scenes.find(sceneName);
 			if (it != scenes.end()) {
 				if (currentScene)
-					currentScene->Unload();
+				currentScene->Unload();
 				currentScene = it->second.get();
 				currentScene->Load();
 				Logger::LogInfo("Switched to scene: " + sceneName);

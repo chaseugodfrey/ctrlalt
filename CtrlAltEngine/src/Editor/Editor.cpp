@@ -180,21 +180,27 @@ namespace Editor
 				if (ImGui::BeginMenu("File"))
 				{
 					ImGui::MenuItem("Exit", NULL, &isPromptedToExit);
+
+					// DISABLE SAVE SCENE FOR NOW
+					//if (ImGui::MenuItem("Save Scene"))
+					//{
+					//	scene_manager->SaveScene();
+					//}
+
 					ImGui::EndMenu();
-					if (ImGui::MenuItem("Save Scene"))
-					{
-						scene_manager->SaveScene();
-					}
 				}
 
 				if (ImGui::BeginMenu("Create"))
 				{
-					if (ImGui::MenuItem("Entity"))
+					ImGui::BeginDisabled();
+
+					if (ImGui::MenuItem("Entity (WIP)"))
 					{
-						scene_manager->CreateEntityInScene("Player");
+						scene_manager->CreateEntityInScene("Basic");
 						//ECS::Entity entity = registry->CreateEntity();
 
 					}
+					ImGui::EndDisabled();
 					ImGui::EndMenu();
 				}
 

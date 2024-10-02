@@ -28,6 +28,7 @@ namespace EntityFactory
 			entity.AddComponent<Component::CTransform>();
 			entity.AddComponent<Component::CRigidBody>();
 			entity.AddComponent<Component::CIdentifier>("Player");
+			
 			return entity;
 		}
 		
