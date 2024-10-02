@@ -48,10 +48,10 @@ compatible with OpenGL 4.5 and doesn't support "old" OpenGL, has 32-bit RGBA,
 double-buffered color buffer, 24-bit depth buffer and 8-bit stencil buffer 
 with each buffer of size width x height pixels
 */
-bool GLHelper::init(GLint width, GLint height, std::string title) {
-  GLHelper::width = width;
-  GLHelper::height = height;
-  GLHelper::title = title;
+bool GLHelper::init(GLint _width, GLint _height, std::string _title) {
+  GLHelper::width = _width;
+  GLHelper::height = _height;
+  GLHelper::title = _title;
 
   // Part 1
   if (!glfwInit()) {
@@ -157,11 +157,12 @@ were held down
 This function is called when keyboard buttons are pressed.
 When the ESC key is pressed, the close flag of the window is set.
 */
-void GLHelper::key_cb(GLFWwindow *pwin, int key, int scancode, int action, int mod) {
+void GLHelper::key_cb(GLFWwindow *pwin, int key, int /*scancode*/, int action, int /*mod*/) {
   if (GLFW_PRESS == action) {
 #ifdef _DEBUG
     std::cout << "Key pressed" << std::endl;
 #endif
+
     if (GLFW_KEY_ESCAPE == key) {
 
         glfwSetWindowShouldClose(pwin, GLFW_TRUE);
@@ -232,7 +233,7 @@ were held down
 
 This function is called when mouse buttons are pressed.
 */
-void GLHelper::mousebutton_cb(GLFWwindow *pwin, int button, int action, int mod) {
+void GLHelper::mousebutton_cb(GLFWwindow */*pwin*/, int button, int action, int /*mod*/) {
   switch (button) {
   case GLFW_MOUSE_BUTTON_LEFT:
 #ifdef _DEBUG
@@ -278,7 +279,7 @@ new cursor y-coordinate, relative to the top edge of the client area
 This functions receives the cursor position, measured in screen coordinates but
 relative to the top-left corner of the window client area.
 */
-void GLHelper::mousepos_cb(GLFWwindow *pwin, double xpos, double ypos) {
+void GLHelper::mousepos_cb(GLFWwindow */*pwin*/, double xpos, double ypos) {
 #ifdef _DEBUG
   std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
 #endif
@@ -302,7 +303,7 @@ This function is called when the user scrolls, whether with a mouse wheel or
 touchpad gesture. Although the function receives 2D scroll offsets, a simple
 mouse scroll wheel, being vertical, provides offsets only along the Y-axis.
 */
-void GLHelper::mousescroll_cb(GLFWwindow *pwin, double xoffset, double yoffset) {
+void GLHelper::mousescroll_cb(GLFWwindow */*pwin*/, double xoffset, double yoffset) {
 #ifdef _DEBUG
   std::cout << "Mouse scroll wheel offset: ("
     << xoffset << ", " << yoffset << ")" << std::endl;
@@ -323,7 +324,7 @@ Human-readable description of the code
 The error callback receives a human-readable description of the error and
 (when possible) its cause.
 */
-void GLHelper::error_cb(int error, char const* description) {
+void GLHelper::error_cb(int /*error*/, char const* description) {
 #ifdef _DEBUG
   std::cerr << "GLFW error: " << description << std::endl;
 #endif
@@ -346,12 +347,12 @@ Height in pixels of new window size
 This function is called when the window is resized - it receives the new size
 of the window in pixels.
 */
-void GLHelper::fbsize_cb(GLFWwindow *ptr_win, int width, int height) {
+void GLHelper::fbsize_cb(GLFWwindow */*ptr_win*/, int _width, int _height) {
 #ifdef _DEBUG
   std::cout << "fbsize_cb getting called!!!" << std::endl;
 #endif
-  GLHelper::width = width;
-  GLHelper::height = height;
+  GLHelper::width = _width;
+  GLHelper::height = _height;
 }
 
 /*  _________________________________________________________________________*/

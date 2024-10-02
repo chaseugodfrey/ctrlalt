@@ -19,6 +19,7 @@ namespace Input {
 
 	public:
 		//design InputState
+
 		enum InputState {
 			RELEASE = GLFW_RELEASE,
 			PRESS = GLFW_PRESS,

@@ -1,12 +1,22 @@
-#ifndef EDITORWINDOW_H
-#define EDITORWINDOW_H
+/******************************************************************************/
+/*!
+\group  	CtrlAlt
+\file		EditorWindow.h
+\author 	Chase Rodrigues
+\par    	rodrigues.i@digipen.edu
+\date   	Sep 08, 2024
+\brief
 
+ */
+ /******************************************************************************/
 
+#ifndef EDITOR_WINDOW_H
+#define EDITOR_WINDOW_H
 
 #include "Editor_Includes.h"
 #include <string>
 
-namespace GameEditor
+namespace Editor
 {
 	class EditorWindow
 	{
@@ -19,4 +29,5 @@ namespace GameEditor
 		virtual ~EditorWindow() = default;
 	};
 }
-#endif // !
+
+#endif
