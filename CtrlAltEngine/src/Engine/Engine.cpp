@@ -10,7 +10,6 @@ m.lazaroo@digipen.edu
 // INCLUDES
 // =========================================================================================================
 #include "Engine.h"
-#include "../ECS/ECS.h"
 #include <iostream>
 #include "glm/glm.hpp"
 #include "../Components/CTransform.h"
@@ -18,6 +17,9 @@ m.lazaroo@digipen.edu
 #include "../Systems/SMovement.h"
 #include "../Systems/SPhysics.h"
 #include "../Math/MathLib.h"
+#include "../Systems/SKeyboardControl.h"
+#include "../Scene/Scene.h"
+#include "../Debug/Debugger.h"
 
 #include "../Render/Render.h"
 
@@ -26,13 +28,17 @@ m.lazaroo@digipen.edu
 // =========================================================================================================
 
 //Render::RenderPipeline renderSystem;
+Input::Input_Container global_input;// definition of the global variable 
+//Render::RenderPipeline renderSystem; // do not need this?
+Scene::Scene* sceneSystem;
+Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
 namespace Engine{
 
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
+    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false), main_window(nullptr) {
         Logger::LogInfo("Engine Created");
     }
 
@@ -40,7 +46,7 @@ namespace Engine{
     /// 
     /// </summary>
     Engine::~Engine() {
-        Logger::LogInfo("Engine Deleted");
+        //Logger::LogInfo("Engine Deleted");
     }
 
     /// <summary>
@@ -55,21 +61,42 @@ namespace Engine{
         glClearColor(1.f, 1.f, 0.f, 1.f);
         main_window = CreateGLFWwindow(windowWidth, windowHeight);
 
-        // INITIALIZE SYSTEMS HERE
-       // renderSystem.Init();
-        editor = new GameEditor::Editor();
-        editor->Initialize(main_window);
+
+        //## initialise input systems,
+        // key binds WASD, 1 rot, 2 scale.
+        //## my input system will be a static variable in header.
+        global_input.Init_System(main_window); 
+    
 
         isRunning = true;
+        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
+
+		
+        editor = new Editor::Editor();
+        editor->Initialize(main_window, sceneManager.get(),&frameTimer);
+
+
+        sceneManager->AddScene("Scene1", "Assets/scene1.txt");
+        sceneManager->AddScene("Scene2", "Assets/scene2.txt");
+        sceneManager->AddScene("Scene3", "Assets/scene3.txt");
+        sceneManager->SwitchScene("Scene1");
+
     }
 
     /// <summary>
     /// 
     /// </summary>
     void Engine::ProcessInput() {
+        for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+            int state = glfwGetKey(main_window, key);
+            if (state == GLFW_PRESS) {
+                eventBus->EmitEvent<KeyPressEvent>(key);
+            }
+        }
         if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
+        global_input.UpdateActionState(main_window); // able to dynamically change windows for keychecks
     }
 
     /// <summary>
@@ -81,14 +108,8 @@ namespace Engine{
         //change this
         registry->AddSystem<System::SPhysics>();
         registry->AddSystem<System::SRender>();
-
-        CheckGLError();
-		ECS::Entity E_Player = registry->CreateEntity();
-		ECS::Entity E_RabbitBlack = registry->CreateEntity();
-
-        //change this
-        E_Player.AddComponent<Component::CTransform>(MathLib::vec2(10.0, 30.0), MathLib::vec2(1.0, 1.0), 60.0);
-		E_Player.AddComponent<Component::CRigidBody>(MathLib::vec2(10.0, 30.0));
+        registry->AddSystem<System::SKeyboardControl>();
+        //sceneSystem->Init();
 
         ECS::Entity E_RabbitWhite = registry->CreateEntity();
         E_RabbitWhite.AddComponent<Render::CRenderable>();
@@ -115,12 +136,26 @@ namespace Engine{
     /// </summary>
     void Engine::Update() {
 
+        eventBus->Reset();
 		registry->GetSystem<System::SMovement>().Update();
-        CheckGLError();
+        // CheckGLError();
 
+        registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         registry->Update();
         CheckGLError();
         editor->Update();
+
+        frameTimer.update();
+        if(frameTimer.GetFrameCount() == 59)
+            std::cout << frameTimer.ReadFPS() << std::endl; //This is what's suppose to be on Editor huhu
+        
+        // if you want to use Input
+        /*
+        if (global_input.Action("action name")) // returns true if you want to do it
+        */
+        global_input.Action("KEY W");
+        //global_input.GetKeyReleased(GLFW_KEY_Z); // this is not trigger
+        //sceneManager->UpdateScene();
     }
 
     /// <summary>
@@ -148,6 +183,13 @@ namespace Engine{
     void Engine::Run() {
         Setup();
         while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
+			//Frame Timer
+            frameTimer.update();
+			
+            //Keyboard Input
+            glfwPollEvents();
+            
+			//Engine Update
             ProcessInput();
             Update();
             Render();

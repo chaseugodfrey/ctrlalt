@@ -1,0 +1,9 @@
+3
+ID: 0
+CRigidBody  0 0
+CTransform  0.0 0.0 500 500 0
+ID: 1
+CRigidBody  10 0
+CTransform  -500 -500 500 500 90
+ID: 2
+CTransform  500 500 500 500 0
