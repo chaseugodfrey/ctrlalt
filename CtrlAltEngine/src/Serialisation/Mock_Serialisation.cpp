@@ -1,8 +1,55 @@
+
+
+
 #include "Mock_Serialisation.h"
+
+
+/// <summary>
+    /// This is a Component serialisation of CTransform type.
+    /// </summary>
+    /// <param name="transform_comp"></param>
+    /// 
+    /// <param name="componentJson"></param>
+    /// We use the implementation for arrays
+    /// <param name="allocator"></param>
+    /// allocator is important with rapidJson
+void TSerialise(Component::CTransform const& transform_comp, rapidjson::Value& componentJson,
+    rapidjson::Document::AllocatorType& allocator);
+/// <summary>
+/// 
+/// </summary>
+/// <param name="entity_obj"></param>
+/// <param name="entity_data"></param>
+void RSerialise(Component::CRigidBody const& rigidbody_comp, rapidjson::Value& componentJson,
+    rapidjson::Document::AllocatorType& allocator);
+
+void TDeserialise(Component::CTransform& transform_comp, const rapidjson::Value& componentJson);
+void RDeserialise(Component::CRigidBody& rigidbody_comp, const rapidjson::Value& componentJson);
+
+
+/// <summary>
+/// This is a Entity serialisation.
+/// </summary>
+/// <param name="entity_obj"></param>
+/// To get Entity's data
+/// <param name="entity_array"></param>
+/// We use the implementation for arrays
+/// <param name="base_document"></param>
+/// this is to get the 
+void ESerialise(ECS::Entity& entity_obj, rapidjson::Value& entity_array, rapidjson::Document& base_document);
+/// <summary>
+/// This is a Entity Deserialisation.
+/// </summary>
+/// <param name="entity_obj"></param>
+/// To get Entity's data
+/// <param name="entity_data"></param>
+/// This is a Value of type kObject.
+void EDeserialise(ECS::Entity& entity_obj, const rapidjson::Value& entity_data);
+
 
 using namespace Serialisation;
 
-void Serialise(Component::CTransform const& transform_comp, rapidjson::Value& componentJson, rapidjson::Document::AllocatorType& allocator)
+void TSerialise(Component::CTransform const& transform_comp, rapidjson::Value& componentJson, rapidjson::Document::AllocatorType& allocator)
 {
     // abstraction of json to add members
     // Add the transform data to the JSON object
@@ -19,7 +66,7 @@ void Serialise(Component::CTransform const& transform_comp, rapidjson::Value& co
 
 }
 
-void Serialise(Component::CRigidBody const& rigidbody_comp, rapidjson::Value& componentJson, rapidjson::Document::AllocatorType& allocator)
+void RSerialise(Component::CRigidBody const& rigidbody_comp, rapidjson::Value& componentJson, rapidjson::Document::AllocatorType& allocator)
 {
     // abstraction of json to add members
     // Add the transform data to the JSON object
@@ -34,7 +81,7 @@ void Serialise(Component::CRigidBody const& rigidbody_comp, rapidjson::Value& co
 
 }
 
-void Deserialise(Component::CTransform& transform_comp, const rapidjson::Value& componentJson)
+void TDeserialise(Component::CTransform& transform_comp, const rapidjson::Value& componentJson)
 {
     transform_comp.position.x = componentJson["pos_x"].GetFloat();
     transform_comp.position.y = componentJson["pos_y"].GetFloat();
@@ -43,14 +90,14 @@ void Deserialise(Component::CTransform& transform_comp, const rapidjson::Value& 
     transform_comp.rotation = componentJson["rot"].GetFloat();
 }
 
-void Deserialise(Component::CRigidBody& rigidbody_comp, const rapidjson::Value& componentJson)
+void RDeserialise(Component::CRigidBody& rigidbody_comp, const rapidjson::Value& componentJson)
 {
     rigidbody_comp.vel.x = componentJson["vel_x"].GetFloat();
     rigidbody_comp.vel.y = componentJson["vel_y"].GetFloat();
 }
 
 
-void Serialise(ECS::Entity& entity_obj, rapidjson::Value& entity_array, rapidjson::Document& base_document) {
+void ESerialise(ECS::Entity& entity_obj, rapidjson::Value& entity_array, rapidjson::Document& base_document) {
 
     rapidjson::Document::AllocatorType& allocator = base_document.GetAllocator();
     rapidjson::Value entity_data(rapidjson::kObjectType); // this is the root object.
@@ -59,7 +106,7 @@ void Serialise(ECS::Entity& entity_obj, rapidjson::Value& entity_array, rapidjso
     //creating a the object member // it is a Value. 
     rapidjson::Value transform_data(rapidjson::kObjectType);
     auto transform_comp = entity_obj.GetComponent<Component::CTransform>();
-    Serialise(transform_comp, transform_data, allocator);
+    TSerialise(transform_comp, transform_data, allocator);
 
     // close off
     entity_data.AddMember("CTransform", transform_data, allocator); // i used auto return type.
@@ -68,7 +115,7 @@ void Serialise(ECS::Entity& entity_obj, rapidjson::Value& entity_array, rapidjso
     //creating a the object member // it is a Value. 
     rapidjson::Value rigidbody_data(rapidjson::kObjectType);
     auto rigidbody_comp = entity_obj.GetComponent<Component::CRigidBody>(); 
-    Serialise(rigidbody_comp, rigidbody_data, allocator); 
+    RSerialise(rigidbody_comp, rigidbody_data, allocator);
 
     // close off
     entity_data.AddMember("CRigidBody", transform_data, allocator); // i used auto return type.
@@ -80,7 +127,7 @@ void Serialise(ECS::Entity& entity_obj, rapidjson::Value& entity_array, rapidjso
 
 
 
-void Deserialise(ECS::Entity& entity_obj, const rapidjson::Value& entity_data) {
+void EDeserialise(ECS::Entity& entity_obj, const rapidjson::Value& entity_data) {
 
 
 
@@ -99,12 +146,12 @@ void Deserialise(ECS::Entity& entity_obj, const rapidjson::Value& entity_data) {
     // I may send in the document to comp deserialisation if I need multiple object values.
     const rapidjson::Value& transform_data = entity_data["CTransform"];
     auto transform_comp = entity_obj.GetComponent<Component::CTransform>(); 
-    Deserialise(transform_comp, transform_data); 
+    TDeserialise(transform_comp, transform_data); 
 
 
     const rapidjson::Value& rigidbody_data = entity_data["CRigidBody"]; 
     auto rigidbody_comp = entity_obj.GetComponent<Component::CRigidBody>();
-    Deserialise(rigidbody_comp, rigidbody_data); 
+    RDeserialise(rigidbody_comp, rigidbody_data);
    
 
 }
@@ -117,7 +164,7 @@ Scene_Serialiser::Scene_Serialiser() {
 
 
 // what to do
-void Scene_Serialiser::Serialise(ECS::Registry* registry) {
+void Scene_Serialiser::Serialise(ECS::Registry* registry, std::vector<ECS::Entity> entities) { 
 
     rapidjson::Value entity_array(rapidjson::kArrayType);
 
@@ -129,13 +176,18 @@ void Scene_Serialiser::Serialise(ECS::Registry* registry) {
     //entity.Serialise(entity_array, this->base_document); // my entity cannot be const?
 
     //this->base_document.AddMember("Entity_Array", entity_array, this->base_document.GetAllocator());
+    for (ECS::Entity x : entities) 
+    {
+        ESerialise(x, entity_array, this->base_document);  
+        
+    }
 }
 
 
 void Scene_Serialiser::Write_To_File(const char* filename) {
     // waiting to transfer onto json file.
     FILE* out_file_stream;
-    fopen_s(&out_file_stream, filename, "w"); // orh it is not buffer
+    fopen_s(&out_file_stream, filename, "w"); // orh it is not buffer  
     if (out_file_stream == NULL)
     {
         std::cout << "file cannot be open, check again." << filename << std::endl;
@@ -154,7 +206,7 @@ void Scene_Serialiser::Write_To_File(const char* filename) {
 
     //clean
     delete []writeBuffer;
-    fclose(out_file_stream);
+    fclose(out_file_stream); 
 
 }
 
@@ -170,7 +222,7 @@ void Scene_Serialiser::Deserialise(ECS::Registry* registry) {
             // Create entity
             ECS::Entity entity = registry->CreateEntity();
             // Deserialise with json::Value into ECS::Entity.
-            ::Deserialise(entity, entity_data); 
+            EDeserialise(entity, entity_data);  
         }
 
     }

@@ -6,7 +6,7 @@
 #include <ctime>
 #include "../Editor/Editor.h"
 
-//std::vector<LogEntry> Logger::messages{};
+std::vector<LogEntry> Logger::messages;
 //https://en.cppreference.com/w/c/chrono/localtime 
 std::string Logger::CurrentDateTimeToString() {
     std::time_t t = std::time(nullptr);

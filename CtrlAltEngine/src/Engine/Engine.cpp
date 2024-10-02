@@ -97,7 +97,7 @@ namespace Engine{
         if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
-        global_input.UpdateActionState(main_window); // able to dynamically change windows for keychecks
+        global_input.Update(main_window); // able to dynamically change windows for keychecks
     }
 
     /// <summary>

@@ -7,7 +7,7 @@
 
 //static class variables
 namespace Input {
-	float Input_Container::mouse_device_coord[2]{};
+	double Input_Container::mouse_device_coord[2]{};
 }
 
 
@@ -20,11 +20,12 @@ namespace Input {
 	{
 		this->currentWindow = ptr_window;
 
-		// would need these 3 callbacks for now,
-		// should i have a function when window changes?
-		glfwSetKeyCallback(this->currentWindow, Input_Container::key_cb);  
-		glfwSetMouseButtonCallback(this->currentWindow, Input_Container::mousebutton_cb); 
-		glfwSetCursorPosCallback(this->currentWindow, Input_Container::mousepos_cb); 
+		// not necessary for now.
+		//// would need these 3 callbacks for now,
+		//// should i have a function when window changes?
+		//glfwSetKeyCallback(this->currentWindow, Input_Container::key_cb);  
+		//glfwSetMouseButtonCallback(this->currentWindow, Input_Container::mousebutton_cb); 
+		//glfwSetCursorPosCallback(this->currentWindow, Input_Container::mousepos_cb); 
 
 
 		this->Init_Add_Keybind("KEY W", GLFW_KEY_W, Input::Input_Container::PRESS); 
@@ -36,7 +37,7 @@ namespace Input {
 		this->Init_Add_Keybind("KEY 2", GLFW_KEY_2, Input::Input_Container::PRESS);
 
 		this->Init_Add_Keybind("KEY SPACE", GLFW_KEY_SPACE, Input::Input_Container::TRIGGER);
-		this->Init_Add_Keybind("MOUSE LEFT", GLFW_MOUSE_BUTTON_LEFT, Input::Input_Container::PRESS);
+		//this->Init_Add_Keybind("MOUSE LEFT", GLFW_MOUSE_BUTTON_LEFT, Input::Input_Container::PRESS);
 
 	}
 
@@ -119,9 +120,10 @@ namespace Input {
 			if (this->actionMap[action_name].actionState) {
 				std::string Input_debug_string = action_name + " is to occur! \n";
 				std::cout << Input_debug_string;
+				return true; // true means found the action_name
 			}
 
-			return true; // true means found the action_name
+			return false; // false means don't do the action.
 		}
 		else {
 			// no existing action_name in map;
@@ -144,6 +146,30 @@ namespace Input {
 		std::cout << key << " Key is released" << std::endl;
 		return glfwGetKey(this->currentWindow, key);
 	}
+
+
+	bool Input_Container::GetMouseLeft()
+	{
+		return glfwGetMouseButton(this->currentWindow, GLFW_MOUSE_BUTTON_LEFT);
+	}
+
+	bool Input_Container::GetMouseRight()
+	{
+		return glfwGetMouseButton(this->currentWindow, GLFW_MOUSE_BUTTON_RIGHT);
+	}
+
+	void Input_Container::GetMousePosDevice(double& xpos, double& ypos)
+	{
+		glfwGetCursorPos(this->currentWindow, &xpos, &ypos);
+	}
+
+
+	void Input_Container::Update(GLFWwindow* ptr_window)
+	{
+		this->UpdateActionState(ptr_window);
+		this->GetMousePosDevice(this->mouse_device_coord[0], this->mouse_device_coord[1]);
+	}
+
 
 	//update in glfw callback.
 	void Input_Container::UpdateActionState(GLFWwindow* ptr_window)
@@ -194,132 +220,134 @@ namespace Input {
 
 }// end of namespace for Input , Input_container functionality
 
-
-
-
-namespace Input {
-	/*  _________________________________________________________________________*/
-	/*! key_cb
-
-	@param GLFWwindow*
-	Handle to window that is receiving event
-
-	@param int
-	the keyboard key that was pressed or released
-
-	@parm int
-	Platform-specific scancode of the key
-
-	@parm int
-	GLFW_PRESS, GLFW_REPEAT or GLFW_RELEASE
-	action will be GLFW_KEY_UNKNOWN if GLFW lacks a key token for it,
-	for example E-mail and Play keys.
-
-	@parm int
-	bit-field describing which modifier keys (shift, alt, control)
-	were held down
-
-	@return none
-
-	This function is called when keyboard buttons are pressed.
-	When the ESC key is pressed, the close flag of the window is set.
-	*/
-	void Input_Container::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
-		if (GLFW_PRESS == action) {
-//#ifdef _DEBUG
-//			std::cout << "Key pressed" << std::endl;
-//#endif
-		}
-		else if (GLFW_REPEAT == action) {
-//#ifdef _DEBUG
-//			std::cout << "Key repeatedly pressed" << std::endl;
-//#endif
-		}
-		else if (GLFW_RELEASE == action) {
-//#ifdef _DEBUG
-//			std::cout << "Key released" << std::endl;
-//#endif
-		}
-
-		//if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
-		//	glfwSetWindowShouldClose(pwin, GLFW_TRUE);
-		//}
-	}
-
-	/*  _________________________________________________________________________*/
-	/*! mousebutton_cb
-
-	@param GLFWwindow*
-	Handle to window that is receiving event
-
-	@param int
-	the mouse button that was pressed or released
-	GLFW_MOUSE_BUTTON_LEFT and GLFW_MOUSE_BUTTON_RIGHT specifying left and right
-	mouse buttons are most useful
-
-	@parm int
-	action is either GLFW_PRESS or GLFW_RELEASE
-
-	@parm int
-	bit-field describing which modifier keys (shift, alt, control)
-	were held down
-
-	@return none
-
-	This function is called when mouse buttons are pressed.
-	*/
-	void Input_Container::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
-		switch (button) {
-		case GLFW_MOUSE_BUTTON_LEFT:
-//#ifdef _DEBUG
-//			std::cout << "Left mouse button ";
-//#endif
-			break;
-		case GLFW_MOUSE_BUTTON_RIGHT:
-//#ifdef _DEBUG
-//			std::cout << "Right mouse button ";
-//#endif
-			break;
-		}
-		switch (action) {
-		case GLFW_PRESS:
-//#ifdef _DEBUG
-//			std::cout << "pressed!!!" << std::endl;
-//#endif
-			break;
-		case GLFW_RELEASE:
-//#ifdef _DEBUG
-//			std::cout << "released!!!" << std::endl;
-//#endif
-			break;
-		}
-	}
-
-	/*  _________________________________________________________________________*/
-	/*! mousepos_cb
-
-	@param GLFWwindow*
-	Handle to window that is receiving event
-
-	@param double
-	new cursor x-coordinate, relative to the left edge of the client area
-
-	@param double
-	new cursor y-coordinate, relative to the top edge of the client area
-
-	@return none
-
-	This functions receives the cursor position, measured in screen coordinates but
-	relative to the top-left corner of the window client area.
-	*/
-	void Input_Container::mousepos_cb(GLFWwindow* pwin, double xpos, double ypos) {
-//#ifdef _DEBUG
-//		std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
-//#endif
-
-		Input_Container::mouse_device_coord[0] = (float)xpos; 
-		Input_Container::mouse_device_coord[1] = (float)ypos; 
-		 
-	}
-}// end of namespace for callback functions
+//
+//namespace GraveYard {
+//
+//
+//	namespace Input {
+//		/*  _________________________________________________________________________*/
+//		/*! key_cb
+//
+//		@param GLFWwindow*
+//		Handle to window that is receiving event
+//
+//		@param int
+//		the keyboard key that was pressed or released
+//
+//		@parm int
+//		Platform-specific scancode of the key
+//
+//		@parm int
+//		GLFW_PRESS, GLFW_REPEAT or GLFW_RELEASE
+//		action will be GLFW_KEY_UNKNOWN if GLFW lacks a key token for it,
+//		for example E-mail and Play keys.
+//
+//		@parm int
+//		bit-field describing which modifier keys (shift, alt, control)
+//		were held down
+//
+//		@return none
+//
+//		This function is called when keyboard buttons are pressed.
+//		When the ESC key is pressed, the close flag of the window is set.
+//		*/
+//		void Input_Container::key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod) {
+//			if (GLFW_PRESS == action) {
+//				//#ifdef _DEBUG
+//				//			std::cout << "Key pressed" << std::endl;
+//				//#endif
+//			}
+//			else if (GLFW_REPEAT == action) {
+//				//#ifdef _DEBUG
+//				//			std::cout << "Key repeatedly pressed" << std::endl;
+//				//#endif
+//			}
+//			else if (GLFW_RELEASE == action) {
+//				//#ifdef _DEBUG
+//				//			std::cout << "Key released" << std::endl;
+//				//#endif
+//			}
+//
+//			//if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action) {
+//			//	glfwSetWindowShouldClose(pwin, GLFW_TRUE);
+//			//}
+//		}
+//
+//		/*  _________________________________________________________________________*/
+//		/*! mousebutton_cb
+//
+//		@param GLFWwindow*
+//		Handle to window that is receiving event
+//
+//		@param int
+//		the mouse button that was pressed or released
+//		GLFW_MOUSE_BUTTON_LEFT and GLFW_MOUSE_BUTTON_RIGHT specifying left and right
+//		mouse buttons are most useful
+//
+//		@parm int
+//		action is either GLFW_PRESS or GLFW_RELEASE
+//
+//		@parm int
+//		bit-field describing which modifier keys (shift, alt, control)
+//		were held down
+//
+//		@return none
+//
+//		This function is called when mouse buttons are pressed.
+//		*/
+//		void Input_Container::mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod) {
+//			switch (button) {
+//			case GLFW_MOUSE_BUTTON_LEFT:
+//				//#ifdef _DEBUG
+//				//			std::cout << "Left mouse button ";
+//				//#endif
+//				break;
+//			case GLFW_MOUSE_BUTTON_RIGHT:
+//				//#ifdef _DEBUG
+//				//			std::cout << "Right mouse button ";
+//				//#endif
+//				break;
+//			}
+//			switch (action) {
+//			case GLFW_PRESS:
+//				//#ifdef _DEBUG
+//				//			std::cout << "pressed!!!" << std::endl;
+//				//#endif
+//				break;
+//			case GLFW_RELEASE:
+//				//#ifdef _DEBUG
+//				//			std::cout << "released!!!" << std::endl;
+//				//#endif
+//				break;
+//			}
+//		}
+//
+//		/*  _________________________________________________________________________*/
+//		/*! mousepos_cb
+//
+//		@param GLFWwindow*
+//		Handle to window that is receiving event
+//
+//		@param double
+//		new cursor x-coordinate, relative to the left edge of the client area
+//
+//		@param double
+//		new cursor y-coordinate, relative to the top edge of the client area
+//
+//		@return none
+//
+//		This functions receives the cursor position, measured in screen coordinates but
+//		relative to the top-left corner of the window client area.
+//		*/
+//		void Input_Container::mousepos_cb(GLFWwindow* pwin, double xpos, double ypos) {
+//			//#ifdef _DEBUG
+//			//		std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
+//			//#endif
+//
+//			Input_Container::mouse_device_coord[0] = (float)xpos;
+//			Input_Container::mouse_device_coord[1] = (float)ypos;
+//
+//		}
+//	}// end of namespace for callback functions
+//}
 

@@ -46,13 +46,22 @@ namespace Input {
 		bool Action(std::string);
 
 		// update loop 
+		void Update(GLFWwindow*);
+
 		void UpdateActionState(GLFWwindow*);
 
+		// calling function.
 		bool GetKeyDown(Key);
 
-		//bool GetKeyTriggered(Key);  // if i want to use the glfw callback , I will a messaging system.
+		//bool GetKeyTriggered(Key);  // if i want to use the glfw callback , It will be a messaging system.
 
 		bool GetKeyReleased(Key);
+
+		bool GetMouseLeft();
+
+		bool GetMouseRight();
+
+		void GetMousePosDevice(double& xpos, double& ypos);  
 
 
 		// a wrapper for GetKeyState -- WINAPI
@@ -64,9 +73,9 @@ namespace Input {
 
 	private:
 
-		static void key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod); 
-		static void mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod);
-		static void mousepos_cb(GLFWwindow* pwin, double xpos, double ypos);
+		//static void key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod); 
+		//static void mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod);
+		//static void mousepos_cb(GLFWwindow* pwin, double xpos, double ypos);
 
 
 		struct KeyData {
@@ -93,7 +102,7 @@ namespace Input {
 			bool actionState;
 			bool keyStatePrev; // or this can be a secondary boolean    // true pressed, // false released.
 		};
-		static float mouse_device_coord[2]; // mouse.
+		static double mouse_device_coord[2]; // mouse.
 
 
 		// or I can combine Key and InputState to be like a pair or a struct.
