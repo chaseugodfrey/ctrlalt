@@ -150,6 +150,7 @@ namespace Render {
 		return target_window;
 	}
 
+	//Setups for render pipeline if required
 	void RenderPipeline::StartDraw() {
 		CheckGLError();
 		SetTargetAsCurrent();
@@ -163,6 +164,7 @@ namespace Render {
 		CheckGLError();
 	}
 
+	//Draw an individual render component
 	void RenderPipeline::Draw(CRenderable const& renderable, glm::mat3 const& tform) {
 		CheckGLError();
 		GLSLShader& shdr_pgm = (*renderable.shader_handle).second;
@@ -222,6 +224,44 @@ namespace Render {
 
 		shdr_pgm.UnUse();
 		CheckGLError();
+	}
+
+	//Draw a single line
+	void RenderPipeline::DrawLine(glm::mat3 const& tform, glm::vec4 color, GLModel const& mdl, GLSLShader& shdr_pgm) {
+		//say which shdr to use now
+		shdr_pgm.Use();
+		//say which vao to use for pipeline
+		glBindVertexArray(mdl.vao_ID);
+
+		//Add modulate color, for now 1, 1
+		GLuint uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uColor");
+		CheckGLError();
+		if (uniform_var_loc >= 0) {
+			glUniform4f(uniform_var_loc, color[0], color[1], color[2], color[3]);
+			CheckGLError();
+		}
+		else {
+			std::cout << "Uniform Variable doesn't exist!!!\n";
+			std::exit(EXIT_FAILURE);
+		}
+		CheckGLError();
+
+		//Upload xform mtx
+		uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uModel_to_NDC");
+		if (uniform_var_loc >= 0) {
+			//put value of matrix in it
+			glUniformMatrix3fv(uniform_var_loc, 1, GL_FALSE, glm::value_ptr(tform));
+		}
+		else {
+			std::cout << "Uniform Variable doesn't exist!!!\n";
+			std::exit(EXIT_FAILURE);
+		}
+		CheckGLError();
+
+		glDrawArrays(mdl.primitive_type, 0, mdl.draw_cnt);
+
+		glBindVertexArray(0);
+		shdr_pgm.UnUse();
 	}
 
 	//Cleanup any resources allocated
@@ -306,6 +346,35 @@ namespace Render {
 
 		return mdl;
 		CheckGLError();
+	}
+
+	GLModel RenderPipeline::LoadModel_Line() {
+		std::vector<glm::vec2> pos_vtx{
+			glm::vec2{0.f,0.f}, glm::vec2{1.f,0.f}
+		};
+		//Create model
+		GLModel mdl;
+
+		//Create vbo here
+		glCreateBuffers(1, &mdl.vbo_ID);
+		//not nullptr cuz ur directly transfering the data into buffer, if nullptr need to use glNamedBufferSubData
+		glNamedBufferStorage(mdl.vbo_ID, sizeof(glm::vec2) * pos_vtx.size(), pos_vtx.data(), GL_DYNAMIC_STORAGE_BIT);
+
+		//Setup vao
+		glCreateVertexArrays(1, &mdl.vao_ID);
+		glEnableVertexArrayAttrib(mdl.vao_ID, 0);	//use slot 0
+		glVertexArrayVertexBuffer(mdl.vao_ID, 0, mdl.vbo_ID, 0, sizeof(glm::vec2));	//use binding index 0, vbo, start from 0 bytes from memory, each ele sizeof vec2
+		glVertexArrayAttribFormat(mdl.vao_ID, 0, 2, GL_FLOAT, GL_FALSE, 0);
+		glVertexArrayAttribBinding(mdl.vao_ID, 0, 0);
+
+		//unbind
+		glBindVertexArray(0);
+
+		mdl.primitive_type = GL_LINES;
+		//i guess it cant implictly type cast in static func? weird error not too sure
+		mdl.draw_cnt = 2;
+		mdl.primitive_cnt = 1;
+		return mdl;
 	}
 
 	//Everything here should be data driven for camera default values - todo next
@@ -429,7 +498,14 @@ namespace System {
 			std::make_pair(GL_VERTEX_SHADER, vtx_shaders[0].string()),
 			std::make_pair(GL_FRAGMENT_SHADER, frg_shaders[0].string()) };
 		shader_pgm.CompileLinkValidate(shdr_files);
-		shader_map.insert({ "default", std::move(shader_pgm) });
+		shader_map.insert({ "default", shader_pgm });
+
+		GLSLShader shader_pgm2;
+		std::vector<std::pair<GLenum, std::string>> shdr_files2{
+			std::make_pair(GL_VERTEX_SHADER, vtx_shaders[1].string()),
+			std::make_pair(GL_FRAGMENT_SHADER, frg_shaders[1].string()) };
+		shader_pgm2.CompileLinkValidate(shdr_files2);
+		shader_map.insert({ "PlainColor", shader_pgm2 });
 
 		LoadDefaults();
 		CheckGLError();
@@ -476,10 +552,10 @@ namespace System {
 
 		Logger::LogInfo("Default Quad");
 		std::vector<Render::GLVertStruct> pos_vtx{
-			{ glm::vec2(-.5f, -.5f),  glm::vec2(0.f, 0.f)},
-			{ glm::vec2(.5f, -.5f),	glm::vec2(1.f, 0.f)},
-			{ glm::vec2(.5f, .5f),	glm::vec2(1.f,1.f)},
-			{ glm::vec2(-.5f, .5f),	glm::vec2(0.f,1.f)}
+			{ glm::vec2(-.5f, -.5f),  glm::vec2(0.f, 1.f)},
+			{ glm::vec2(.5f, -.5f),	glm::vec2(1.f, 1.f)},
+			{ glm::vec2(.5f, .5f),	glm::vec2(1.f,0.f)},
+			{ glm::vec2(-.5f, .5f),	glm::vec2(0.f,0.f)}
 		};
 
 		std::vector<GLushort> idx_vtx{
@@ -488,8 +564,11 @@ namespace System {
 		};
 		Render::GLModel mdl = render_pipeline.LoadModel_Triangles(pos_vtx, idx_vtx);
 		model_map.insert({ "default", mdl });
-		Logger::LogInfo("Finished defaults");
 
+		Render::GLModel line = render_pipeline.LoadModel_Line();
+		model_map.insert({ "line", line });
+
+		Logger::LogInfo("Finished defaults");
 		CheckGLError();
 	}
 
@@ -500,6 +579,7 @@ namespace System {
 		render_pipeline.StartDraw();
 		//Create a copy of the array because entity vector is used for ecs indexing
 		std::vector<ECS::Entity> entity_copy = GetEntities();
+		//sorting every frame kinda L
 		std::sort(entity_copy.begin(), entity_copy.end(), Render::RenderSort);
 		for (ECS::Entity const& entity : entity_copy)
 		{
@@ -556,14 +636,62 @@ namespace System {
 				renderable.compiled = true;
 			}
 			render_pipeline.Draw(renderable, tform_mtx);
-			//render_pipeline.Draw(renderable);
-			//Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.x) + ", " + std::to_string((int)transform.position.y) + ')');
+
+			//Draw debug info if needed
+			if (draw_debug) {
+				render_pipeline.DrawLine(tform_mtx, { 0.f,0.f,0.f,1.f }, model_map["line"], shader_map["PlainColor"]);
+			}
 		}
 
+		DrawLine({ 0.f,0.f }, { 2.5f,-2.5f });
 
 		render_pipeline.FinishDraw();
 
 		CheckGLError();
+	}
+
+	//Draws a single line from start to end with color
+	void SRender::DrawLine(glm::vec2 start, glm::vec2 end, glm::vec4 color) {
+		//Length of line
+		GLfloat length = glm::length(end - start);
+		//Start position is start
+
+		//Angle between 1,0 and end-start
+		glm::vec2 line = glm::normalize(end - start);
+		GLfloat dot = glm::dot(line, { 1.f,0.f });
+		GLfloat angle = acosf(dot);
+		//Use inward normal to determine positive or negative angle
+		glm::vec2 norm{ -line.y, line.x };
+		//If greater then 0, means angle is clockwise, meaning -angle
+		if (glm::dot(norm, { 1.f,0.f }) > 0) {
+			angle = -angle;
+		}
+
+		//Scale, Rotate, Translate
+		glm::mat3 scale = {
+			glm::vec3(length, 0 ,0),
+			glm::vec3(0, length, 0),
+			glm::vec3(0, 0, 1.f)
+		};
+
+		glm::mat3 rotate = {
+			glm::vec3(cosf(angle), -sinf(angle), 0.f),
+			glm::vec3(sinf(angle), cosf(angle), 0.f),
+			glm::vec3(0.f, 0.f, 1.f)
+		};
+		rotate = glm::transpose(rotate);
+
+		glm::mat3 translate = {
+			glm::vec3(1.f, 0.f, start.x),
+			glm::vec3(0.f, 1.f, start.y),
+			glm::vec3(0.f, 0.f, 1.f)
+		};
+		
+		translate = glm::transpose(translate);
+
+		glm::mat3 tform = camera.GetWorldtoNDC() * translate * rotate * scale;
+
+		render_pipeline.DrawLine(tform, { 0.f,0.f,0.f,1.f }, model_map["line"], shader_map["PlainColor"]);
 	}
 }
 

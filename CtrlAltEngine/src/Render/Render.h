@@ -114,6 +114,8 @@ namespace Render {
 	public:
 		RenderPipeline();
 
+		//Load a line Model
+		GLModel LoadModel_Line();
 		//Loads Model, and returns a GLModel that draws using triangles
 		GLModel LoadModel_Triangles(std::vector<GLVertStruct> const&, std::vector<GLushort> const&);
 		//Loads image, and returns a texture handle
@@ -133,6 +135,7 @@ namespace Render {
 		//Draws a single renderable
 		void StartDraw();
 		void Draw(CRenderable const&, glm::mat3 const&);
+		void DrawLine(glm::mat3 const&, glm::vec4 color, GLModel const&, GLSLShader&);
 		void FinishDraw();
 		void Cleanup();
 	};
@@ -178,6 +181,7 @@ namespace System {
 	//This is basically my adapter between the rendering system itself, and the ecs system
 	class SRender : public ECS::System
 	{
+		bool draw_debug{ true };
 		//Mapping string name to texture handle
 		std::unordered_map<std::string, GLuint> texture_map;
 
@@ -195,6 +199,9 @@ namespace System {
 
 		//Generate the default quad and default image
 		void LoadDefaults();
+
+		//Draw line from 2 world positions, internal function, only called in render
+		void DrawLine(glm::vec2, glm::vec2, glm::vec4 color = {0.f,0.f,0.f,1.f});
 	public:
 		SRender();
 

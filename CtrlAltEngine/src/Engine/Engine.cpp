@@ -99,7 +99,7 @@ namespace Engine{
 
         ECS::Entity E_RabbitTest2 = registry->CreateEntity();
         E_RabbitTest2.AddComponent<Render::CRenderable>();
-        E_RabbitTest2.AddComponent<Component::CTransform>(MathLib::vec2(-1.f, -1.f), MathLib::vec2(2.f, 2.f), 60.f);
+        E_RabbitTest2.AddComponent<Component::CTransform>(MathLib::vec2(-1.f, -1.f), MathLib::vec2(2.f, 2.f));
         Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
         rComp3.SetTexture("test");
         rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
