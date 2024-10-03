@@ -158,10 +158,10 @@ namespace Scene {
     {
         if (!isLoaded) return;
 
-        for (auto& entity : sceneEntities) {
-            /*registry->RemoveEntityFromSystems(entity)*/; // does it decrement the counter
-            //registry->Update();
-        }
+        //for (auto& entity : sceneEntities) {
+        //    /*registry->RemoveEntityFromSystems(entity)*/; // does it decrement the counter
+        //    //registry->Update();
+        //}
         registry->ClearEntities();
         sceneEntities.clear();
         nextEntityID = 0; // this is meant for things to reset and count up
@@ -244,10 +244,10 @@ namespace Scene {
             if (!spawn_bg)
             {
                 ECS::Entity bg = registry->CreateEntity();
-                bg.AddComponent<Component::CTransform>(MathLib::vec2{0,0}, MathLib::vec2{5.0, 2.5});
+                bg.AddComponent<Component::CTransform>(MathLib::vec2{0,0}, MathLib::vec2{16.0, 9.0}, 180);
                 bg.AddComponent<Render::CRenderable>();
                 Render::CRenderable& rComp = bg.GetComponent<Render::CRenderable>();
-                rComp.SetTexture("test");
+                rComp.SetTexture("BG_Test");
                 rComp.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
                 spawn_bg = true;
             }
@@ -258,7 +258,7 @@ namespace Scene {
                 auto& transf = ent.GetComponent<Component::CTransform>();
 
                 // SCALE UP AND DOWN
-                static int swap_scale = 1;
+                static float swap_scale = 1;
                 static MathLib::vec2 scale_speed(0.001, 0.001);
                 transf.scale += scale_speed * swap_scale;
 
@@ -332,7 +332,7 @@ namespace Scene {
             rComp.SetTexture("Axol_Sprite");
             rComp.SetRenderLayer(Render::CRenderable::R_WORLD);
             sceneEntities.push_back(axol);
-
+            registry->Update();
             
             if (i == max_obj - 1)
                 spawned = true;

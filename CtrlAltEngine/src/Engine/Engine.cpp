@@ -1,9 +1,9 @@
 /** 
 @group CTRL ALT
 @file Engine.cpp
-@brief Implementation of the Game class
-Created by Michael Lazaroo
-m.lazaroo@digipen.edu
+@brief Implementation of the Engine class
+Created by Chase Rodrigues
+rodrigues.i@digipen.edu
 */ 
 
 
@@ -29,6 +29,8 @@ using namespace MathLib;
 
 // DEFINITIONS
 // =========================================================================================================
+
+// STORE GLOBALS IN BETTER PLACE AFTER M1
 
 //Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 

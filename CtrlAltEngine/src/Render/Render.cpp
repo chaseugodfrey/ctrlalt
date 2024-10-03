@@ -120,6 +120,7 @@ namespace Render {
 	}
 
 	void RenderPipeline::FB_callback(GLFWwindow* window, int width, int height) {
+		if (window) {};
 		glViewport(0, 0, width, height);
 		view_width = width;
 		view_height = height;
