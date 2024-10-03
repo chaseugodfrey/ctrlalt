@@ -436,6 +436,7 @@ namespace System {
 		//Setup Render pipeline
 		render_pipeline.CreateTargetWindow(900, 480);
 		camera.Init(900, 480);
+		render_pipeline.SetCamera(&camera);
 
 		//render_pipeline.SetT(render_pipeline.CreateNewWindow());
 		CheckGLError();
