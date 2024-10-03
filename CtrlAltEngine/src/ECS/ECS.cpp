@@ -49,7 +49,7 @@ namespace ECS
 		if (freeIDs.empty())
 		{
 			entityId = numEntities++;
-			std::cout << "Num entities: " << numEntities << std::endl;
+			Logger::LogInfo("Num entities: " + numEntities);
 			if (entityId >= entityComponentMasks.size())
 			{
 				entityComponentMasks.resize(entityId + 1);
@@ -78,6 +78,7 @@ namespace ECS
 
 	void Registry::ClearEntities()
 	{
+
 		componentPools.clear();
 
 		for (auto& system : systems)
@@ -85,14 +86,16 @@ namespace ECS
 			system.second->ClearEntities();
 		}
 		
+		entitiesAddQueue.clear();
+		entitiesRemoveQueue.clear();
+		entityComponentMasks.clear();
 		numEntities = 0;
-		std::cout << "AAAAAAAAA" << std::endl;
 	}
 
 	void Registry::AddEntityToSystems(Entity entity)
 	{
 		const auto entityID = entity.GetID();
-		std::cout << "Created Entity of " << entityID << std::endl;
+		Logger::LogInfo("Created Entity of " + entityID);
 	
 		const auto entityComponentMask = entityComponentMasks[entityID];
 

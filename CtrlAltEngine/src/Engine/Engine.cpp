@@ -141,13 +141,8 @@ namespace Engine{
         CheckGLError();
         editor->Update();
 
-        frameTimer.update();
-        if(frameTimer.GetFrameCount() == 59)
-            std::cout << frameTimer.ReadFPS() << std::endl; //This is what's suppose to be on Editor huhu
-        
-       
-        //sceneManager->UpdateScene();
-    }
+        frameTimer.update();        
+           }
 
     /// <summary>
     /// 

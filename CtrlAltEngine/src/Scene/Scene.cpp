@@ -158,14 +158,10 @@ namespace Scene {
     {
         if (!isLoaded) return;
 
-        //for (auto& entity : sceneEntities) {
-        //    /*registry->RemoveEntityFromSystems(entity)*/; // does it decrement the counter
-        //    //registry->Update();
-        //}
         registry->ClearEntities();
         sceneEntities.clear();
-        nextEntityID = 0; // this is meant for things to reset and count up
-        // I think this scene's entity counter is different from Registry's entity counter
+        
+        nextEntityID = 0; 
 
         isLoaded = false;
         Logger::LogInfo("Unloaded scene: " + sceneName);
@@ -234,7 +230,7 @@ namespace Scene {
     void Scene::Update()
     {
         // SCENE 1
-        //std::cout << sceneName << std::endl;
+        // M1 SUBMISSION STUFFS
 
         if (sceneName == "Scene1")
         {
@@ -243,12 +239,20 @@ namespace Scene {
 
             if (!spawn_bg)
             {
+                ECS::Entity wireframe_ui = registry->CreateEntity();
+                wireframe_ui.AddComponent<Render::CRenderable>();
+                Render::CRenderable& rComp2 = wireframe_ui.GetComponent<Render::CRenderable>();
+                rComp2.SetColor({ 1.f,0.f,0.f,0.5f });
+                sceneEntities.push_back(wireframe_ui);
+
+                // BG
                 ECS::Entity bg = registry->CreateEntity();
                 bg.AddComponent<Component::CTransform>(MathLib::vec2{0,0}, MathLib::vec2{16.0, 9.0}, 180);
                 bg.AddComponent<Render::CRenderable>();
                 Render::CRenderable& rComp = bg.GetComponent<Render::CRenderable>();
                 rComp.SetTexture("BG_Test");
                 rComp.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
+                sceneEntities.push_back(bg);
                 spawn_bg = true;
             }
 
@@ -306,7 +310,7 @@ namespace Scene {
 
     void Scene::DebugPrintEntityCount() const
     {
-        std::cout << "Total entities in scene: " << sceneEntities.size() << std::endl;
+        Logger::LogInfo("Total entities in scene: " + sceneEntities.size());
         for (const auto& entity : sceneEntities) {
             Logger::LogInfo("Entity " + std::to_string(entity.GetID()));
             std::string componentList = GetComponentList(entity);
@@ -320,7 +324,6 @@ namespace Scene {
         if (spawned)
             return;
 
-        ////std::cout << "test" << std::endl;
         double max_obj = 2500;
         for (double i = 0.0; i < max_obj; i++)
         {

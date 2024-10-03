@@ -524,7 +524,7 @@ namespace System {
 					glm::vec3(0, 0, 1.f)
 				};
 
-				GLfloat orientation_Rad = glm::radians(transform.rotation);
+				GLfloat orientation_Rad = (GLfloat)(glm::radians(transform.rotation));
 				rotate = {
 					glm::vec3(cosf(orientation_Rad), -sinf(orientation_Rad), 0.f),
 					glm::vec3(sinf(orientation_Rad), cosf(orientation_Rad), 0.f),
@@ -573,7 +573,7 @@ namespace System {
 
 	void _CheckGLError(const char* file, int line)
 	{
-#ifndef DEBUG
+#ifndef _DEBUG
 		return;
 #endif // only do this on debug
 

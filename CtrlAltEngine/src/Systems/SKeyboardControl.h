@@ -21,7 +21,7 @@ namespace System{
 		void OnKeyPressed(KeyPressEvent& event)
 		{
 			std::string keyCode = std::to_string(event.key);
-			std::string keySymbol((size_t)1, event.key);
+			//std::string keySymbol((size_t)1, event.key);
 			Logger::LogInfo("Key Pressed: " + keyCode);
 
 		}

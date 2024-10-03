@@ -55,7 +55,8 @@ bool GLHelper::init(GLint _width, GLint _height, std::string _title) {
 
   // Part 1
   if (!glfwInit()) {
-    std::cout << "GLFW init has failed - abort program!!!" << std::endl;
+    
+      << "GLFW init has failed - abort program!!!" << std::endl;
     return false;
   }
 
