@@ -30,19 +30,22 @@ namespace Render {
 	/************************************/
 	//Renderable
 	/************************************/
-	void CRenderable::SetTexture(std::string name) {
+	void CRenderable::SetTexture(std::string name, bool force) {
+		if (textureName == name && !force) {
+			return;
+		}
 		textureName = name;
 		compiled = false;
 	}
-	void CRenderable::SetMesh(std::string name) {
+	void CRenderable::SetMesh(std::string const& name) {
 		meshName = name;
 		compiled = false;
 	}
-	void CRenderable::SetShader(std::string name) {
+	void CRenderable::SetShader(std::string const& name) {
 		shaderName = name;
 		compiled = false;
 	}
-	void CRenderable::SetColor(glm::vec4 col) {
+	void CRenderable::SetColor(glm::vec4 const& col) {
 		color = col;
 	}
 
@@ -50,22 +53,102 @@ namespace Render {
 		render_layer = layer;
 	}
 
+	//UV Setting
+	void CRenderable::SetTex_U(glm::vec2 const& u) {
+		UV[0] = u[0];
+		UV[1] = u[1];
+	}
+	void CRenderable::SetTex_V(glm::vec2 const& v) {
+		UV[2] = v[0];
+		UV[3] = v[1];
+	}
+	void CRenderable::SetTex_UV(glm::vec4 const& uv) {
+		UV = uv;
+	}
+	void CRenderable::SetTex_UV(glm::vec4&& uv) {
+		UV = std::move(uv);
+	}
 	CRenderable::RenderLayer CRenderable::GetRenderLayer() const {
 		return render_layer;
 	}
-	//Sorting operation for priority queue
-	//bool operator < (CRenderable const& lhs, CRenderable const& rhs) {
-	//	if (lhs.textureHandle < rhs.textureHandle) {
-	//		return true;
-	//	}
-	//	else if (lhs.shaderHandle < rhs.shaderHandle) {
-	//		return true;
-	//	}
-	//	else if (lhs.meshHandle < rhs.meshHandle) {
-	//		return true;
-	//	}
-	//	return false;
-	//}
+
+
+	/************************************/
+	//SpriteAnimation
+	/************************************/
+	SpriteAnimationAsset SpriteAnimationAsset::CreateSpriteAsset(std::vector<glm::vec4> const& uv, GLfloat time, std::string tex) {
+		SpriteAnimationAsset asset;
+		asset.sprite_UVs = uv;
+		asset.time_per_frame = time;
+		asset.currentTime = time;
+		asset.textureName = tex;
+		return asset;
+	}
+	SpriteAnimationAsset SpriteAnimationAsset::CreateSpriteAsset(std::vector<glm::vec4>&& uv, GLfloat time, std::string tex) {
+		SpriteAnimationAsset asset;
+		asset.sprite_UVs = std::move(uv);
+		asset.time_per_frame = time;
+		asset.currentTime = time;
+		asset.textureName = tex;
+		return asset;
+	}
+	void SpriteAnimationAsset::Reset() {
+		currentTime = time_per_frame;
+		currentUV = 0;
+	}
+	void SpriteAnimationAsset::Update(GLfloat dt) {
+		currentTime -= dt;
+		//Wrap and move current frame
+		if (currentTime <= 0.f) {
+			currentTime = time_per_frame + currentTime;
+			currentUV = (currentUV + 1) % sprite_UVs.size();
+		}
+	}
+
+	glm::vec4 SpriteAnimationAsset::GetCurrentUV() const {
+		return sprite_UVs[currentUV];
+	}
+
+	/************************************/
+	//SpriteAnimator
+	/************************************/
+
+	void CSpriteAnimator::AddAnimation(std::string name, SpriteAnimationAsset const& asset) {
+		animation_map.insert({ name, asset });
+	}
+	void CSpriteAnimator::AddAnimation(std::string name, SpriteAnimationAsset&& asset) {
+		animation_map.insert({ name, std::move(asset) });
+	}
+
+	void CSpriteAnimator::AddTransition(std::string start, bool(*condition)(ECS::Entity const&), std::string target) {
+		state_machine.state_transitions.push_back({ start, condition, target });
+	}
+	void CSpriteAnimator::SetStartAnimation(std::string const& anim) {
+		currentAnimation = anim;
+		startAnimation = anim;
+	}
+
+
+	void CSpriteAnimator::Update(GLfloat dt, ECS::Entity const& entity) {
+		//Check state machine
+		for (auto& state : state_machine.state_transitions) {
+			if (std::get<0>(state) == currentAnimation && std::get<1>(state)(entity)) {
+				currentAnimation = std::get<2>(state);
+				animation_map.at(currentAnimation).Reset();
+				break;
+			}
+		}
+		//Update sprite frames
+		animation_map.at(currentAnimation).Update(dt);
+	}
+
+	glm::vec4 CSpriteAnimator::GetUV() const {
+		return animation_map.at(currentAnimation).GetCurrentUV();
+	}
+
+	std::string CSpriteAnimator::GetCurrentTexture() const {
+		return animation_map.at(currentAnimation).textureName;
+	}
 
 	/************************************/
 	//Render Pipeline
@@ -117,7 +200,6 @@ namespace Render {
 		return target_window;
 	}
 
-
 	void RenderPipeline::SetCamera(Camera2d* cam) {
 		camera = cam;
 	}
@@ -128,6 +210,18 @@ namespace Render {
 		view_width = width;
 		view_height = height;
 		camera->UpdateViewtoNDC(width, height);
+	}
+
+	glm::mat3 RenderPipeline::GetMtx_UV(glm::vec4 const& uv) const{
+		GLfloat uLength = uv[1] - uv[0];
+		GLfloat vLength = uv[3] - uv[2];
+		glm::mat3 uvMtx{
+			glm::vec3{uLength, 0.f, uv[0]},
+			glm::vec3{0.f, vLength, uv[2]},
+			glm::vec3{0.f,0.f,1.f}
+		};
+
+		return glm::transpose(uvMtx);
 	}
 
 	void RenderPipeline::SetTargetWindow(GLFWwindow* window) {
@@ -209,6 +303,20 @@ namespace Render {
 		}
 		CheckGLError();
 
+		uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uUV_tform");
+		CheckGLError();
+		if (uniform_var_loc >= 0) {
+			//Convert uv vec to mtx
+			glm::mat3 uvTform = GetMtx_UV(renderable.UV);
+			glUniformMatrix3fv(uniform_var_loc, 1, GL_FALSE, glm::value_ptr(uvTform));
+			CheckGLError();
+		}
+		else {
+			std::cout << "Uniform Variable doesn't exist!!!\n";
+			std::exit(EXIT_FAILURE);
+		}
+		CheckGLError();
+
 		//Upload xform mtx
 		uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uModel_to_NDC");
 		if (uniform_var_loc >= 0) {
@@ -267,11 +375,6 @@ namespace Render {
 		glBindVertexArray(0);
 		shdr_pgm.UnUse();
 	}
-
-	//Cleanup any resources allocated
-	void RenderPipeline::Cleanup() {
-	}
-
 
 	GLuint RenderPipeline::LoadTexture(Engine::ImageAsset const& texture) {
 		CheckGLError();
@@ -432,6 +535,9 @@ namespace Render {
 }
 
 namespace System {
+	/************************************/
+	//SRender
+	/************************************/
 	SRender::SRender()
 	{
 		RequireComponent<Render::CRenderable>();
@@ -726,6 +832,24 @@ namespace System {
 		glm::mat3 tform = camera.GetWorldtoNDC() * translate * rotate * scale;
 
 		render_pipeline.DrawLine(tform, { 0.f,0.f,0.f,1.f }, model_map["line"], shader_map["PlainColor"]);
+	}
+
+	/************************************/
+	//SAnimator
+	/************************************/
+	SAnimator::SAnimator() {
+		RequireComponent<Render::CRenderable>();
+		RequireComponent<Render::CSpriteAnimator>();
+	}
+	void SAnimator::Update(GLfloat dt) {
+		for (ECS::Entity const& entity : GetEntities())
+		{
+			Render::CSpriteAnimator& animator = entity.GetComponent<Render::CSpriteAnimator>();
+			Render::CRenderable& renderable = entity.GetComponent<Render::CRenderable>();
+			animator.Update(dt, entity);
+			renderable.SetTexture(animator.GetCurrentTexture());
+			renderable.SetTex_UV(animator.GetUV());
+		}
 	}
 }
 

@@ -145,6 +145,24 @@ namespace Scene {
             entity.AddComponent<Render::CRenderable>();
             Render::CRenderable& rComp = entity.GetComponent<Render::CRenderable>();
             rComp.SetTexture("Axol_Sprite");
+            entity.AddComponent<Render::CSpriteAnimator>();
+            Render::CSpriteAnimator& spriteAnimator = entity.GetComponent<Render::CSpriteAnimator>();
+            spriteAnimator.AddAnimation("anim1", Render::SpriteAnimationAsset::CreateSpriteAsset({
+                    {0.f,0.5f,0.f,0.5f}, {0.5f,1.f,0.f,0.5f}, 
+                    {0.f,0.5f,0.5f,1.f}, {0.5f,1.f,0.5f,1.f} }, 1.f, "Axol_Sprite"));
+            spriteAnimator.AddAnimation("anim2", Render::SpriteAnimationAsset::CreateSpriteAsset({
+                    {0.f,0.5f,0.f,0.5f}, {0.5f,1.f,0.f,0.5f},
+                    {0.f,0.5f,0.5f,1.f}, {0.5f,1.f,0.5f,1.f} }, 0.1f, "test"));
+            spriteAnimator.AddTransition("anim1", [](ECS::Entity const& e) -> bool{
+                Component::CTransform& tForm = e.GetComponent<Component::CTransform>();
+                return tForm.scale.x >= 1.4f;
+                }, "anim2");
+            spriteAnimator.AddTransition("anim2", [](ECS::Entity const& e) -> bool {
+                Component::CTransform& tForm = e.GetComponent<Component::CTransform>();
+                return tForm.scale.x <= 0.6f;
+                }, "anim1");
+            spriteAnimator.SetStartAnimation("anim1");
+
             sceneEntities.push_back(entity);
             registry->AddEntityToSystems(entity);
         }

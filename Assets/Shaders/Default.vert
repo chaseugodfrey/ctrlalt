@@ -10,6 +10,7 @@ layout (location=1) in vec2 aVertexTexture;
 //---------------Uniform
 //object's 3x3 matrix transform
 uniform mat3 uModel_to_NDC;
+uniform mat3 uUV_tform;
 
 //---------------Output
 //Pass texture coord to frag shader
@@ -19,7 +20,7 @@ layout (location=1) out vec2 vTexture;
 
 void main(){
     	gl_Position 	= vec4(vec2(uModel_to_NDC * vec3(aVertexPosition, 1.0)), 0.0, 1.0);
-	vTexture	= aVertexTexture;
+	vTexture	= vec2(uUV_tform * vec3(aVertexTexture, 1.0));
 
     //gl_Position = vec4(aVertexPosition, 0.0, 1.0);
     //vColor      = aVertexColor;

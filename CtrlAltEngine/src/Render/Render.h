@@ -81,20 +81,72 @@ namespace Render {
 		std::string shaderName{ "default" };
 		bool compiled = false;
 		glm::vec4 color{1.f,1.f,1.f,1.f};
+
+		//U start, U end, V start, V end
+		glm::vec4 UV{ 0.f,1.f,0.f,1.f };
+
 		RenderLayer render_layer{ R_WORLD };
 	public:
 		//Sorting operation for priority queue
 		//friend bool operator < (CRenderable const&, CRenderable const&);
-		void SetTexture(std::string);
-		void SetMesh(std::string);
-		void SetShader(std::string);
-		void SetColor(glm::vec4);
+		void SetTexture(std::string, bool force = false);
+		void SetMesh(std::string const&);
+		void SetShader(std::string const&);
+		void SetColor(glm::vec4 const&);
 		void SetRenderLayer(RenderLayer);
+
+
+		void SetTex_U(glm::vec2 const&);
+		void SetTex_V(glm::vec2 const&);
+		void SetTex_UV(glm::vec4 const&);
+		void SetTex_UV(glm::vec4&&);
 		RenderLayer GetRenderLayer() const;
 
 		friend System::SRender;
 		friend RenderPipeline;
 	};
+
+	//Asset of a SpriteAnimation
+	class SpriteAnimationAsset {
+	private:
+		std::vector<glm::vec4> sprite_UVs{};
+		GLfloat time_per_frame{ 1.f };
+		GLfloat currentTime{};
+		std::size_t currentUV{};
+		bool loop{ true };
+	public:
+		std::string textureName{};
+		void Reset();
+		void Update(GLfloat);
+		glm::vec4 GetCurrentUV() const;
+		//Factory
+		static SpriteAnimationAsset CreateSpriteAsset(std::vector<glm::vec4> const&, GLfloat, std::string);
+		static SpriteAnimationAsset CreateSpriteAsset(std::vector<glm::vec4> &&, GLfloat, std::string);
+	};		
+	
+	//State Machine for animator
+	struct SpriteStateMachine {
+		//vector of state transitions
+		std::vector<std::tuple<std::string, bool(*)(ECS::Entity const&), std::string>> state_transitions;
+	};
+
+	class CSpriteAnimator {
+	private:
+		SpriteStateMachine state_machine;
+		std::unordered_map<std::string, SpriteAnimationAsset> animation_map;
+		std::string currentAnimation{};
+		std::string startAnimation{};
+	public:
+		void AddAnimation(std::string, SpriteAnimationAsset const&);
+		void AddAnimation(std::string, SpriteAnimationAsset&&);
+		void AddTransition(std::string, bool(*)(ECS::Entity const&), std::string);
+		void Update(GLfloat, ECS::Entity const&);
+		void SetStartAnimation(std::string const&);
+
+		std::string GetCurrentTexture() const;
+		glm::vec4 GetUV() const;
+	};
+
 	struct {
 		bool operator()(ECS::Entity const& lhs, ECS::Entity const& rhs) {
 			return lhs.GetComponent<CRenderable>().GetRenderLayer() < rhs.GetComponent<CRenderable>().GetRenderLayer();
@@ -108,9 +160,13 @@ namespace Render {
 	class RenderPipeline {
 		GLFWwindow* target_window{};
 		Camera2d* camera{};
+		//Viewport
 		GLint view_width{}, view_height{};
 		//std::multiset<CRenderable> objects;
 		void FB_callback(GLFWwindow* window, int width, int height);
+
+		glm::mat3 GetMtx_UV(glm::vec4 const& UV) const;
+
 	public:
 		RenderPipeline();
 
@@ -137,7 +193,6 @@ namespace Render {
 		void Draw(CRenderable const&, glm::mat3 const&);
 		void DrawLine(glm::mat3 const&, glm::vec4 color, GLModel const&, GLSLShader&);
 		void FinishDraw();
-		void Cleanup();
 	};
 
 	//For now just assume only 1 camera and its not a component
@@ -146,13 +201,13 @@ namespace Render {
 		glm::mat3 view_xform{};
 
 		//------------TEMPORARY!!!!!!!
-		glm::vec2 position;
+		glm::vec2 position{};
 
 		//height of cam
 		GLint height{ 1000 };
 		//zoom limits
-		GLint min_height;
-		GLint max_height;
+		GLint min_height{};
+		GLint max_height{};
 		//1 if zooming in, -1 if zooming out
 		GLint height_chng_dir{ 1 };
 
@@ -209,6 +264,13 @@ namespace System {
 		void UpdateFlags();
 		void Render();
 		void Destroy();
+	};
+
+	class SAnimator : public ECS::System 
+	{
+	public:
+		SAnimator();
+		void Update(GLfloat);
 	};
 }
 

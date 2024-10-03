@@ -115,6 +115,7 @@ namespace Engine{
         // System Set Ups
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SPhysics>();
+        registry->AddSystem<System::SAnimator>();
         registry->AddSystem<System::SRender>();
         // CheckGLError();
 		// ECS::Entity E_Player = registry->CreateEntity();
@@ -159,6 +160,7 @@ namespace Engine{
         registry->GetSystem<System::SPhysics>().Update();
         registry->GetSystem<System::SCollision>().Update();
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
+        registry->GetSystem<System::SAnimator>().Update(static_cast<GLfloat>(frameTimer.Get_dt()));
         registry->GetSystem<System::SRender>().UpdateFlags();
         global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
         global_input.Test_Keybinds();
