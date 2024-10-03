@@ -165,7 +165,7 @@ Scene_Serialiser::Scene_Serialiser() {
 
 // what to do
 void Scene_Serialiser::Serialise(ECS::Registry* registry, std::vector<ECS::Entity> entities) { 
-
+    registry;
     rapidjson::Value entity_array(rapidjson::kArrayType);
 
     //// this entity will serialise itself to the Document.

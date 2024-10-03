@@ -32,7 +32,7 @@ namespace System
 		{
 			auto& transform1 = entity.GetComponent<Component::CTransform>();
 			const auto& rb1 = entity.GetComponent<Component::CRigidBody>();
-			const auto& aabb = entity.GetComponent<Component::AABB>();
+			//const auto& aabb = entity.GetComponent<Component::AABB>();
 
 			bool collided = false;
 

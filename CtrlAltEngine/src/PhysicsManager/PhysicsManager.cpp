@@ -34,6 +34,7 @@ namespace PhysicsManager
 
 	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, const MathLib::vec2& velocity)
 	{
+		if (end.x == 1) {}
 		//if (start.x != end.x && start.y != end.y)
 		//{
 			start.x += velocity.x * g_dt;
