@@ -181,7 +181,7 @@ namespace System {
 	//This is basically my adapter between the rendering system itself, and the ecs system
 	class SRender : public ECS::System
 	{
-		bool draw_debug{ true };
+		bool draw_debug{ false };
 		//Mapping string name to texture handle
 		std::unordered_map<std::string, GLuint> texture_map;
 
@@ -205,6 +205,8 @@ namespace System {
 	public:
 		SRender();
 
+		//Check for changes in input for now, should be changed to engine env variables
+		void UpdateFlags();
 		void Render();
 		void Destroy();
 	};

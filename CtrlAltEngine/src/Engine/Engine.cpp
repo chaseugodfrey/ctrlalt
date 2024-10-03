@@ -34,7 +34,6 @@ using namespace MathLib;
 
 //Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 
-//Render::RenderPipeline renderSystem; // do not need this?
 Scene::Scene* sceneSystem;
 Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
@@ -160,6 +159,7 @@ namespace Engine{
         registry->GetSystem<System::SPhysics>().Update();
         registry->GetSystem<System::SCollision>().Update();
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
+        registry->GetSystem<System::SRender>().UpdateFlags();
         global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
         global_input.Test_Keybinds();
         
@@ -171,7 +171,6 @@ namespace Engine{
         if(frameTimer.GetFrameCount() == 59)
             std::cout << frameTimer.ReadFPS() << std::endl; //This is what's suppose to be on Editor huhu
         
-       
         //sceneManager->UpdateScene();
     }
 

@@ -17,10 +17,13 @@
 #include "../Logger/Logger.h"
 #include "../Components/CTransform.h"
 #include <glm/gtc/type_ptr.hpp>
+
+#include "../Input/Input.h"
+#include "../Components/CCollider.h"
+
+//Temp measure to get access to engine's global input
+extern Input::Input_Container global_input;
 //namespace 
-
-
-
 
 namespace Render {
 
@@ -433,6 +436,9 @@ namespace System {
 	{
 		RequireComponent<Render::CRenderable>();
 
+		//Setup some keybind stuff, temp
+		global_input.Init_Add_Keybind("debug toggle", GLFW_KEY_G, Input::Input_Container::TRIGGER);
+
 		//Setup Render pipeline
 		render_pipeline.CreateTargetWindow(900, 480);
 		camera.Init(900, 480);
@@ -573,6 +579,13 @@ namespace System {
 		CheckGLError();
 	}
 
+	void SRender::UpdateFlags() {
+		if (global_input.Action("debug toggle")) {
+			Logger::LogInfo("debug toggle");
+			draw_debug = !draw_debug;
+		}
+	}
+
 	//Only Render Function, basically goto all the draw calls
 	void SRender::Render()
 	{
@@ -639,12 +652,32 @@ namespace System {
 			render_pipeline.Draw(renderable, tform_mtx);
 
 			//Draw debug info if needed
-			if (draw_debug) {
-				render_pipeline.DrawLine(tform_mtx, { 0.f,0.f,0.f,1.f }, model_map["line"], shader_map["PlainColor"]);
+			if (draw_debug && entity.HasComponent<Component::CTransform>() && entity.HasComponent<Component::AABB>()) {
+				//render_pipeline.DrawLine(tform_mtx, { 1.f,0.f,0.f,1.f }, model_map["line"], shader_map["PlainColor"]);
+				/*
+				* !!!!!==============THIS IS TEMPORARY DEBUG INFO, COLLISION IS NOT DONE==================
+				* !!!!!==============THIS IS NOT TESTED, IF IT DOSENT WORK COMMENT IT OUT=================
+				*/
+				//Get 4 corners of aabb
+				Component::CTransform& transform = entity.GetComponent<Component::CTransform>();
+				glm::vec2 pos = { transform.position.x, transform.position.y };
+				glm::vec2 scale = { transform.scale.x, transform.scale.y };
+				glm::vec2 TL{ pos.x - scale.x * 0.5f, pos.y + scale.y * 0.5f };
+				glm::vec2 TR{ pos.x + scale.x * 0.5f, pos.y + scale.y * 0.5f };
+				glm::vec2 BL{ pos.x - scale.x * 0.5f, pos.y - scale.y * 0.5f };
+				glm::vec2 BR{ pos.x + scale.x * 0.5f, pos.y - scale.y * 0.5f };
+
+
+				DrawLine(TL, TR, { 1.f,0.f,0.f,1.f });
+				DrawLine(TR, BR, { 1.f,0.f,0.f,1.f });
+				DrawLine(BR, BL, { 1.f,0.f,0.f,1.f });
+				DrawLine(BL, TL, { 1.f,0.f,0.f,1.f });
 			}
 		}
-
-		DrawLine({ 0.f,0.f }, { 2.5f,-2.5f });
+		//Example of drawing of line
+		if (draw_debug) {
+			DrawLine({ -3.f,-1.7f }, { 1.5f, 4.9f });
+		}
 
 		render_pipeline.FinishDraw();
 

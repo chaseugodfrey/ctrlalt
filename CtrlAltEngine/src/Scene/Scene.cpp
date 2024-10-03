@@ -244,7 +244,7 @@ namespace Scene {
             if (!spawn_bg)
             {
                 ECS::Entity bg = registry->CreateEntity();
-                bg.AddComponent<Component::CTransform>(MathLib::vec2{0,0}, MathLib::vec2{16.0, 9.0}, 180);
+                bg.AddComponent<Component::CTransform>(MathLib::vec2{0,0}, MathLib::vec2{16.0, 9.0}, 0);
                 bg.AddComponent<Render::CRenderable>();
                 Render::CRenderable& rComp = bg.GetComponent<Render::CRenderable>();
                 rComp.SetTexture("BG_Test");
