@@ -325,18 +325,29 @@ namespace Editor
 				ConsoleClear();
 			}
 
-			
+			static bool auto_scroll = true;
+			static float scroll_pos = 0.f;
+
 			if (ImGui::BeginTable("Console_Table", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_BordersInner | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY))
 			{
 
 				for (size_t i = 0; i < console_data.size(); i++)
 				{
-
 					ImGui::TableNextRow(NULL, 25.0f);
 					ImGui::TableNextColumn();
 					ImGui::Text(console_data[i].c_str());
 				}
 
+				if (auto_scroll)
+					ImGui::SetScrollY(ImGui::GetScrollMaxY());
+
+				if (ImGui::GetScrollY() < ImGui::GetScrollMaxY() - 10.0f)
+					auto_scroll = false;
+				else
+					auto_scroll = true;
+
+
+			
 				ImGui::EndTable();
 			}
 

@@ -27,20 +27,17 @@ namespace System
 
 	void SPhysics::Update()
 	{
-		for (auto entity : GetEntities())
+		for (auto& entity : GetEntities())
 		{
 			auto& transform = entity.GetComponent<Component::CTransform>();
-			const auto rigidBody = entity.GetComponent<Component::CRigidBody>();
+			const auto& rigidBody = entity.GetComponent<Component::CRigidBody>();
 
-			/*transform.position.X() += rigidBody.vel.X();
-			transform.position.Y() += rigidBody.vel.Y();*/
-			MathLib::vec2 end = transform.position *1.5;
-			MathLib::vec2 time{ 1,1 };
+			std::cout << "updating " << std::endl;
+			//transform.position += rigidBody.vel;
+			MathLib::vec2 end = transform.position * 1.5;
+			//MathLib::vec2 time{ 1,1 };
 
-			PhysicsManager::Move_over_time(transform.position,end , time);
-
-			Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.x) + ", " + std::to_string((int)transform.position.y) + ')');
-			//std::cout << transform.position << std::endl;
+			PhysicsManager::Move_Basic(transform.position, end, rigidBody.vel);
 		}
 	}
 

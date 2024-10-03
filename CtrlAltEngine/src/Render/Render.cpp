@@ -499,6 +499,7 @@ namespace System {
 		render_pipeline.StartDraw();
 		//Create a copy of the array because entity vector is used for ecs indexing
 		std::vector<ECS::Entity> entity_copy = GetEntities();
+
 		std::sort(entity_copy.begin(), entity_copy.end(), Render::RenderSort);
 		for (ECS::Entity const& entity : entity_copy)
 		{

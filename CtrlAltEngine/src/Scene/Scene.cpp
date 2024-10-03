@@ -3,6 +3,7 @@
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
 #include "../Components/CIdentifier.h"
+#include "../Components/CCollider.h"
 #include "../Render/Render.h"
 
 
@@ -143,7 +144,7 @@ namespace Scene {
 
             entity.AddComponent<Render::CRenderable>();
             Render::CRenderable& rComp = entity.GetComponent<Render::CRenderable>();
-            rComp.SetTexture("test");
+            rComp.SetTexture("Axol_Sprite");
             sceneEntities.push_back(entity);
             registry->AddEntityToSystems(entity);
         }
@@ -237,11 +238,62 @@ namespace Scene {
 
         if (sceneName == "Scene1")
         {
-            //std::cout << "im in scene 1" << std::endl;
+            // We are spawning bg separately as render component currently has no deserialization functionality
+            static bool spawn_bg = false;
+
+            if (!spawn_bg)
+            {
+                ECS::Entity bg = registry->CreateEntity();
+                bg.AddComponent<Component::CTransform>(MathLib::vec2{0,0}, MathLib::vec2{5.0, 2.5});
+                bg.AddComponent<Render::CRenderable>();
+                Render::CRenderable& rComp = bg.GetComponent<Render::CRenderable>();
+                rComp.SetTexture("test");
+                rComp.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
+                spawn_bg = true;
+            }
+
+
+            for (auto& ent : sceneEntities)
+            {
+                auto& transf = ent.GetComponent<Component::CTransform>();
+
+                // SCALE UP AND DOWN
+                static int swap_scale = 1;
+                static MathLib::vec2 scale_speed(0.001, 0.001);
+                transf.scale += scale_speed * swap_scale;
+
+                if (transf.scale.x >= 1.5)
+                    swap_scale = -1;
+                else if (transf.scale.x <= 0.5)
+                    swap_scale = 1;
+                    
+                // CLAMP ROTATION
+                transf.rotation += 1.0;
+                if (transf.rotation >= 360)
+                    transf.rotation = 0;
+
+            }
         }
 
         else if (sceneName == "Scene2")
         {
+            // We are manually adding collider as collider component currently has no deserialization functionality
+            static bool add_collider = false;
+
+            if (!add_collider)
+            {
+                for (auto& ent : sceneEntities)
+                {
+                    auto& transf = ent.GetComponent<Component::CTransform>();
+                    ent.AddComponent<Component::CRigidBody>();
+                    ent.AddComponent<Component::AABB>(transf.position, 2, 2);
+                }
+
+                auto& rb = sceneEntities[0].GetComponent<Component::CRigidBody>();
+                rb.vel = MathLib::vec2(5.0, 0.0);
+
+                add_collider = true;
+            }
 
         }
 
@@ -273,17 +325,18 @@ namespace Scene {
         for (double i = 0.0; i < max_obj; i++)
         {
             //CreateEntity("Basic");
-            ECS::Entity E_RabbitWhite = entityFactory.CreateBasicEntity();
+            ECS::Entity axol = registry->CreateEntity();
+            axol.AddComponent<Component::CTransform>(MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
+            axol.AddComponent<Render::CRenderable>();
+            Render::CRenderable& rComp = axol.GetComponent<Render::CRenderable>();
+            rComp.SetTexture("Axol_Sprite");
+            rComp.SetRenderLayer(Render::CRenderable::R_WORLD);
+            sceneEntities.push_back(axol);
 
-            auto& transform = E_RabbitWhite.GetComponent<Component::CTransform>().position;
-            Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
-            transform = (MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
-            rComp.SetRenderLayer(Render::CRenderable::R_UI);
-
-
-            //DebugPrintEntityCount();
+            
             if (i == max_obj - 1)
                 spawned = true;
         }
+        Logger::LogInfo("Dynamically created 2500 objects in Scene Runtime for Scene 3.");
     }
 }

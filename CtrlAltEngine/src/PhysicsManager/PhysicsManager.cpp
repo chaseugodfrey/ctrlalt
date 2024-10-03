@@ -32,13 +32,13 @@ namespace PhysicsManager
 		}
 	}
 
-	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& velocity)
+	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, const MathLib::vec2& velocity)
 	{
-		if (start.x != end.x && start.y != end.y)
-		{
+		//if (start.x != end.x && start.y != end.y)
+		//{
 			start.x += velocity.x * g_dt;
 			start.y += velocity.y * g_dt;
-		}
+		//}
 	}
 }
 

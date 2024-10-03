@@ -15,10 +15,12 @@ m.lazaroo@digipen.edu
 #include "../Render/Render.h"
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
+#include "../Components/CCollider.h"
 #include "../Systems/SMovement.h"
 #include "../Systems/SPhysics.h"
-#include "../Math/MathLib.h"
 #include "../Systems/SKeyboardControl.h"
+#include "../Systems/SCollision.h"
+#include "../Math/MathLib.h"
 #include "../Scene/Scene.h"
 #include "../Debug/Debugger.h"
 
@@ -74,7 +76,6 @@ namespace Engine{
         // key binds WASD, 1 rot, 2 scale.
         //## my input system will be a static variable in header.
         global_input.Init_System(main_window); 
-    
 
         isRunning = true;
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
@@ -110,31 +111,13 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Setup() {
-		// TODO: Create game objects...
+        // System Set Ups
 		registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SPhysics>();
         registry->AddSystem<System::SRender>();
+        registry->AddSystem<System::SCollision>();
         registry->AddSystem<System::SKeyboardControl>();
         //sceneSystem->Init();
-
-        //ECS::Entity E_RabbitWhite = registry->CreateEntity();
-        //E_RabbitWhite.AddComponent<Render::CRenderable>();
-        //E_RabbitWhite.AddComponent<Component::CTransform>(vec2(1.f, 1.f), vec2(2.f, 2.f), 60.f);
-        //Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
-        //rComp.SetTexture("test");
-        //rComp.SetRenderLayer(Render::CRenderable::R_UI);
-
-        //ECS::Entity E_RabbitTest2 = registry->CreateEntity();
-        //E_RabbitTest2.AddComponent<Render::CRenderable>();
-        //E_RabbitTest2.AddComponent<Component::CTransform>(vec2(-1.f, -1.f), vec2(2.f, 2.f), 60.f);
-        //Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
-        //rComp3.SetTexture("test");
-        //rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
-
-        //ECS::Entity E_RabbitTest = registry->CreateEntity();
-        //E_RabbitTest.AddComponent<Render::CRenderable>();
-        //Render::CRenderable& rComp2 = E_RabbitTest.GetComponent<Render::CRenderable>();
-        //rComp2.SetColor({ 1.f,0.f,0.f,0.5f });
     }
 
     /// <summary>
@@ -145,8 +128,9 @@ namespace Engine{
         sceneManager->UpdateScene();
 
         eventBus->Reset();
-		//registry->GetSystem<System::SMovement>().Update();
+		registry->GetSystem<System::SMovement>().Update();
         registry->GetSystem<System::SPhysics>().Update();
+        registry->GetSystem<System::SCollision>().Update();
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
         registry->Update();
