@@ -1,5 +1,7 @@
 /**
  * @file EventBus.h
+ * @author Michael Lazaroo
+ * @email m.lazaroo@digipen.edu
  * @brief
  * EventBus is a map of event types and a list of wrapper classes for callback functions.
  *

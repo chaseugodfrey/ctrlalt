@@ -5,6 +5,7 @@
 #include "../Components/CIdentifier.h"
 #include "../Render/Render.h"
 
+
 namespace Scene {
 
     void Scene::RegisterComponentDeserializers() {
@@ -272,13 +273,11 @@ namespace Scene {
         for (double i = 0.0; i < max_obj; i++)
         {
             //CreateEntity("Basic");
-            ECS::Entity E_RabbitWhite = registry->CreateEntity();
-            E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
-            //E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2(i, i), MathLib::vec2(1, 1), 0);
-            //std::cout << i << std::endl;
-            E_RabbitWhite.AddComponent<Render::CRenderable>();
+            ECS::Entity E_RabbitWhite = entityFactory.CreateBasicEntity();
+
+            auto& transform = E_RabbitWhite.GetComponent<Component::CTransform>().position;
             Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
-            rComp.SetTexture("test");
+            transform = (MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
             rComp.SetRenderLayer(Render::CRenderable::R_UI);
 
 
