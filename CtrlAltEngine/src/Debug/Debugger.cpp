@@ -20,6 +20,11 @@ namespace Debug {
 
     }
 
+    // this function gives access to deltaTime.
+    double FrameTimer::Get_dt() {
+        return this->deltaTime;
+    }
+
     void Debug::FrameTimer::update() {
         // Get the current time
         auto startFrameTime = std::chrono::high_resolution_clock::now();

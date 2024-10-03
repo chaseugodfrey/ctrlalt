@@ -1,5 +1,8 @@
 
 #include "input.h"
+#include "../Render/glhelper.h" // for g_dt for the moment.
+#include <sstream>
+#include "../Debug/Debugger.h"
 
 
 //std::unordered_map<std::string, Key> actionMap;
@@ -214,6 +217,30 @@ namespace Input {
 
 
 		}// end of ranged for through the map.
+
+	}
+
+
+	void Input_Container::Test_Left_Mouse_Button(double dt)
+	{
+		if (this->GetMouseLeft())
+		{
+			static double timer = 0.5f;
+			if (timer < 0.5) {
+				timer += dt;
+				return;
+			}
+			timer -= 0.5;
+
+			GetMousePosDevice(this->mouse_device_coord[0], this->mouse_device_coord[1]);
+			std::ostringstream message; 
+			message << "Left Mouse is pressed, position is: ";
+			message << std::setprecision(2) << std::to_string(this->mouse_device_coord[0]);
+			message << " , ";
+			message << std::setprecision(2) << std::to_string(this->mouse_device_coord[1]);
+			message << "\n";
+			Logger::LogInfo(message.str());
+		}
 
 	}
 

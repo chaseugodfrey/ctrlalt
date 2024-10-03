@@ -64,6 +64,9 @@ namespace Input {
 		void GetMousePosDevice(double& xpos, double& ypos);  
 
 
+		void Test_Left_Mouse_Button(double dt);
+
+
 		// a wrapper for GetKeyState -- WINAPI
 
 		//ooo I want more special keystates, but it could do more of game logic.
@@ -117,6 +120,7 @@ namespace Input {
 	//	float device_coord[2];
 	//};
 
+	
 	
 
 

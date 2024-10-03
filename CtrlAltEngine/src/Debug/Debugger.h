@@ -34,7 +34,7 @@
 #define HIGH_LIMIT 0.1     // 10 FPS (1/10)
 
 namespace Debug {
-    extern double deltaTime;
+    extern double deltaTime; // this does not work
 
     class FrameTimer
     {
@@ -45,6 +45,7 @@ namespace Debug {
         void update();
         std::string ReadFPS();
         int GetFrameCount();
+        double Get_dt();
 
     private:
         int frameCount;  // Number of frames counted

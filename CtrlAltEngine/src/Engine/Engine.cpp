@@ -148,6 +148,7 @@ namespace Engine{
 		//registry->GetSystem<System::SMovement>().Update();
         registry->GetSystem<System::SPhysics>().Update();
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
+        global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
         registry->Update();
         CheckGLError();
         editor->Update();
@@ -156,12 +157,7 @@ namespace Engine{
         if(frameTimer.GetFrameCount() == 59)
             std::cout << frameTimer.ReadFPS() << std::endl; //This is what's suppose to be on Editor huhu
         
-        // if you want to use Input
-        /*
-        if (global_input.Action("action name")) // returns true if you want to do it
-        */
-        global_input.Action("KEY W");
-        //global_input.GetKeyReleased(GLFW_KEY_Z); // this is not trigger
+       
         //sceneManager->UpdateScene();
     }
 
