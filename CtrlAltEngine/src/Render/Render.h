@@ -20,6 +20,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define RENDER_H
 
 #include <GLEW/GL/glew.h>
+#include "glslshader.h"
 #include <GLFW/glfw3.h>
 
 #include <string>
@@ -29,7 +30,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <glm/glm.hpp>
 #include "../ECS/ECS.h"
 #include "../AssetManager/AssetManager.h"
-#include "glslshader.h"
 
 
 void _CheckGLError(const char* file, int line);

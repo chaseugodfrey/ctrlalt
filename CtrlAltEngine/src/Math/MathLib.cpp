@@ -179,24 +179,6 @@ namespace MathLib
 		return this->x * rhs.y - this->y * rhs.x;
 	}
 
-	const float& vec2::X() const
-	{
-		return this->x;
-	}
-	const float& vec2::Y() const
-	{
-		return this->y;
-	}
-
-	float& vec2::X()
-	{
-		return this->x;
-	}
-	float& vec2::Y()
-	{
-		return this->y;
-	}
-
 	const float& vec2::operator[](int pos) const
 	{
 		if (pos < 0 || pos >= 2)
@@ -282,9 +264,9 @@ namespace MathLib
 	}
 	vec3& vec3::operator*=(const vec3& inv)
 	{
-		this->x *= inv.X();
-		this->y *= inv.Y();
-		this->z *= inv.Z();
+		this->x *= inv.x;
+		this->y *= inv.y;
+		this->z *= inv.z;
 
 		return *this;
 	}
@@ -314,9 +296,9 @@ namespace MathLib
 	}
 	vec3& vec3::operator/=(const vec3& inv)
 	{
-		this->x /= inv.X();
-		this->y /= inv.Y();
-		this->z /= inv.Z();
+		this->x /= inv.x;
+		this->y /= inv.y;
+		this->z /= inv.z;
 
 		return *this;
 	}
@@ -365,18 +347,6 @@ namespace MathLib
 	}
 
 	//accessor
-	float vec3::X() const
-	{
-		return this->x;
-	}
-	float vec3::Y() const
-	{
-		return this->y;
-	}
-	float vec3::Z() const
-	{
-		return this->z;
-	}
 
 	const float& vec3::operator[](int pos) const
 	{
@@ -390,6 +360,8 @@ namespace MathLib
 
 		return z;
 	}
+
+	//modifier
 	float& vec3::operator[](int pos)
 	{
 		if (pos < 0 || pos >= 3)
@@ -403,19 +375,7 @@ namespace MathLib
 		return z;
 	}
 
-	//modifier
-	void vec3::X(float in)
-	{
-		this->x = in;
-	}
-	void vec3::Y(float in)
-	{
-		this->y = in;
-	}
-	void vec3::Z(float in)
-	{
-		this->z = in;
-	}
+	
 
 	bool vec3::operator==(const vec3& rhs)
 	{
@@ -436,12 +396,12 @@ namespace MathLib
 
 	vec3 to3D(const vec2& inv, float z)
 	{
-		return vec3(inv.X(), inv.Y(), z);
+		return vec3(inv.x, inv.y, z);
 	}
 
 	vec2 to2D(const vec3& inv)
 	{
-		return vec2(inv.X(), inv.Y());
+		return vec2(inv.x, inv.y);
 	}
 
 
@@ -451,14 +411,14 @@ namespace MathLib
 	//ostream for vector2
 	std::ostream& operator<<(std::ostream& os, const vec2& inv)
 	{
-		os << '(' << inv.X() << ',' << inv.Y() << ')';
+		os << '(' << inv.x << ',' << inv.y << ')';
 		return os;
 	}
 
 	//ostream for vector3
 	std::ostream& operator<<(std::ostream& os, const vec3& inv)
 	{
-		os << '(' << inv.X() << ',' << inv.Y() << ',' << inv.Z() << ')';
+		os << '(' << inv.x << ',' << inv.y << ',' << inv.z << ')';
 		return os;
 	}
 }

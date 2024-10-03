@@ -120,6 +120,7 @@ namespace Render {
 	}
 
 	void RenderPipeline::FB_callback(GLFWwindow* window, int width, int height) {
+		if (window) {};
 		glViewport(0, 0, width, height);
 		view_width = width;
 		view_height = height;
@@ -345,7 +346,6 @@ namespace Render {
 		mdl.primitive_cnt = static_cast<GLuint>(idx_data.size() / 3);
 
 		return mdl;
-		CheckGLError();
 	}
 
 	GLModel RenderPipeline::LoadModel_Line() {
@@ -599,8 +599,8 @@ namespace System {
 
 				//Scale, Rotate, Translate
 				scale = {
-					glm::vec3(transform.scale.X(), 0 ,0),
-					glm::vec3(0, transform.scale.Y(), 0),
+					glm::vec3(transform.scale.x, 0 ,0),
+					glm::vec3(0, transform.scale.y, 0),
 					glm::vec3(0, 0, 1.f)
 				};
 
@@ -613,8 +613,8 @@ namespace System {
 				rotate = glm::transpose(rotate);
 
 				translate = {
-					glm::vec3(1.f, 0.f, transform.position.X()),
-					glm::vec3(0.f, 1.f, transform.position.Y()),
+					glm::vec3(1.f, 0.f, transform.position.x),
+					glm::vec3(0.f, 1.f, transform.position.y),
 					glm::vec3(0.f, 0.f, 1.f)
 				};
 				translate = glm::transpose(translate);

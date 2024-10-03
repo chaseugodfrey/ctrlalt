@@ -21,7 +21,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #include "EditorWindow.h"
 
-namespace GameEditor
+namespace Editor
 {
 
 	class Hierarchy : public EditorWindow

@@ -23,6 +23,11 @@ namespace ECS
 			entities.end());
 	}
 
+	void System::ClearEntities()
+	{
+		entities.clear();
+	}
+
 	std::vector<Entity> System::GetEntities() const {
 		return entities;
 	}
@@ -41,33 +46,53 @@ namespace ECS
 	{
 		EntityID entityId;
 
-		entityId = numEntities++;
+		if (freeIDs.empty())
+		{
+			entityId = numEntities++;
+			std::cout << "Num entities: " << numEntities << std::endl;
+			if (entityId >= entityComponentMasks.size())
+			{
+				entityComponentMasks.resize(entityId + 1);
+			}
+		}
+		else
+		{
+			entityId = freeIDs.front();
+			freeIDs.pop_front();
+		}
+
 		Entity entity(static_cast<int>(entityId));
 		entity.registry = this;
-		std::string message{ "Entity created with ID: " + std::to_string(entityId) };
-		Logger::LogInfo(message);
+		//std::string message{ "Entity created with ID: " + std::to_string(entityId) };
+		//Logger::LogInfo(message);
 		entitiesAddQueue.insert(entity);
 
-		if (entityId >= entityComponentMasks.size())
-		{
-			entityComponentMasks.resize(entityId + 1);
-		}
-
-		if (entityId >= MAX_ENTITIES)
-		{
-
-			return Entity(-1);
-		}
-
-		// Create check for debug
-		// if debug == true
-
 		return entity;
+	}
+
+	void Registry::KillEntity(Entity entity)
+	{
+		entitiesRemoveQueue.insert(entity);
+		Logger::LogInfo("Entity " + std::to_string(entity.GetID()) + " was ");
+	}
+
+	void Registry::ClearEntities()
+	{
+		componentPools.clear();
+
+		for (auto& system : systems)
+		{
+			system.second->ClearEntities();
+		}
+		
+		numEntities = 0;
+		std::cout << "AAAAAAAAA" << std::endl;
 	}
 
 	void Registry::AddEntityToSystems(Entity entity)
 	{
 		const auto entityID = entity.GetID();
+		std::cout << "Created Entity of " << entityID << std::endl;
 	
 		const auto entityComponentMask = entityComponentMasks[entityID];
 
@@ -82,6 +107,14 @@ namespace ECS
 		}
 	}	
 
+	void Registry::RemoveEntityFromSystems(Entity entity)
+	{
+		for (auto& system : systems)
+		{
+			system.second->RemoveEntity(entity);
+		}
+	}
+
 	void Registry::Update()
 	{
 		for (auto entity : entitiesAddQueue)
@@ -89,5 +122,14 @@ namespace ECS
 			AddEntityToSystems(entity);
 		}
 		entitiesAddQueue.clear();
+
+		for (auto entity : entitiesRemoveQueue)
+		{
+			RemoveEntityFromSystems(entity);
+			entityComponentMasks[entity.GetID()].reset();
+
+			freeIDs.push_back(entity.GetID());
+		}
+		entitiesRemoveQueue.clear();
 	}
 }

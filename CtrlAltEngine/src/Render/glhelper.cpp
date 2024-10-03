@@ -162,6 +162,7 @@ void GLHelper::key_cb(GLFWwindow *pwin, int key, int /*scancode*/, int action, i
 #ifdef _DEBUG
     std::cout << "Key pressed" << std::endl;
 #endif
+
     if (GLFW_KEY_ESCAPE == key) {
 
         glfwSetWindowShouldClose(pwin, GLFW_TRUE);

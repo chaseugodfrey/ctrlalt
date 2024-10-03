@@ -1,3 +1,11 @@
+/*
+@group	CTRL ALT
+@file	CRigidBody.h
+@brief	Rigidbody Component
+Created by Muhammad Rayan
+muhammadrayan.b@digipen.edu
+*/
+
 #ifndef CRIGIDBODY_H
 #define CRIGIDBODY_H
 

@@ -18,27 +18,27 @@ namespace PhysicsManager
 
 	void Move_over_time(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& time)
 	{
-		if (start.X() != end.X() && start.Y() != end.Y())
+		if (start.x != end.x && start.y != end.y)
 		{
 			MathLib::vec2 dist = end - start;
-			float y_speed = dist.Y() / time.Y();
-			float x_speed = dist.X() / time.X();
+			float y_speed = dist.y / time.y;
+			float x_speed = dist.x / time.x;
 
-			start.X() += x_speed * g_dt;
-			start.Y() += y_speed * g_dt;
+			start.x += x_speed * g_dt;
+			start.y += y_speed * g_dt;
 
-			time.X() -= g_dt;
-			time.Y() -= g_dt;
+			time.x -= g_dt;
+			time.y-= g_dt;
 		}
 	}
 
-	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, MathLib::vec2& velocity)
+	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, const MathLib::vec2& velocity)
 	{
-		if (start.X() != end.X() && start.Y() != end.Y())
-		{
-			start.X() += velocity.X() * g_dt;
-			start.Y() += velocity.Y() * g_dt;
-		}
+		//if (start.x != end.x && start.y != end.y)
+		//{
+			start.x += velocity.x * g_dt;
+			start.y += velocity.y * g_dt;
+		//}
 	}
 }
 

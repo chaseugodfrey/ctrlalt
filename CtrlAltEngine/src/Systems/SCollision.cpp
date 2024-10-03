@@ -19,33 +19,60 @@ namespace System
 		RequireComponent<Component::CTransform>();
 		RequireComponent<Component::CRigidBody>();
 		RequireComponent<Component::AABB>();
-		RequireComponent<Component::Circle>();
-		RequireComponent<Component::Line>();
+
+		// Disable for now as we only have AABB
+		// 
+		//RequireComponent<Component::Circle>();
+		//RequireComponent<Component::Line>();
 	}
 
 	void SCollision::Update()
 	{
 		for (auto entity : GetEntities())
 		{
-			auto& transform = entity.GetComponent<Component::CTransform>();
-			const auto rigidBody = entity.GetComponent<Component::CRigidBody>();
-			const auto aabb = entity.GetComponent<Component::AABB>();
+			auto& transform1 = entity.GetComponent<Component::CTransform>();
+			const auto& rb1 = entity.GetComponent<Component::CRigidBody>();
+			const auto& aabb = entity.GetComponent<Component::AABB>();
 
-			bool grid_collided = false;
+			bool collided = false;
+
+			// M1 SUBMISSION PURPOSES
+			static bool is_colliding = false;
+
 
 			for (auto entity2 : GetEntities())
 			{
 				auto& transform2 = entity2.GetComponent<Component::CTransform>();
+				const auto& rb2 = entity2.GetComponent<Component::CRigidBody>();
+
 				if (entity == entity2)
 				{
 					continue;
 				}
 
-				grid_collided = SCollision::GridCollision(transform.position, transform2.position);
+				float time{};
+
+				////grid_collided = SCollision::GridCollision(transform.position, transform2.position);
+				collided = CollisionIntersection_RectRect(
+					transform1.position, transform1.scale.x, transform1.scale.y, rb1.vel,
+					transform2.position, transform2.scale.x, transform2.scale.y, rb2.vel,
+					time
+				);
+
+				// M1 SUBMISSION PURPOSES
+				if (is_colliding && !collided)
+				{
+					Logger::LogInfo("Collision Exited.");
+				}
+
+				is_colliding = collided;
+
 			}
 
-			//Logger::LogInfo("ENTITY: " + std::to_string(entity.GetID()) + " POS: (" + std::to_string((int)transform.position.X()) + ", " + std::to_string((int)transform.position.Y()) + ')');
-			//std::cout << transform.position << std::endl;
+			// M1 SUBMISSION PURPOSES
+			if (collided)
+				Logger::LogInfo("Collision detected.");
+
 		}
 	}
 
@@ -78,17 +105,17 @@ namespace System
 													float& firstTimeOfCollision) //Output: the calculated value of tFirst, below, must be returned here
 	{
 
-		float aabb1_min_x = pos1.X() - w1 / 2;
-		float aabb1_min_y = pos1.Y() - h1 / 2;
+		float aabb1_min_x = pos1.x - w1 / 2;
+		float aabb1_min_y = pos1.y - h1 / 2;
 
-		float aabb1_max_x = pos1.X() + w1 / 2;
-		float aabb1_max_y = pos1.Y() + h1 / 2;
+		float aabb1_max_x = pos1.x + w1 / 2;
+		float aabb1_max_y = pos1.y + h1 / 2;
 
-		float aabb2_min_x = pos2.X() - w2 / 2;
-		float aabb2_min_y = pos2.Y() - h2 / 2;
+		float aabb2_min_x = pos2.x - w2 / 2;
+		float aabb2_min_y = pos2.y - h2 / 2;
 
-		float aabb2_max_x = pos2.X() + w2 / 2;
-		float aabb2_max_y = pos2.Y() + h2 / 2;
+		float aabb2_max_x = pos2.x + w2 / 2;
+		float aabb2_max_y = pos2.y + h2 / 2;
 
 		if ((aabb2_min_y < aabb1_max_y && aabb2_min_x < aabb1_max_x) && (aabb1_min_y < aabb2_max_y && aabb1_min_x < aabb2_max_x))
 		{
@@ -101,10 +128,10 @@ namespace System
 
 			// relative vel, aabb1 is stationary, aabb2 is moving
 			MathLib::vec2 Vb{};
-			Vb.X() = vel2.X() - vel1.X();
-			Vb.Y() = vel2.Y() - vel1.Y();
+			Vb.x = vel2.x - vel1.x;
+			Vb.y = vel2.y - vel1.y;
 
-			if (Vb.X() < 0)
+			if (Vb.x < 0)
 			{
 				if (aabb1_min_x > aabb2_max_x)
 				{
@@ -112,15 +139,15 @@ namespace System
 				}
 				if (aabb1_max_x < aabb2_min_x)
 				{
-					firstTimeOfCollision = std::max((aabb2_min_x - aabb1_max_x) / Vb.X(), firstTimeOfCollision);
+					firstTimeOfCollision = std::max((aabb2_min_x - aabb1_max_x) / Vb.x, firstTimeOfCollision);
 				}
 				if (aabb1_min_x < aabb2_max_x)
 				{
-					dLast = std::min((aabb2_max_x - aabb1_min_x) / Vb.X(), dLast);
+					dLast = std::min((aabb2_max_x - aabb1_min_x) / Vb.x, dLast);
 				}
 			}
 
-			else if (Vb.X() > 0)
+			else if (Vb.x > 0)
 			{
 				if (aabb1_max_x < aabb2_min_x)
 				{
@@ -128,11 +155,11 @@ namespace System
 				}
 				if (aabb1_min_x > aabb2_max_x)
 				{
-					firstTimeOfCollision = std::max((aabb1_min_x - aabb2_max_x) / Vb.X(), firstTimeOfCollision);
+					firstTimeOfCollision = std::max((aabb1_min_x - aabb2_max_x) / Vb.x, firstTimeOfCollision);
 				}
 				if (aabb1_max_x > aabb2_min_x)
 				{
-					dLast = std::min((aabb1_max_x - aabb2_min_x) / Vb.X(), dLast);
+					dLast = std::min((aabb1_max_x - aabb2_min_x) / Vb.x, dLast);
 				}
 			}
 
@@ -155,7 +182,7 @@ namespace System
 
 
 
-			if (Vb.Y() < 0)
+			if (Vb.y < 0)
 			{
 				if (aabb1_min_y > aabb2_max_y)
 				{
@@ -163,15 +190,15 @@ namespace System
 				}
 				if (aabb1_max_y < aabb2_min_y)
 				{
-					firstTimeOfCollision = std::max((aabb2_min_y - aabb1_max_y) / Vb.Y(), firstTimeOfCollision);
+					firstTimeOfCollision = std::max((aabb2_min_y - aabb1_max_y) / Vb.y, firstTimeOfCollision);
 				}
 				if (aabb1_min_y < aabb2_max_y)
 				{
-					dLast = std::min((aabb2_max_y - aabb1_min_y) / Vb.Y(), dLast);
+					dLast = std::min((aabb2_max_y - aabb1_min_y) / Vb.y, dLast);
 				}
 			}
 
-			else if (Vb.Y() > 0)
+			else if (Vb.y > 0)
 			{
 				if (aabb1_max_y < aabb2_min_y)
 				{
@@ -179,11 +206,11 @@ namespace System
 				}
 				if (aabb1_min_y > aabb2_max_y)
 				{
-					firstTimeOfCollision = std::max((aabb1_min_y - aabb2_max_y) / Vb.Y(), firstTimeOfCollision);
+					firstTimeOfCollision = std::max((aabb1_min_y - aabb2_max_y) / Vb.y, firstTimeOfCollision);
 				}
 				if (aabb1_max_y > aabb2_min_y)
 				{
-					dLast = std::min((aabb1_max_y - aabb2_min_y) / Vb.Y(), dLast);
+					dLast = std::min((aabb1_max_y - aabb2_min_y) / Vb.y, dLast);
 				}
 			}
 
@@ -224,8 +251,8 @@ namespace System
 		MathLib::vec2 Be = ptEnd;
 		MathLib::vec2 V = Be - Bs;
 		MathLib::vec2 M{};
-		M.X() = V.Y();
-		M.Y() = -V.X();
+		M.x = V.x;
+		M.y = -V.x;
 
 		//N^.Bs
 		float startingPointCircle = normalizedNormal*Bs;
