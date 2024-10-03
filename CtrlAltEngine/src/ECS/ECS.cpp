@@ -23,6 +23,11 @@ namespace ECS
 			entities.end());
 	}
 
+	void System::ClearEntities()
+	{
+		entities.clear();
+	}
+
 	std::vector<Entity> System::GetEntities() const {
 		return entities;
 	}
@@ -44,6 +49,7 @@ namespace ECS
 		if (freeIDs.empty())
 		{
 			entityId = numEntities++;
+			std::cout << "Num entities: " << numEntities << std::endl;
 			if (entityId >= entityComponentMasks.size())
 			{
 				entityComponentMasks.resize(entityId + 1);
@@ -67,12 +73,26 @@ namespace ECS
 	void Registry::KillEntity(Entity entity)
 	{
 		entitiesRemoveQueue.insert(entity);
-		Logger::LogInfo("Entity " + std::to_string(entity.GetID()) + " was killed");
+		Logger::LogInfo("Entity " + std::to_string(entity.GetID()) + " was ");
+	}
+
+	void Registry::ClearEntities()
+	{
+		componentPools.clear();
+
+		for (auto& system : systems)
+		{
+			system.second->ClearEntities();
+		}
+		
+		numEntities = 0;
+		std::cout << "AAAAAAAAA" << std::endl;
 	}
 
 	void Registry::AddEntityToSystems(Entity entity)
 	{
 		const auto entityID = entity.GetID();
+		std::cout << "Created Entity of " << entityID << std::endl;
 	
 		const auto entityComponentMask = entityComponentMasks[entityID];
 
@@ -89,7 +109,7 @@ namespace ECS
 
 	void Registry::RemoveEntityFromSystems(Entity entity)
 	{
-		for (auto system : systems)
+		for (auto& system : systems)
 		{
 			system.second->RemoveEntity(entity);
 		}

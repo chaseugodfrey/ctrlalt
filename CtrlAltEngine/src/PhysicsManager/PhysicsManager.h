@@ -10,7 +10,6 @@ muhammadrayan.b@digipen.edu
 
 #include "../Systems/SPhysics.h"
 #include "../Math/MathLib.h"
-#include "../ECS/ECS.h"
 
 
 namespace PhysicsManager

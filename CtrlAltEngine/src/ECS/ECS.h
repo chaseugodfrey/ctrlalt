@@ -117,6 +117,7 @@ namespace ECS
 
 		void AddEntity(Entity entity);
 		void RemoveEntity(Entity entity);
+		void ClearEntities();
 		std::vector<Entity> GetEntities() const;
 		const ComponentMask& GetComponentMask() const;
 		template <typename TComponent> void RequireComponent();
@@ -252,6 +253,7 @@ namespace ECS
 		//Entity Management
 		Entity CreateEntity();
 		void KillEntity(Entity entity);
+		void ClearEntities();
 
 		//Component Management
 		template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
@@ -366,6 +368,8 @@ namespace ECS
 
 		return componentPool->GetComponent(entityID);
 	}
+
+
 	//seperation of templated definitions, will do in future
 	//#include "ECSTemplates.h"
 
