@@ -66,6 +66,8 @@ namespace Input {
 
 		void Test_Left_Mouse_Button(double dt);
 
+		void Test_Keybinds();
+
 
 		// a wrapper for GetKeyState -- WINAPI
 

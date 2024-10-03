@@ -44,6 +44,18 @@ namespace Input {
 
 	}
 
+	void Input_Container::Test_Keybinds()
+	{
+		this->Action("KEY W");
+		this->Action("KEY A"); 
+		this->Action("KEY S"); 
+		this->Action("KEY D");
+
+		this->Action("KEY SPACE"); 
+
+
+	}
+
 	//member helper function
 	// initialise key bind
 	void Input_Container::Init_Add_Keybind(std::string action_name, Key key, InputState keystate)
@@ -121,8 +133,9 @@ namespace Input {
 
 		if (this->actionMap.find(action_name) != this->actionMap.end()) { // i want to locate the key.
 			if (this->actionMap[action_name].actionState) {
-				std::string Input_debug_string = action_name + " is to occur! \n";
-				std::cout << Input_debug_string;
+				std::string Input_debug_string = action_name + " action is to occur! \n";
+
+				Logger::LogInfo(Input_debug_string);
 				return true; // true means found the action_name
 			}
 
@@ -234,7 +247,7 @@ namespace Input {
 
 			GetMousePosDevice(this->mouse_device_coord[0], this->mouse_device_coord[1]);
 			std::ostringstream message; 
-			message << "Left Mouse is pressed, position is: ";
+			message << "Left Mouse is pressed, device position is: ";
 			message << std::setprecision(2) << std::to_string(this->mouse_device_coord[0]);
 			message << " , ";
 			message << std::setprecision(2) << std::to_string(this->mouse_device_coord[1]);
