@@ -277,6 +277,10 @@ namespace Scene {
 
             for (auto& ent : sceneEntities)
             {
+                auto rComp = ent.GetComponent<Render::CRenderable>();
+                if (rComp.GetRenderLayer() == Render::CRenderable::R_BACKGROUND) {
+                    continue;
+                }
                 auto& transf = ent.GetComponent<Component::CTransform>();
 
                 // SCALE UP AND DOWN
