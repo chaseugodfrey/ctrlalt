@@ -74,6 +74,9 @@ namespace ECS
 
 	public:
 		//Constructor
+		/*
+		
+		*/
         Entity(EntityID id) : id(id), registry(nullptr) { 0; }
 		EntityID GetID() const { return id; }
 		Entity(const Entity& other) = default;
