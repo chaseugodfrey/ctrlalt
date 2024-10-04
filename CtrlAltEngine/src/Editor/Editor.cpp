@@ -45,6 +45,11 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 namespace Editor
 {
 
+	//========================================================
+	//========================================================
+	//========================================================
+
+	// TESTING PURPOSES
 	static Editor* editor = nullptr;
 
 	Editor const* GetEditor()
@@ -52,7 +57,6 @@ namespace Editor
 		return editor;
 	}
 
-	// TESTING STUFF
 	std::string file_path{ "Resources/test.txt" };
 	std::string test_text{};
 
@@ -78,6 +82,8 @@ namespace Editor
 	}
 
 	//========================================================
+	//========================================================
+	//========================================================
 
 	Editor::Editor() : window(nullptr), frame_timer(nullptr), scene_manager(nullptr)
 	{
@@ -90,6 +96,19 @@ namespace Editor
 
 		//Logger::LogInfo("Editor Created");
 	}
+
+	/**
+	 * @brief Initializes the editor with necessary dependencies and ImGui setup.
+	 *
+	 * This function sets up the editor by initializing the window, scene manager,
+	 * and frame timer. It also configures the ImGui context and docking settings.
+	 *
+	 * @param _window A pointer to the GLFW window used by the editor.
+	 * @param _scene_manager A pointer to the scene manager responsible for scene handling.
+	 * @param _frameTimer A pointer to the frame timer used to track FPS and other time-based functionality.
+	 *
+	 * @return void This function does not return a value.
+	 */
 
 	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
 	{
@@ -111,7 +130,7 @@ namespace Editor
 
 	void Editor::Update()
 	{
-		//glfwPollEvents();
+		//glfwPollEvents(); // unsure if extra polling?
 
 		// =========== TESTING PURPOSES =============
 
@@ -125,6 +144,7 @@ namespace Editor
 		{
 
 		}
+
 		// ===========================================
 	}
 
@@ -156,6 +176,16 @@ namespace Editor
 	}
 
 	// EDITOR WINDOWS
+
+	/**
+	 * @brief Displays the menu bar for the editor window.
+	 *
+	 * This function creates and renders the editor's menu bar, including menus for "File",
+	 * "Create", and "M1 Scenes", with options like exiting the program, creating entities,
+	 * and loading scenes.
+	 *
+	 * @return void This function does not return a value.
+	 */
 
 	void Editor::DisplayMenuBar()
 	{
@@ -233,6 +263,15 @@ namespace Editor
 
 	}
 
+	/**
+	 * @brief Displays the play state window in the editor.
+	 *
+	 * This function sets up and renders the play state window, which includes buttons
+	 * for "Play" and "Stop", as well as displaying the current frames per second (FPS).
+	 *
+	 * @return void This function does not return a value.
+	 */
+
 	void Editor::DisplayPlayState()
 	{
 
@@ -255,6 +294,16 @@ namespace Editor
 
 		ImGui::End();
 	}
+
+	/**
+	 * @brief Displays the inspector window in the editor.
+	 *
+	 * This function creates and renders the inspector window, allowing users to view
+	 * and edit entity properties such as "Transform". It includes drag-and-drop for
+	 * modifying position coordinates and an input text field for serialization testing.
+	 *
+	 * @return void This function does not return a value.
+	 */
 
 	void Editor::DisplayInspector()
 	{
@@ -287,6 +336,18 @@ namespace Editor
 
 	}
 
+	/**
+	 * @brief Displays scene window in the editor.
+	 *
+	 * This function displays the scene rendered as a frame buffer
+	 * from the rendering system after converting it into an ImGUI
+	 * texture.
+	 * 
+	 * Not currently working now.
+	 *
+	 * @return void This function does not return a value.
+	 */
+
 	void Editor::DisplayScene()
 	{
 		//ImGui::SetNextWindowSize(ImVec2(1120, 500));
@@ -301,6 +362,17 @@ namespace Editor
 		ImGui::End();
 
 	}
+
+	/**
+	 * @brief Displays the console window in the editor.
+	 *
+	 * This function sets up and renders the console window, allowing users to view
+	 * and clear console messages. It features a scrollable table displaying logged data,
+	 * with an option for auto-scrolling. Users can also manually clear the console
+	 * by pressing the "Clear" button.
+	 *
+	 * @return void This function does not return a value.
+	 */
 
 	void Editor::DisplayInConsole()
 	{
@@ -347,27 +419,70 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/**
+	 * @brief Retrieves the exit prompt status.
+	 *
+	 * This function checks whether the user has been prompted to exit the editor.
+	 *
+	 * @return bool True if the user is prompted to exit, false otherwise.
+	 */
 
 	bool Editor::GetExitPrompt()
 	{
 		return isPromptedToExit;
 	}
 
+	/**
+	 * @brief Adds a new line of text to the console.
+	 * 
+	 * This function appends a given string to the console's log.
+	 * 
+	 * @param str The string to be added to the console.
+	 * @return void This function does not return a value.
+	 */
+
 	void Editor::ConsoleAddLine(std::string const& str) const
 	{
 		console_data.push_back(str);
 	}
+
+	/**
+	 * @brief Clears the console log.
+	 *
+	 * This function clears all the text currently stored in the console's log.
+	 *
+	 * @return void This function does not return a value.
+	 */
 
 	void Editor::ConsoleClear() const
 	{
 		console_data.clear();
 	}
 
+	/**
+	 * @brief Reads and returns the current frames per second (FPS).
+	 *
+	 * This function retrieves the current FPS from the frame timer and formats it
+	 * as a string.
+	 *
+	 * @return std::string A formatted string showing the current FPS.
+	 */
+
 	std::string Editor::ReadFPS() const
 	{
 		std::string FPSCOUNT = "FPS + " + frame_timer->ReadFPS();
 		return FPSCOUNT;
 	}
+
+	/**
+	 * @brief Loads a scene based on its index.
+	 *
+	 * This function logs a message to the console and switches to a new scene
+	 * by its index.
+	 *
+	 * @param index The index of the scene to load.
+	 * @return void This function does not return a value.
+	 */
 
 	void Editor::LoadScene(int index)
 	{
@@ -376,5 +491,4 @@ namespace Editor
 		scene_manager->SwitchScene(this_string);
 	}
 
-	//}
 }
