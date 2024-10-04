@@ -180,7 +180,6 @@
     <ClCompile Include="src\Math\MathLib.cpp" />
     <ClCompile Include="src\PhysicsManager\PhysicsManager.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
-    <ClCompile Include="src\Render\glhelper.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -251,7 +250,6 @@
     <ClInclude Include="src\EventManager\EventBus.h" />
     <ClInclude Include="src\Events\KeyPressEvent.h" />
     <ClInclude Include="src\Input\Input.h" />
-    <ClInclude Include="src\Render\glhelper.h" />
     <ClInclude Include="src\Render\glslshader.h" />
     <ClInclude Include="src\Render\Render.h" />
     <ClInclude Include="src\Engine\Engine.h" />

@@ -7,7 +7,6 @@ muhammadrayan.b@digipen.edu
 */
 
 #include "PhysicsManager.h"
-#include "../Render/glhelper.h"
 
 
 

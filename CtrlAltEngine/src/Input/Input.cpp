@@ -1,6 +1,5 @@
 
 #include "input.h"
-#include "../Render/glhelper.h" // for g_dt for the moment.
 #include <sstream>
 #include "../Debug/Debugger.h"
 
