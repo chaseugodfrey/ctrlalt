@@ -87,6 +87,8 @@ namespace Editor
 
 	Editor::~Editor()
 	{
+		if (editor)
+			delete editor;
 		//Logger::LogInfo("Editor Created");
 	}
 
