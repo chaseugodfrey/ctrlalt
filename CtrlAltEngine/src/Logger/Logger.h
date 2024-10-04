@@ -1,8 +1,8 @@
 /*!
 \group      CtrlAlt
 \file       Logger.h
-\author     Jerron Teng
-\par        t.junrongjerroni@digipen.edu
+\author     Michael Lazaroo
+\par        m.lazaroo@digipen.edu
 \date       Sep 09, 2024
 \brief      Basic implementation of a Logging system.
 

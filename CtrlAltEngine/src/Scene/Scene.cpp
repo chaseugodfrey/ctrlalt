@@ -2,8 +2,8 @@
 @group CTRL ALT
 @file Scene.cpp
 @brief Implementation of the Scene
-Created by Jerron Teng
-t.junrongjerron@digipen.edu
+Created by Chase Rodrigues
+rodrigues.i@digipen.edu
 */
 #include "Scene.h"
 
