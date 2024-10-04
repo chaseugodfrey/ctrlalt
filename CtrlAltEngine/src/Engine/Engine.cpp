@@ -68,8 +68,7 @@ namespace Engine{
     /// 
     /// </summary>
     Engine::~Engine() {
-        if (editor)
-            delete editor;
+
         //Logger::LogInfo("Engine Deleted");
     }
 
@@ -212,6 +211,8 @@ namespace Engine{
         glfwDestroyWindow(main_window);
         editor->Destroy();
         glfwTerminate();
+        if (editor)
+            delete editor;
      //   CheckGLError();
     }
 
