@@ -774,10 +774,21 @@ namespace System {
 				glm::vec2 BR{ pos.x + scale.x * 0.5f, pos.y - scale.y * 0.5f };
 
 
-				DrawLine(TL, TR, { 1.f,0.f,0.f,1.f });
-				DrawLine(TR, BR, { 1.f,0.f,0.f,1.f });
-				DrawLine(BR, BL, { 1.f,0.f,0.f,1.f });
-				DrawLine(BL, TL, { 1.f,0.f,0.f,1.f });
+				DrawLine(TL, TR, { 0.f,1.f,0.f,1.f });
+				DrawLine(TR, BR, { 0.f,1.f,0.f,1.f });
+				DrawLine(BR, BL, { 0.f,1.f,0.f,1.f });
+				DrawLine(BL, TL, { 0.f,1.f,0.f,1.f });
+			}
+			//Draw velocity debug info
+			if (draw_debug && entity.HasComponent<Component::CTransform>() && entity.HasComponent<Component::CRigidBody>()) {
+				Component::CTransform& transform = entity.GetComponent<Component::CTransform>();
+				Component::CRigidBody& rigidbody = entity.GetComponent<Component::CRigidBody>();
+				MathLib::vec2 targetPos = transform.position + rigidbody.vel;
+
+				glm::vec2 target = { targetPos.x, targetPos.y };
+				glm::vec2 pos = { transform.position.x, transform.position.y };
+
+				DrawLine(pos, target, {0.f,1.f,1.f,1.f});
 			}
 		}
 		//Example of drawing of line
@@ -831,7 +842,7 @@ namespace System {
 
 		glm::mat3 tform = camera.GetWorldtoNDC() * translate * rotate * scale;
 
-		render_pipeline.DrawLine(tform, { 0.f,0.f,0.f,1.f }, model_map["line"], shader_map["PlainColor"]);
+		render_pipeline.DrawLine(tform, color, model_map["line"], shader_map["PlainColor"]);
 	}
 
 	/************************************/
