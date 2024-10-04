@@ -5,7 +5,7 @@
 \author 	Elton Leosantosa
 \par    	leosantosa.e@digipen.edu
 \date   	Sep 13, 2024
-\brief		Render System Definitions and API
+\brief		Render System Declarations and API
 
 
 Copyright (C) 2024 DigiPen Institute of Technology.
@@ -59,10 +59,10 @@ namespace Render {
 		glm::vec2 texCoord;
 	};
 
-	//Class that represents something that can be drawn
+	//Component that deals with rendering something to the screen
 	class CRenderable {
 	public:
-		//Quick render layer for now
+		//Quick render layer for now for deciding rendering order
 		enum RenderLayer{
 			R_BACKGROUND = 0,
 			R_WORLD,
@@ -70,55 +70,85 @@ namespace Render {
 			R_TOTAL
 		};
 	private:
+		/*
+		* Handle to actual underlying asset
+		*/
 		std::unordered_map<std::string, GLuint>::iterator textureHandle;
 		std::unordered_map<std::string, GLModel>::iterator modelHandle;
 		std::unordered_map<std::string, GLSLShader>::iterator shader_handle;
 		/*
-		Render Variables
+		* Handle to temporary asset for loading in by internal asset manager
 		*/
 		std::string textureName{ "default" };
 		std::string meshName{ "default" };
 		std::string shaderName{ "default" };
+		//Flag for when temporary asset has been changed and need to be re-loaded in by asset manager
 		bool compiled = false;
+
+		//Color variable for use to modulate texture/image
 		glm::vec4 color{1.f,1.f,1.f,1.f};
 
 		//U start, U end, V start, V end
 		glm::vec4 UV{ 0.f,1.f,0.f,1.f };
 
+		//Render order
 		RenderLayer render_layer{ R_WORLD };
 	public:
-		//Sorting operation for priority queue
-		//friend bool operator < (CRenderable const&, CRenderable const&);
+		/*
+		* Setter functions which wrap setting of temporary name as well as flagging for reload with asset manager
+		*/
 		void SetTexture(std::string, bool force = false);
 		void SetMesh(std::string const&);
 		void SetShader(std::string const&);
 		void SetColor(glm::vec4 const&);
 		void SetRenderLayer(RenderLayer);
 
-
 		void SetTex_U(glm::vec2 const&);
 		void SetTex_V(glm::vec2 const&);
 		void SetTex_UV(glm::vec4 const&);
 		void SetTex_UV(glm::vec4&&);
+
+
 		RenderLayer GetRenderLayer() const;
 
 		friend System::SRender;
 		friend RenderPipeline;
 	};
 
-	//Asset of a SpriteAnimation
+	/*
+	* Function object to sort render layer
+	*/
+	struct {
+		bool operator()(ECS::Entity const& lhs, ECS::Entity const& rhs) {
+			return lhs.GetComponent<CRenderable>().GetRenderLayer() < rhs.GetComponent<CRenderable>().GetRenderLayer();
+		}
+	} RenderSort;
+
+	/*
+	* Current Implementation of a Sprite Animation Asset
+	* Still unsure whether this should be a seperate form of text file or some form of data structure
+	* potentially serialized into a json, need to think more about this
+	*/
 	class SpriteAnimationAsset {
 	private:
+		//Array of UVs for each sprite frame
 		std::vector<glm::vec4> sprite_UVs{};
 		GLfloat time_per_frame{ 1.f };
+		//Current time of frame
 		GLfloat currentTime{};
+		//Index of current frame
 		std::size_t currentUV{};
+
 		bool loop{ true };
 	public:
+		//Name of texture it is referring to, this structure will need to be re considered for mapping of sprite animation data and target texture
 		std::string textureName{};
+		//Reset animation
 		void Reset();
+		//Update animation timer
 		void Update(GLfloat);
 		glm::vec4 GetCurrentUV() const;
+
 		//Factory
 		static SpriteAnimationAsset CreateSpriteAsset(std::vector<glm::vec4> const&, GLfloat, std::string);
 		static SpriteAnimationAsset CreateSpriteAsset(std::vector<glm::vec4> &&, GLfloat, std::string);
@@ -127,13 +157,19 @@ namespace Render {
 	//State Machine for animator
 	struct SpriteStateMachine {
 		//vector of state transitions
+		//start state, condition, end state
 		std::vector<std::tuple<std::string, bool(*)(ECS::Entity const&), std::string>> state_transitions;
 	};
 
+	//Component that deals with sprite animation, will need to invert logic into system and not here
+	//Currently feels like its dealing with both sprite animation and transition, need to think more about structure of this
 	class CSpriteAnimator {
 	private:
+		//Underlying transition state machine
 		SpriteStateMachine state_machine;
+		//Access to each sprite animation asset
 		std::unordered_map<std::string, SpriteAnimationAsset> animation_map;
+		//Handles to current and starting animation
 		std::string currentAnimation{};
 		std::string startAnimation{};
 	public:
@@ -147,24 +183,29 @@ namespace Render {
 		glm::vec4 GetUV() const;
 	};
 
-	struct {
-		bool operator()(ECS::Entity const& lhs, ECS::Entity const& rhs) {
-			return lhs.GetComponent<CRenderable>().GetRenderLayer() < rhs.GetComponent<CRenderable>().GetRenderLayer();
-		}
-	} RenderSort;
-
 	//Forward
 	class Camera2d;
 
-	//Class that contains the pipeline to draw something to the window
+	/*
+	* Class that contains the pipeline to draw something to the window
+	* Wrapper for the draw pipeline
+	* Currently extremely basic, takes in 1 draw command, and draws to screen
+	* Keeps track of camera, which should be split into its own component and system
+	* Ownership of control of viewport is unsure right now as well
+	* 
+	* Uses assets from cpu memory, loads into gpu store, returns handle - eventually restructure to asset manager
+	* GLFWwindow management for seperate window rendering
+	*/
 	class RenderPipeline {
+		//Current window to draw on
 		GLFWwindow* target_window{};
+		//Temporary location to place camera
 		Camera2d* camera{};
 		//Viewport
 		GLint view_width{}, view_height{};
 		//std::multiset<CRenderable> objects;
 		void FB_callback(GLFWwindow* window, int width, int height);
-
+		//Converts a UV to a matrix to implement mapping- probably should not be here
 		glm::mat3 GetMtx_UV(glm::vec4 const& UV) const;
 
 	public:
@@ -197,7 +238,9 @@ namespace Render {
 
 	//For now just assume only 1 camera and its not a component
 	class Camera2d {
+		//Up and down vectors
 		glm::vec2 right{}, up{};
+		//world to view xform
 		glm::mat3 view_xform{};
 
 		//------------TEMPORARY!!!!!!!
@@ -266,6 +309,8 @@ namespace System {
 		void Destroy();
 	};
 
+	//System that tells entities with animator component to update and check its state
+	//Will need to invert logic so that it is here in the system and not with the component
 	class SAnimator : public ECS::System 
 	{
 	public:

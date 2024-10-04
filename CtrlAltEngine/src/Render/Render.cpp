@@ -1,3 +1,19 @@
+/******************************************************************************/
+/*!
+\group  	CtrlAlt
+\file		Render.cpp
+\author 	Elton Leosantosa
+\par    	leosantosa.e@digipen.edu
+\date   	Sep 13, 2024
+\brief		Render System Implementations
+
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+ /******************************************************************************/
+
 #include "Render.h"
 
 #include <array>

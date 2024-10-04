@@ -15,6 +15,14 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
  /******************************************************************************/
 
+/*
+* ===========================READ ME===========================
+* Currently this is a prototype for Assetmanager's api
+* Will need to determine where logic of loading assets should be
+* eg. loading textures from files/loading textures to GPU
+* Currently this class is not used
+* =============================================================
+*/
 #include <unordered_map>
 #include <string>
 #include <vector>
