@@ -1,3 +1,10 @@
+/**
+@group CTRL ALT
+@file Scene.cpp
+@brief Implementation of the Logger
+Created by Michael Lazaroo
+m.lazaroo@digipen.edu
+*/
 #include "Logger.h"
 #include <iostream>
 #include <iomanip>

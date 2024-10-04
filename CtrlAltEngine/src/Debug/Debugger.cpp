@@ -1,12 +1,15 @@
-///**
-//@group CTRL ALT
-//@file Debugger.cpp
-//@brief Debugging information to be calculated here
-//Created by Jerron Teng
-//t.junrongjerron@digipen.edu
-//*/ 
-//
-//#pragma once
+/**
+@group CTRL ALT
+@file Debugger.cpp
+@brief Debugging information to be calculated here
+Created by Jerron Teng
+t.junrongjerron@digipen.edu
+*/ 
+
+#pragma once
+
+// INCLUDES
+// =========================================================================================================
 #include "../Debug/Debugger.h"
 
 namespace Debug {

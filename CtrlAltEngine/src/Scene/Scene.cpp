@@ -1,5 +1,14 @@
+/**
+@group CTRL ALT
+@file Scene.cpp
+@brief Implementation of the Scene
+Created by Jerron Teng
+t.junrongjerron@digipen.edu
+*/
 #include "Scene.h"
 
+// INCLUDES
+// =========================================================================================================
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
 #include "../Components/CIdentifier.h"
