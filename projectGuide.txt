@@ -1,0 +1,51 @@
+~ CTRL ALT PRODUCTIONS ~
+# Project Settings Guide for CTRL ALT ENGINE
+# written by Chase Rodrigues
+
+Before Building, ensure that these project settings are as follows.
+
+------------------------------------------------------------------------
+
+VC++ Directories:
+- Include Directories
+1) $(SolutionDir)AxelUnderland\libs\GLFW\include;
+2) $(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)
+
+------------------------------------------------------------------------
+
+C/C++:
+- General
+
+$(SolutionDir)CtrlAltEngine\libs;
+$(SolutionDir)CtrlAltEngine\libs\GLFW\include;
+%(AdditionalIncludeDirectories)
+
+- Code Generation
+Runtime Library-> Multi-threaded Debug DLL (/MDd)
+
+------------------------------------------------------------------------
+
+Linker:
+Under Additional Dependencies
+
+glfw3.lib
+opengl32.lib
+glew32.lib
+$(CoreLibraryDependencies)
+
+------------------------------------------------------------------------
+
+Post Build Events (All Configurations): 
+1) xcopy /y /i /s "$(ProjectDir)Resources" "$(TargetDir)Resources"
+2) xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
+
+------------------------------------------------------------------------
+
+For now, ImGui Editor/Windows do not have an on/off functionality since the rendering 
+of scenes takes place in a separate GLFW Window. For Engine & Editor usage & functionality,
+refer to README txt (CTRLALT_ReadMe.txt).
+
+
+
+
+

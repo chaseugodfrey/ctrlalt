@@ -374,8 +374,8 @@ namespace ECS
 		 * @brief Resize the pool
 		 * @param _size The new size of the pool
 		 */
-		void Resize(int size) {
-			data.resize(size);
+		void Resize(int _size) {
+			data.resize(_size);
 		}
 
 		/**

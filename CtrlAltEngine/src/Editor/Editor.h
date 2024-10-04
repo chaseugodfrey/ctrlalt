@@ -1,3 +1,21 @@
+/******************************************************************************/
+/*!
+\group  	CtrlAlt
+\file		Editor.h
+\author 	Chase Rodrigues
+\par    	rodrigues.i@digipen.edu
+\date   	Sep 08, 2024
+\brief
+
+ImGui Editor Interface to wrap engine functionality and display necessary information
+for editing scenes.
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+ /******************************************************************************/
+
 #ifndef EDITOR_H
 #define EDITOR_H
 
@@ -40,10 +58,8 @@ namespace Editor {
 
 		// TEST FUNCTIONS
 
-		void DisplayCreateEntityButton();
 		void DisplayMenuBar();
 		void DisplayPlayState();
-		void DisplayFPS();
 		void DisplayHierarchy();
 		void DisplayInspector();
 		void DisplayScene();

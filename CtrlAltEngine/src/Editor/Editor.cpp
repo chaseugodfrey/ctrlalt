@@ -77,7 +77,7 @@ namespace Editor
 		ofs.close();
 	}
 
-	/////////////////////////////////////////////////////////
+	//========================================================
 
 	Editor::Editor() : window(nullptr), frame_timer(nullptr), scene_manager(nullptr)
 	{
@@ -141,7 +141,6 @@ namespace Editor
 		DisplayInspector();
 		DisplayScene();
 		DisplayInConsole();
-		DisplayFPS();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -254,13 +253,6 @@ namespace Editor
 	
 
 		ImGui::End();
-	}
-
-	// To Do:
-	// Delete as function has been relocated
-	void Editor::DisplayFPS()
-	{
-
 	}
 
 	void Editor::DisplayInspector()

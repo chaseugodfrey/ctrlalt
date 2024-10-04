@@ -33,15 +33,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 //#include <GLEW/GL/glew.h>
 //#include <GLFW/glfw3.h>
 
-/// spdlog is a lightweight C++ logging class
-/// usage
-/// 
-/// spdlog::trace("TRACE") Loglevel: Trace (Won't show up in console)
-/// spdlog::debug("DEBUG") Loglevel: Debug (Won't show up in console)
-/// spdlog::info("INFO") Loglevel: Info
-/// spdlog::warn("WARN") Loglevel: Warn
-/// spdlog::error("ERROR") Loglevel: Error
-/// spdlog::critical("CRITICAL") Loglevel: Critical
 #include "../ECS/ECS.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneManager.h"

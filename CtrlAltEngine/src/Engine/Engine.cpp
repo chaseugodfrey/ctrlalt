@@ -45,6 +45,17 @@ namespace {
 GLFWwindow* main_window;
 namespace Engine{
 
+    void EnableMemoryLeakChecking(int breakAlloc = -1)
+    {
+        //Set the leak checking flag
+        int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+        tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+        _CrtSetDbgFlag(tmpDbgFlag);
+
+        //If a valid break alloc provided set the breakAlloc
+        if (breakAlloc != -1) _CrtSetBreakAlloc(breakAlloc);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -117,35 +128,8 @@ namespace Engine{
         registry->AddSystem<System::SPhysics>();
         registry->AddSystem<System::SAnimator>();
         registry->AddSystem<System::SRender>();
-        // CheckGLError();
-		// ECS::Entity E_Player = registry->CreateEntity();
-		// ECS::Entity E_RabbitBlack = registry->CreateEntity();
-
-        // //change this
-        // E_Player.AddComponent<Component::CTransform>(MathLib::vec2(10.0, 30.0), MathLib::vec2(1.0, 1.0), 60.0);
-		// E_Player.AddComponent<Component::CRigidBody>(MathLib::vec2(10.0, 30.0));
-
-        // ECS::Entity E_RabbitWhite = registry->CreateEntity();
-        // E_RabbitWhite.AddComponent<Render::CRenderable>();
-        // E_RabbitWhite.AddComponent<Component::CTransform>(MathLib::vec2(1.f, 1.f), MathLib::vec2(2.f, 2.f), 60.f);
-        // Render::CRenderable& rComp = E_RabbitWhite.GetComponent<Render::CRenderable>();
-        // rComp.SetTexture("test");
-        // rComp.SetRenderLayer(Render::CRenderable::R_UI);
-
-        // ECS::Entity E_RabbitTest2 = registry->CreateEntity();
-        // E_RabbitTest2.AddComponent<Render::CRenderable>();
-        // E_RabbitTest2.AddComponent<Component::CTransform>(MathLib::vec2(-1.f, -1.f), MathLib::vec2(2.f, 2.f));
-        // Render::CRenderable& rComp3 = E_RabbitTest2.GetComponent<Render::CRenderable>();
-        // rComp3.SetTexture("test");
-        // rComp3.SetRenderLayer(Render::CRenderable::R_BACKGROUND);
-
-        // ECS::Entity E_RabbitTest = registry->CreateEntity();
-        // E_RabbitTest.AddComponent<Render::CRenderable>();
-        // Render::CRenderable& rComp2 = E_RabbitTest.GetComponent<Render::CRenderable>();
-        // rComp2.SetColor({ 1.f,0.f,0.f,0.5f });
         registry->AddSystem<System::SCollision>();
         registry->AddSystem<System::SKeyboardControl>();
-        //sceneSystem->Init();
     }
 
     /// <summary>
@@ -199,6 +183,7 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Run() {
+        EnableMemoryLeakChecking();
         Setup();
         while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
 			//Frame Timer
