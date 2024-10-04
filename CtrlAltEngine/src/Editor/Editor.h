@@ -1,6 +1,15 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
+/**
+GLFW_INCLUDE_NONE makes the GLFW header not include any OpenGL or OpenGL ES API header. This is useful in combination with an extension loading library.
+
+If none of the above inclusion macros are defined, the standard OpenGL GL/gl.h header (OpenGL/gl.h on macOS) is included, unless GLFW detects the inclusion guards of any OpenGL, OpenGL ES or extension loader header it knows about.
+
+The following macros control the inclusion of additional API headers. Any number of these may be defined simultaneously, and/or together with one of the above macros.
+*/
+#define GLFW_INCLUDE_NONE
+
 #include  <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include <vector>
