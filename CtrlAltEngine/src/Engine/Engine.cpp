@@ -68,6 +68,8 @@ namespace Engine{
     /// 
     /// </summary>
     Engine::~Engine() {
+        if (editor)
+            delete editor;
         //Logger::LogInfo("Engine Deleted");
     }
 
