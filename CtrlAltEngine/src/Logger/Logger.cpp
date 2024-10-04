@@ -21,8 +21,14 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <ctime>
 #include "../Editor/Editor.h"
 
+
 std::vector<LogEntry> Logger::messages;
 //https://en.cppreference.com/w/c/chrono/localtime 
+/**
+ * @brief Get the current date and time as a string
+ * @return std::string The current date and time as a string
+ * 
+ */
 std::string Logger::CurrentDateTimeToString() {
     std::time_t t = std::time(nullptr);
     std::tm tm;
@@ -35,6 +41,10 @@ std::string Logger::CurrentDateTimeToString() {
     return time.str();
 }
 
+/**
+ * @brief Log a message with a severity level of INFO
+ * @param message The message to log
+ */
 void Logger::LogInfo(const std::string& message) {
     LogEntry logEntry;
     logEntry.type = LOG_INFO;
