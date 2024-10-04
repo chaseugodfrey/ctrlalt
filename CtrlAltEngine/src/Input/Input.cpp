@@ -1,3 +1,26 @@
+/******************************************************************************/
+/*!
+\group  	CtrlAlt
+\file		Input.cpp
+\author 	Sherman Goh Wee Hao
+\par    	shermanweehao.goh@digipen.edu
+\date   	Oct 02, 2024
+\brief		Partial Action Maps and Wrapper of GLFW Function Calls.
+
+
+\par
+		This is my Input System,
+		I initialially went to thinking about Game Implementations , 
+		thus the Action map.
+		But we would need more usable APIs and flexible calls within our engines.
+		We would need to consider how the event/messaging systems is to be integrated.
+		There is also the case of using window's callback functions .
+
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+ /******************************************************************************/
 
 #include "input.h"
 #include <sstream>

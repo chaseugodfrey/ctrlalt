@@ -1,4 +1,29 @@
+/******************************************************************************/
+/*!
+\group  	CtrlAlt
+\file		Mock_Serialisation.cpp
+\author 	Sherman Goh Wee Hao
+\par    	shermanweehao.goh@digipen.edu
+\date   	Oct 02, 2024
+\brief		Data Serialisation with rapidJson
 
+\par 
+        These functions were ported from a working sandbox, it has not been
+        tested with the ECS , so we have not considered how integration would 
+        go when saving / switching scenes.
+        This does not allow for scaliability and also address special 
+        considerations like potential pointers or holding onto relations
+        of entities with each other.
+
+        Lastly, when I did this, Jerron and I aimed for simplicity,
+        Where Entities are stored as an array.
+        Looking at the current state of our ECS, I believe that having names
+        or taking the EntityID would allow easier tagging/identification.
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+ /******************************************************************************/
 
 
 #include "Mock_Serialisation.h"

@@ -68,6 +68,10 @@ namespace Serialisation{
 
         rapidjson::Document base_document; // Now at a class level 
 
+        /// <summary>
+        /// default constructor, 
+        /// I will set the base_document as base object.
+        /// </summary>
         Scene_Serialiser();
     };
 
