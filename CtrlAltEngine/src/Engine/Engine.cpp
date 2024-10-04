@@ -162,8 +162,8 @@ namespace Engine{
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
         registry->GetSystem<System::SAnimator>().Update(static_cast<GLfloat>(frameTimer.Get_dt()));
         registry->GetSystem<System::SRender>().UpdateFlags();
-        //global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
-        //global_input.Test_Keybinds();
+        global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
+        global_input.Test_Keybinds();
         
         registry->Update();
         CheckGLError();
