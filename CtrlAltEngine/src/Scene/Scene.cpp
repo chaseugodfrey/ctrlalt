@@ -321,7 +321,7 @@ namespace Scene {
                 {
                     auto& transf = ent.GetComponent<Component::CTransform>();
                     ent.AddComponent<Component::CRigidBody>();
-                    ent.AddComponent<Component::AABB>(transf.position, 2, 2);
+                    ent.AddComponent<Component::AABB>(transf.position, 2.0f, 2.0f);
                 }
 
                 auto& rb = sceneEntities[0].GetComponent<Component::CRigidBody>();
