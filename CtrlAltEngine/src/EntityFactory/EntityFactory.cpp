@@ -45,7 +45,7 @@ namespace EntityFactory {
 		entity.AddComponent<Component::CTransform>();
 		entity.AddComponent<Render::CRenderable>();
 		Render::CRenderable& rComp = entity.GetComponent<Render::CRenderable>();
-		rComp.SetTexture("test");
+		rComp.SetTexture("Axol_Sprite");
 		return entity;
 	}
 
