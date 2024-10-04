@@ -11,7 +11,7 @@ muhammadrayan.b@digipen.edu
 #include "../Components/CRigidBody.h"
 #include "../Math/MathLib.h"
 #include "../PhysicsManager/PhysicsManager.h"
-#include "../Render/glhelper.h"
+//#include "../Render/glhelper.h"
 
 
 

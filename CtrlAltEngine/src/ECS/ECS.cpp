@@ -49,7 +49,7 @@ namespace ECS
 		if (freeIDs.empty())
 		{
 			entityId = numEntities++;
-			Logger::LogInfo("Num entities: " + numEntities);
+			Logger::LogInfo("Num entities: " + std::to_string(numEntities));
 			if (entityId >= entityComponentMasks.size())
 			{
 				entityComponentMasks.resize(entityId + 1);
@@ -95,7 +95,7 @@ namespace ECS
 	void Registry::AddEntityToSystems(Entity entity)
 	{
 		const auto entityID = entity.GetID();
-		Logger::LogInfo("Created Entity of " + entityID);
+		Logger::LogInfo("Created Entity of " + std::to_string(entityID));
 	
 		const auto entityComponentMask = entityComponentMasks[entityID];
 

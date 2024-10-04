@@ -79,7 +79,7 @@ namespace Editor
 
 	/////////////////////////////////////////////////////////
 
-	Editor::Editor() : window(nullptr)
+	Editor::Editor() : window(nullptr), frame_timer(nullptr), scene_manager(nullptr)
 	{
 		//Logger::LogInfo("Editor Created");
 		editor = this;
@@ -106,13 +106,11 @@ namespace Editor
 		ImGui_ImplOpenGL3_Init("#version 450");
 
 		deserialize_string();
-
-		//gui_windows_list.push_back()
 	}
 
 	void Editor::Update()
 	{
-		glfwPollEvents();
+		//glfwPollEvents();
 
 		// =========== TESTING PURPOSES =============
 

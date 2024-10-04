@@ -767,11 +767,11 @@ namespace System {
 				//Get 4 corners of aabb
 				Component::CTransform& transform = entity.GetComponent<Component::CTransform>();
 				glm::vec2 pos = { transform.position.x, transform.position.y };
-				glm::vec2 scale = { transform.scale.x, transform.scale.y };
-				glm::vec2 TL{ pos.x - scale.x * 0.5f, pos.y + scale.y * 0.5f };
-				glm::vec2 TR{ pos.x + scale.x * 0.5f, pos.y + scale.y * 0.5f };
-				glm::vec2 BL{ pos.x - scale.x * 0.5f, pos.y - scale.y * 0.5f };
-				glm::vec2 BR{ pos.x + scale.x * 0.5f, pos.y - scale.y * 0.5f };
+				glm::vec2 scl = { transform.scale.x, transform.scale.y };
+				glm::vec2 TL{ pos.x - scl.x * 0.5f, pos.y + scl.y * 0.5f };
+				glm::vec2 TR{ pos.x + scl.x * 0.5f, pos.y + scl.y * 0.5f };
+				glm::vec2 BL{ pos.x - scl.x * 0.5f, pos.y - scl.y * 0.5f };
+				glm::vec2 BR{ pos.x + scl.x * 0.5f, pos.y - scl.y * 0.5f };
 
 
 				DrawLine(TL, TR, { 0.f,1.f,0.f,1.f });

@@ -153,7 +153,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /i /s "$(ProjectDir)Resources" "$(TargetDir)Resources"
-</Command>
+xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
