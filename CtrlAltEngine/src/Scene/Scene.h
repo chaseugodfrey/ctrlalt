@@ -1,10 +1,11 @@
+/******************************************************************************/
 /*!
-\group      CtrlAlt
-\file       Scene.h
-\author     Jerron Teng
-\par        t.junrongjerroni@digipen.edu
-\date       Sep 17, 2024
-\brief      
+\group  	CtrlAlt
+\file		Editor.cpp
+\author 	Chase Rodrigues
+\par    	rodrigues.i@digipen.edu
+\date   	Sep 08, 2024
+\brief
 
 This file defines the `Scene` class which manages a collection of entities in an ECS system.
 It provides functionality for loading and saving entity data, registering component deserializers,
