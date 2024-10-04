@@ -12,6 +12,11 @@ muhammadrayan.b@digipen.edu
 
 namespace Component
 {
+	/******************************************************************************/
+	/*
+		An enum to specify which anchor the position of the grid relates to
+	 */
+	 /******************************************************************************/
 	enum ANCHOR
 	{
 		CENTRE,
@@ -23,7 +28,7 @@ namespace Component
 
 	/******************************************************************************/
 	/*
-		A class to represent a Line segment from 2 points.
+		A class to represent a Grid and its data members
 	 */
 	 /******************************************************************************/
 	struct Grid

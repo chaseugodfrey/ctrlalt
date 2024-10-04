@@ -32,12 +32,25 @@ namespace System
 		 /******************************************************************************/
 		void Update();
 
-
+		/******************************************************************************/
+		/*
+			Grid collision to check if on the same tile
+		 */
+		 /******************************************************************************/
 		bool GridCollision( MathLib::vec2& lhs,  MathLib::vec2& rhs);
 
-
+		/******************************************************************************/
+		/*
+			Grid collision to check if on the same tile, compares x and y for vec3
+		 */
+		 /******************************************************************************/
 		bool GridCollision( MathLib::vec3& lhs,  MathLib::vec3& rhs);
 
+		/******************************************************************************/
+		/*
+			AABB collision that returns a boolean based on object input
+		 */
+		 /******************************************************************************/
 		bool CollisionIntersection_RectRect(const MathLib::vec2& pos1,	//Input position 1
 											const float w1,				//Input width
 											const float h1,				//Input height
@@ -48,6 +61,11 @@ namespace System
 											const MathLib::vec2& vel2,	//Input velocity
 											float& firstTimeOfCollision);
 
+		/******************************************************************************/
+		/*
+			Circle line collision returns a boolean if a circle component collides with a line component
+		 */
+		 /******************************************************************************/
 		bool CollisionIntersection_CircleLineSegment(const Component::Circle& circle,			//Circle data - input
 													const MathLib::vec2& ptEnd,					//End circle position - input
 													const Component::Line& lineSeg,				//Line segment - input

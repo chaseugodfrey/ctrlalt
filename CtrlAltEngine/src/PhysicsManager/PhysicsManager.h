@@ -23,7 +23,7 @@ namespace PhysicsManager
 
 	/******************************************************************************/
 	/*
-		Moves the starting point to the end point.
+		Moves the starting point to the end point with specified velocity
 	*/
 	/******************************************************************************/
 	void Move_Basic(MathLib::vec2& start, MathLib::vec2& end, const MathLib::vec2& velocity);
