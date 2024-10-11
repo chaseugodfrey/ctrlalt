@@ -1,0 +1,10 @@
+3
+ID: 0
+CTransform  0 0 1 1 0
+
+ID: 1
+CTransform  2 2 1 1 0
+
+ID: 2
+CTransform  -2 -2 1 1 0
+

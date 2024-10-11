@@ -27,13 +27,13 @@ namespace ECS
 	*/
 	/******************************************************************************/
 	//Entities
-	using EntityID = uint64_t;
-	using NumEntities = uint64_t;
+	using EntityID = int;
+	using NumEntities = int;
 	constexpr NumEntities MAX_ENTITIES = 100'000'000;
 
 	//Components
-	using ComponentID = uint8_t; //Allows up to 256 components
-	constexpr ComponentID MAX_COMPONENTS = (ComponentID)256;
+	using ComponentID = int; //Allows up to 256 components
+	constexpr ComponentID MAX_COMPONENTS = 256;
 	// Eacg bit in the mask represents a component
 	// '1' == active '0' == inactive
 	using ComponentMask = std::bitset <MAX_COMPONENTS>;
