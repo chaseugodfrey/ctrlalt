@@ -12,7 +12,6 @@ rodrigues.i@digipen.edu
 #include "Engine.h"
 #include <iostream>
 #include "glm/glm.hpp"
-#include "../Application/AppManager.h"
 #include "../Render/Render.h"
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
@@ -36,8 +35,6 @@ using namespace MathLib;
 Input::Input_Container global_input;// definition of the global variable 
 Scene::Scene* sceneSystem;
 Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
-
-using namespace ApplicationManager;
 
 namespace Engine{
 
@@ -67,7 +64,7 @@ namespace Engine{
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
         //## my input system will be a static variable in header.
-        global_input.Init_System(AppManager::GetInstance().GetAppWindow()); 
+        //global_input.Init_System(AppManager::GetInstance().GetAppWindow()); 
 
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
 
@@ -91,7 +88,7 @@ namespace Engine{
         //if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         //    isRunning = false;
         //}
-        global_input.Update(AppManager::GetInstance().GetAppWindow()); // able to dynamically change windows for keychecks
+        //global_input.Update(AppManager::GetInstance().GetAppWindow()); // able to dynamically change windows for keychecks
     }
 
     /// <summary>
@@ -138,14 +135,6 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Render() {
-
-        // SET BACKGROUND
-        glfwMakeContextCurrent(AppManager::GetInstance().GetAppWindow());
-        glClearColor(1.f, 1.f, 1.f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glfwSwapBuffers(AppManager::GetInstance().GetAppWindow());
-        glfwPollEvents();
 
         registry->GetSystem<System::SRender>().Render();
 

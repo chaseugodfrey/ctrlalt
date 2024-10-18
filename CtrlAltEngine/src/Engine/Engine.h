@@ -30,7 +30,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../Scene/Scene.h"
 #include "../Scene/SceneManager.h"
 #include "../Render/Render.h"
-#include "../Editor/Editor.h"
 #include "../EventManager/EventBus.h"
 #include "../AssetManager/AssetManager.h"
 #include "../Input/Input.h"
@@ -55,9 +54,6 @@ namespace Engine
 		std::unique_ptr<ECS::Registry> registry;
 		std::unique_ptr<Event::EventBus> eventBus;
 		std::unique_ptr<Scene::SceneManager> sceneManager;
-		
-		//Editor
-		Editor::Editor* editor;
 
 		//Asset
 		AssetManager assetManager; 

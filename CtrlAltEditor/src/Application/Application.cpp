@@ -2,8 +2,8 @@
 #include <GLFW/glfw3.h>
 #include "Application.h"
 #include "AppManager.h"
-#include "../Engine/Engine.h"
-#include "../Editor/Editor.h"
+#include "Engine/Engine.h"
+#include "Editor/Editor.h"
 
 namespace 
 {
@@ -27,9 +27,8 @@ namespace Application
         glClearColor(1.f, 1.f, 0.f, 1.f);
 
         GLFWwindow* window = CreateGLFWwindow(1920, 1080);
-        AppManager::GetInstance().Init(window);
-        AppManager::GetInstance().GetEngine()->Setup();
-        AppManager::GetInstance().GetEditor()->Initialize();
+        AppManager::GetInstance().Setup(window);
+        AppManager::GetInstance().Init();
 	}
 	
 	void App::Run()
@@ -38,6 +37,14 @@ namespace Application
         EnableMemoryLeakChecking();
         while (isRunning && !glfwWindowShouldClose(AppManager::GetInstance().GetAppWindow()))
         {
+            // SET BACKGROUND
+            glfwMakeContextCurrent(AppManager::GetInstance().GetAppWindow());
+            glClearColor(1.f, 1.f, 1.f, 1.f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glfwSwapBuffers(AppManager::GetInstance().GetAppWindow());
+            glfwPollEvents();
+
             AppManager::GetInstance().Run();
         }
 	}

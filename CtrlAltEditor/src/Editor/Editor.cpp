@@ -110,13 +110,8 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
+	void Editor::Initialize(GLFWwindow* _window)
 	{
-		//Dependencies
-		window = _window;
-		scene_manager = _scene_manager;
-		frame_timer = _frameTimer;
-
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;

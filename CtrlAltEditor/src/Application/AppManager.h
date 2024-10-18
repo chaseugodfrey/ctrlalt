@@ -3,8 +3,8 @@
 
 #include "GLEW/GL/glew.h"
 #include "GLFW/glfw3.h"
-#include "../Engine/Engine.h"
-#include "../Editor/Editor.h"
+#include "Engine/Engine.h"
+#include "Editor/Editor.h"
 
 namespace ApplicationManager
 {
@@ -30,7 +30,8 @@ namespace ApplicationManager
 
         static AppManager& GetInstance();
 
-        void Init(GLFWwindow*);
+        void Setup(GLFWwindow*);
+        void Init();
         void Run();
         void Shutdown();
     };

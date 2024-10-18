@@ -36,11 +36,17 @@ namespace ApplicationManager
 
     AppManager::~AppManager() {}
 
-    void AppManager::Init(GLFWwindow* window)
+    void AppManager::Setup(GLFWwindow* window)
     {
         m_engine = std::make_unique<Engine::Engine>();
         m_editor = std::make_unique<Editor::Editor>();
         m_window = std::make_unique<GLFWwindow*>(window);
+    }
+
+    void AppManager::Init()
+    {
+        m_engine->Initialize();
+        m_editor->Initialize();
     }
 
     void AppManager::Run()

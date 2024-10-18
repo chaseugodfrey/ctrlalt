@@ -72,12 +72,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CtrlAltEngine\libs\GLFW\include;$(SolutionDir)CtrlAltEngine\libs\GLEW\GL;$(IncludePath)</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)AxelUnderland\libs\GLFW\include;$(SolutionDir)AxelUnderland\libs\GLEW\GL;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CtrlAltEngine\libs\GLFW\include;$(SolutionDir)CtrlAltEngine\libs\GLEW\GL;$(IncludePath)</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
   </PropertyGroup>
@@ -165,9 +165,6 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClCompile Include="libs\imgui\include\imgui_stdlib.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_tables.cpp" />
     <ClCompile Include="libs\imgui\include\imgui_widgets.cpp" />
-    <ClCompile Include="src\Application\Application.cpp" />
-    <ClCompile Include="src\Application\AppManager.cpp" />
-    <ClCompile Include="src\Application\AppManager.h" />
     <ClCompile Include="src\AssetManager\AssetManager.cpp" />
     <ClCompile Include="src\Components\CCollider.cpp" />
     <ClCompile Include="src\Components\CGrid.cpp" />
@@ -185,7 +182,6 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
-    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Systems\SCollision.cpp" />
     <ClCompile Include="src\Serialisation\Mock_Serialisation.cpp" />
@@ -232,7 +228,6 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClInclude Include="libs\rapidjson\uri.h" />
     <ClInclude Include="libs\rapidjson\writer.h" />
     <ClInclude Include="libs\STB_Image\stb_image.h" />
-    <ClInclude Include="src\Application\Application.h" />
     <ClInclude Include="src\AssetManager\AssetManager.h" />
     <ClInclude Include="src\Components\CCollider.h" />
     <ClInclude Include="src\Components\CGrid.h" />
