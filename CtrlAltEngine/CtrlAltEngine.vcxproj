@@ -184,6 +184,7 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClCompile Include="src\Render\Render.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Scene\SceneManager.cpp" />
     <ClCompile Include="src\Systems\SCollision.cpp" />
     <ClCompile Include="src\Serialisation\Mock_Serialisation.cpp" />
     <ClCompile Include="src\Systems\SKeyboardControl.h" />
