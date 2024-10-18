@@ -12,6 +12,7 @@ rodrigues.i@digipen.edu
 #include "Engine.h"
 #include <iostream>
 #include "glm/glm.hpp"
+#include "../Application/AppManager.h"
 #include "../Render/Render.h"
 #include "../Components/CTransform.h"
 #include "../Components/CRigidBody.h"
@@ -32,38 +33,22 @@ using namespace MathLib;
 
 // STORE GLOBALS IN BETTER PLACE AFTER M1
 
-//Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 
 Scene::Scene* sceneSystem;
 Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
-namespace {
+using namespace ApplicationManager;
 
-    GLFWwindow* CreateGLFWwindow(int width, int height);
-}
-
-GLFWwindow* main_window;
 namespace Engine{
 
-    void EnableMemoryLeakChecking(int breakAlloc = -1)
-    {
-        //Set the leak checking flag
-        int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-        tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-        _CrtSetDbgFlag(tmpDbgFlag);
-
-        //If a valid break alloc provided set the breakAlloc
-        if (breakAlloc != -1) _CrtSetBreakAlloc(breakAlloc);
-    }
 
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false) {
-        main_window = (nullptr);
+    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()) {
         Logger::LogInfo("Engine Created");
     }
-
+    
     /// <summary>
     /// 
     /// </summary>
@@ -76,26 +61,15 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Initialize() {
-        if (!glfwInit()) {
-            return;
-        }
 
-        // CREATE WINDOWED APPLICATION
-        glClearColor(1.f, 1.f, 0.f, 1.f);
-        main_window = CreateGLFWwindow(windowWidth, windowHeight);
-
+        Setup();
 
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
         //## my input system will be a static variable in header.
-        global_input.Init_System(main_window); 
+        global_input.Init_System(AppManager::GetInstance().GetAppWindow()); 
 
-        isRunning = true;
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
-
-		
-        editor = new Editor::Editor();
-        editor->Initialize(main_window, sceneManager.get(),&frameTimer);
 
         sceneManager->AddScene("Scene1", "Assets/scene1.txt");
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
@@ -108,16 +82,16 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::ProcessInput() {
-        for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
-            int state = glfwGetKey(main_window, key);
-            if (state == GLFW_PRESS) {
-                eventBus->EmitEvent<KeyPressEvent>(key);
-            }
-        }
-        if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            isRunning = false;
-        }
-        global_input.Update(main_window); // able to dynamically change windows for keychecks
+        //for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+        //    int state = glfwGetKey(main_window, key);
+        //    if (state == GLFW_PRESS) {
+        //        eventBus->EmitEvent<KeyPressEvent>(key);
+        //    }
+        //}
+        //if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        //    isRunning = false;
+        //}
+        global_input.Update(AppManager::GetInstance().GetAppWindow()); // able to dynamically change windows for keychecks
     }
 
     /// <summary>
@@ -152,7 +126,6 @@ namespace Engine{
         
         registry->Update();
         CheckGLError();
-        editor->Update();
 
         frameTimer.update();
         if(frameTimer.GetFrameCount() == 59)
@@ -167,13 +140,11 @@ namespace Engine{
     void Engine::Render() {
 
         // SET BACKGROUND
-        glfwMakeContextCurrent(main_window);
+        glfwMakeContextCurrent(AppManager::GetInstance().GetAppWindow());
         glClearColor(1.f, 1.f, 1.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        editor->Draw();
-
-        glfwSwapBuffers(main_window);
+        glfwSwapBuffers(AppManager::GetInstance().GetAppWindow());
         glfwPollEvents();
 
         registry->GetSystem<System::SRender>().Render();
@@ -184,20 +155,13 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Run() {
-        EnableMemoryLeakChecking();
-        Setup();
-        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
-			//Frame Timer
-            frameTimer.update();
-			
-            //Keyboard Input
-            glfwPollEvents();
-            
-			//Engine Update
-            ProcessInput();
-            Update();
-            Render();
-        }
+        //Frame Timer
+        frameTimer.update();
+
+        //Engine Update
+        ProcessInput();
+        Update();
+        Render();
 
         CheckGLError();
     }
@@ -208,49 +172,9 @@ namespace Engine{
     void Engine::Destroy() {
         //   CheckGLError();
         registry->GetSystem<System::SRender>().Destroy();
-        glfwDestroyWindow(main_window);
-        editor->Destroy();
-        glfwTerminate();
-        if (editor)
-            delete editor;
+
      //   CheckGLError();
     }
 
-   
-
-}
-namespace {
-    // HELPER FUNCTIONS
-    GLFWwindow* CreateGLFWwindow(int width, int height)
-    {
-
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-        glfwWindowHint(GLFW_DEPTH_BITS, 24);
-        glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
-        glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        width = mode->width;
-        height = mode->height;
-
-        GLFWwindow* window = glfwCreateWindow(width, height, "AxelUnderland", NULL, nullptr);
-        if (!window) {
-
-            glfwTerminate();
-            return window;
-        }
-
-        glfwMakeContextCurrent(window);
-
-        glViewport(0, 0, width, height);
-        glfwSetFramebufferSizeCallback(window, [](GLFWwindow* /*window*/, int width, int height) {
-            glViewport(0, 0, width, height);
-            });
-
-        return window;
-    }
+  
 }
