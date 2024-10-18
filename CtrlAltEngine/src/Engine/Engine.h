@@ -19,6 +19,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #ifndef ENGINE_H
 #define ENGINE_H
 
+// This is here because= GLFW uses the APIENTRY macro to declare the same name function, both have windows.h  files
+#ifdef _WIN32
+#include <windows.h>
+#else
+#define APIENTRY
+#endif
+
 
 // INCLUDES
 // =========================================================================================================
@@ -50,6 +57,7 @@ namespace Engine
 	class Engine
 	{
 	private:
+		bool isRunning;
 
 		//ECS
 		std::unique_ptr<ECS::Registry> registry;
@@ -83,7 +91,9 @@ namespace Engine
 		void Render();
 
 		void Destroy();
-
+		int windowWidth;
+		int windowHeight;
+		
 	};
 
 

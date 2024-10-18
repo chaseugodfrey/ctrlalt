@@ -9,12 +9,12 @@
 */
 /******************************************************************************/
 
-#include "Application/Application.h"
+#include "Engine/Engine.h"
 
 int main() {
-    Application::App app{};
-    app.Init();
-    app.Run();
-    app.Shutdown();
+    Engine::Engine engine;
+    engine.Initialize();
+    engine.Run();
+    engine.Destroy();
     return 0;
 }
