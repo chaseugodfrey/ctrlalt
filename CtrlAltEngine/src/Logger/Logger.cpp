@@ -52,7 +52,7 @@ void Logger::LogInfo(const std::string& message) {
     logEntry.message = "[" + CurrentDateTimeToString() + "]: " + message;
     std::cout << '[' << GREEN << "info" << RESET <<']' << logEntry.message << std::endl;
 
-    Editor::GetEditor()->ConsoleAddLine(logEntry.message);
+    //Editor::GetEditor()->ConsoleAddLine(logEntry.message);
 
     messages.push_back(logEntry);
 }

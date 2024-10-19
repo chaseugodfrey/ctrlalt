@@ -13,11 +13,23 @@
 #ifndef EDITOR_WINDOW_H
 #define EDITOR_WINDOW_H
 
-#include "Editor_Includes.h"
 #include <string>
+#include "../EditorIncludes.h"
+#include "../EditorService.h"
+#include "../EditorContext.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
+
+	enum EditorWindowType
+	{
+		MENU,
+		SCENE,
+		HIERARCHY,
+		INSPECTOR,
+		LOGGER
+	};
+
 	class EditorWindow
 	{
 	public:

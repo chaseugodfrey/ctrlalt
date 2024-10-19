@@ -32,25 +32,31 @@ The following macros control the inclusion of additional API headers. Any number
 #include "glm/glm.hpp"
 #include <vector>
 
-#include "Editor_Includes.h"
-#include "EditorWindow.h"
+// Include Editor 
+#include "EditorIncludes.h"
+#include "EditorContext.h"
+#include "EditorService.h"
+
+#include "Windows/EditorBaseWindow.h"
+
 #include "../Scene/SceneManager.h"
 #include "../ECS/ECS.h"
 #include "../Debug/Debugger.h"
 
-namespace Editor {
+namespace CtrlAltEditor {
 
 	class Editor {
 
 	private:
 
+		std::unique_ptr<EditorContext> context;
+		std::unique_ptr<EditorService> service;
+		std::vector<EditorWindow> editorWindowsList;
+
 		// bools
 		bool isPromptedToExit{ false };
 		bool isCreateEntity{ false };
 
-		GLFWwindow* window;
-
-		std::vector<EditorWindow*> gui_windows_list;
 		Scene::SceneManager* scene_manager;
 
 		//
@@ -71,8 +77,10 @@ namespace Editor {
 
 		void Initialize(GLFWwindow*, Scene::SceneManager*, Debug::FrameTimer*);
 		void Update();
-		void Draw();
+		void Render(GLFWwindow*);
 		void Destroy();
+
+		void DisplayGUIWindows();
 
 		// TEST FUNCTIONS
 		void LoadScene(int);
@@ -84,8 +92,6 @@ namespace Editor {
 		bool GetExitPrompt();
 
 	};
-
-	Editor const* GetEditor();
 
 }
 

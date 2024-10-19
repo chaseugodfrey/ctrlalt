@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 \group  	CtrlAlt
-\file		Editor_Hierarchy.h
+\file		EditorHierarchy.h
 \author 	Chase Rodrigues
 \par    	rodrigues.i@digipen.edu
 \date   	Sep 08, 2024
@@ -19,15 +19,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #ifndef EDITOR_HIERACHY_H
 #define EDITOR_HIERACHY_H
 
-#include "EditorWindow.h"
+#include "EditorBaseWindow.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
 
 	class Hierarchy : public EditorWindow
 	{
 	public:
-		void Display();
+		void Display() override;
 	};
 
 }

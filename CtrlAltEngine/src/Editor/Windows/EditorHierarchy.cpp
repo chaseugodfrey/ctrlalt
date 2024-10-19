@@ -1,9 +1,9 @@
 #ifndef EDITOR_HIERARCHY_H
 #define EDITOR_HIERARCHY_H
 
-#include "Editor_Hierarchy.h"
+#include "EditorHierarchy.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
 	void Hierarchy::Display()
 	{

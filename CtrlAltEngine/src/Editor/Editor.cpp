@@ -42,7 +42,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../ECS/ECS.h"
 #include "../Scene/SceneManager.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
 
 	//========================================================
@@ -50,12 +50,6 @@ namespace Editor
 	//========================================================
 
 	// TESTING PURPOSES
-	static Editor* editor = nullptr;
-
-	Editor const* GetEditor()
-	{
-		return editor;
-	}
 
 	std::string file_path{ "Resources/test.txt" };
 	std::string test_text{};
@@ -85,10 +79,9 @@ namespace Editor
 	//========================================================
 	//========================================================
 
-	Editor::Editor() : window(nullptr), frame_timer(nullptr), scene_manager(nullptr)
+	Editor::Editor() : frame_timer(nullptr), scene_manager(nullptr)
 	{
 		//Logger::LogInfo("Editor Created");
-		editor = this;
 	};
 
 	Editor::~Editor()
@@ -110,10 +103,9 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
+	void Editor::Initialize(GLFWwindow* window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
 	{
 		//Dependencies
-		window = _window;
 		scene_manager = _scene_manager;
 		frame_timer = _frameTimer;
 
@@ -126,6 +118,10 @@ namespace Editor
 		ImGui_ImplOpenGL3_Init("#version 450");
 
 		deserialize_string();
+
+		context = std::make_unique<EditorContext>();
+		service = std::make_unique<EditorService>(context);
+		service->CreateWindow(MENU);
 	}
 
 	void Editor::Update()
@@ -148,7 +144,7 @@ namespace Editor
 		// ===========================================
 	}
 
-	void Editor::Draw()
+	void Editor::Render(GLFWwindow* window)
 	{
 		glfwMakeContextCurrent(window);
 		ImGui_ImplGlfw_NewFrame();
@@ -157,11 +153,15 @@ namespace Editor
 
 		// To Do:
 		// Convert into separate window file sub classes
-		DisplayMenuBar();
-		DisplayPlayState();
-		DisplayInspector();
-		DisplayScene();
-		DisplayInConsole();
+		// 
+		
+		//DisplayMenuBar();
+		//DisplayPlayState();
+		//DisplayInspector();
+		//DisplayScene();
+		//DisplayInConsole();
+
+		DisplayGUIWindows();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -173,6 +173,17 @@ namespace Editor
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+	}
+
+	void Editor::DisplayGUIWindows()
+	{
+		if (editorWindowsList.size() <= 0)
+			return;
+
+		for (auto& window : editorWindowsList)
+		{
+			window.Display();
+		}
 	}
 
 	// EDITOR WINDOWS
@@ -187,81 +198,7 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::DisplayMenuBar()
-	{
-		// Set Menu Bar Size & position
-		// Remember to change size dynamically
-		ImGui::SetNextWindowSize(ImVec2(1920, 40));
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
 
-		static ImVec2 frame_padding(5.0f, 10.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, frame_padding);
-
-		// Menu Bar Rendering
-		if (ImGui::Begin("AxelUnderland", NULL,
-			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
-		{
-			if (ImGui::BeginMenuBar())
-			{
-				ImGui::SetWindowFontScale(1.2f);
-				// FILE DROP DOWN MENU
-				if (ImGui::BeginMenu("File"))
-				{
-					ImGui::MenuItem("Exit", NULL, &isPromptedToExit);
-
-					// DISABLE SAVE SCENE FOR NOW
-					//if (ImGui::MenuItem("Save Scene"))
-					//{
-					//	scene_manager->SaveScene();
-					//}
-
-					ImGui::EndMenu();
-				}
-
-				if (ImGui::BeginMenu("Create"))
-				{
-					//ImGui::BeginDisabled();
-
-					if (ImGui::MenuItem("Entity (WIP)"))
-					{
-						scene_manager->CreateEntityInScene("Basic");
-						//ECS::Entity entity = registry->CreateEntity();
-
-					}
-					//ImGui::EndDisabled();
-					ImGui::EndMenu();
-				}
-
-				// FOR M1 SUBMISSION PURPOSES
-				if (ImGui::BeginMenu("M1 Scenes"))
-				{
-					if (ImGui::MenuItem("Scene 1"))
-					{
-						LoadScene(1);
-					};
-
-					if (ImGui::MenuItem("Scene 2"))
-					{
-						LoadScene(2);
-					};
-
-					if (ImGui::MenuItem("Scene 3"))
-					{
-						LoadScene(3);
-					};
-
-					ImGui::EndMenu();
-				}
-
-				ImGui::EndMenuBar();
-			}
-
-		};
-
-		ImGui::PopStyleVar();
-		ImGui::End();
-
-	}
 
 	/**
 	 * @brief Displays the play state window in the editor.

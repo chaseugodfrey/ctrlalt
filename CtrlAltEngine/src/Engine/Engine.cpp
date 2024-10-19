@@ -34,7 +34,6 @@ using namespace MathLib;
 
 //Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 
-Scene::Scene* sceneSystem;
 Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
 namespace {
@@ -42,7 +41,6 @@ namespace {
     GLFWwindow* CreateGLFWwindow(int width, int height);
 }
 
-GLFWwindow* main_window;
 namespace Engine{
 
     void EnableMemoryLeakChecking(int breakAlloc = -1)
@@ -60,7 +58,6 @@ namespace Engine{
     /// 
     /// </summary>
     Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false) {
-        main_window = (nullptr);
         Logger::LogInfo("Engine Created");
     }
 
@@ -76,31 +73,33 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Initialize() {
+
         if (!glfwInit()) {
             return;
         }
 
+        isRunning = true;
         // CREATE WINDOWED APPLICATION
         glClearColor(1.f, 1.f, 0.f, 1.f);
-        main_window = CreateGLFWwindow(windowWidth, windowHeight);
+        mainWindow = CreateGLFWwindow(windowWidth, windowHeight);
 
+
+        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
+
+        editor = std::make_unique<CtrlAltEditor::Editor>();
+        editor->Initialize(mainWindow, sceneManager.get(),&frameTimer);
 
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
         //## my input system will be a static variable in header.
-        global_input.Init_System(main_window); 
 
-        isRunning = true;
-        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
-
-		
-        editor = new Editor::Editor();
-        editor->Initialize(main_window, sceneManager.get(),&frameTimer);
-
+        global_input.Init_System(mainWindow);
         sceneManager->AddScene("Scene1", "Assets/scene1.txt");
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
         sceneManager->AddScene("Scene3", "Assets/scene3.txt");
         sceneManager->SwitchScene("Scene1");
+
+
 
     }
 
@@ -109,15 +108,15 @@ namespace Engine{
     /// </summary>
     void Engine::ProcessInput() {
         for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
-            int state = glfwGetKey(main_window, key);
+            int state = glfwGetKey(mainWindow, key);
             if (state == GLFW_PRESS) {
                 eventBus->EmitEvent<KeyPressEvent>(key);
             }
         }
-        if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        if (glfwGetKey(mainWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             isRunning = false;
         }
-        global_input.Update(main_window); // able to dynamically change windows for keychecks
+        global_input.Update(mainWindow); // able to dynamically change windows for keychecks
     }
 
     /// <summary>
@@ -167,13 +166,13 @@ namespace Engine{
     void Engine::Render() {
 
         // SET BACKGROUND
-        glfwMakeContextCurrent(main_window);
+        glfwMakeContextCurrent(mainWindow);
         glClearColor(1.f, 1.f, 1.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        editor->Draw();
+        editor->Render(mainWindow);
 
-        glfwSwapBuffers(main_window);
+        glfwSwapBuffers(mainWindow);
         glfwPollEvents();
 
         registry->GetSystem<System::SRender>().Render();
@@ -186,7 +185,7 @@ namespace Engine{
     void Engine::Run() {
         EnableMemoryLeakChecking();
         Setup();
-        while (isRunning && !glfwWindowShouldClose(main_window) && !editor->GetExitPrompt()) {
+        while (isRunning && !glfwWindowShouldClose(mainWindow) && !editor->GetExitPrompt()) {
 			//Frame Timer
             frameTimer.update();
 			
@@ -208,17 +207,14 @@ namespace Engine{
     void Engine::Destroy() {
         //   CheckGLError();
         registry->GetSystem<System::SRender>().Destroy();
-        glfwDestroyWindow(main_window);
+        glfwDestroyWindow(mainWindow);
         editor->Destroy();
         glfwTerminate();
-        if (editor)
-            delete editor;
      //   CheckGLError();
     }
 
-   
-
 }
+
 namespace {
     // HELPER FUNCTIONS
     GLFWwindow* CreateGLFWwindow(int width, int height)
