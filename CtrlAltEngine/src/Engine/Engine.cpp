@@ -23,6 +23,7 @@ rodrigues.i@digipen.edu
 #include "../Math/MathLib.h"
 #include "../Scene/Scene.h"
 #include "../Debug/Debugger.h"
+#include "../Sound/SoundManager.h"
 
 
 using namespace MathLib;
@@ -36,6 +37,10 @@ using namespace MathLib;
 Input::Input_Container global_input;// definition of the global variable 
 Scene::Scene* sceneSystem;
 Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
+
+//Attempt @ sound
+FMOD::System* pSystem = nullptr;
+
 
 namespace {
 
@@ -101,6 +106,29 @@ namespace Engine{
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
         sceneManager->AddScene("Scene3", "Assets/scene3.txt");
         sceneManager->SwitchScene("Scene1");
+
+        //Sound related
+        // https://youtu.be/vS93mVNC3S4
+        // Above video if unable to load code
+        //Will be moved when i get the hang of things lol
+        FMOD::System_Create(&pSystem);
+        pSystem->init(32, FMOD_INIT_NORMAL, nullptr);
+        FMOD::Sound* pSound = nullptr;
+        pSystem->createSound(
+            R"(../Assets/Sound/bonk.mp3)",
+            FMOD_DEFAULT,
+            nullptr,
+            &pSound);
+
+        FMOD::Channel* pChannel = nullptr;
+        pSystem->playSound(pSound, nullptr, false, &pChannel);
+
+        bool bIsPlaying = true;
+        while (bIsPlaying) {
+            pChannel->isPlaying(&bIsPlaying);
+            pSystem->update();
+        }
+        //End of sound related
 
     }
 
