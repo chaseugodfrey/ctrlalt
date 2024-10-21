@@ -24,7 +24,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 namespace CtrlAltEditor
 {
 
-	class Hierarchy : public EditorWindow
+	class EditorHierarchy : public EditorWindow
 	{
 	public:
 		void Display() override;

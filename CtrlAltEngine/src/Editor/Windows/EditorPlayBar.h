@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 \group  	CtrlAlt
-\file		EditorContext.h
+\file		EditorPlayBar.h
 \author 	Chase Rodrigues
 \par    	rodrigues.i@digipen.edu
 \date   	Sep 08, 2024
@@ -10,26 +10,23 @@
  */
  /******************************************************************************/
 
-#ifndef EDITOR_CONTEXT_H
-#define EDITOR_CONTEXT_H
+#ifndef EDITOR_PLAY_H
+#define EDITOR_PLAY_H
 
-#include "../ECS/ECS.h"
+#include "EditorBaseWindow.h"
 #include <vector>
 #include <memory>
 
 namespace CtrlAltEditor
 {
-	class EditorWindow;
 
-	class EditorContext
+	class EditorPlayBar : public EditorWindow
 	{
 	public:
-		std::vector<std::unique_ptr<EditorWindow>> windowList;
 
-		bool isDirty;
+		void Display() override;
 
-		std::weak_ptr<ECS::Entity> selectedObject;
-		
+		~EditorPlayBar();
 	};
 }
 

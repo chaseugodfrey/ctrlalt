@@ -31,6 +31,7 @@ The following macros control the inclusion of additional API headers. Any number
 #include  <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include <vector>
+#include <memory>
 
 // Include Editor 
 #include "EditorIncludes.h"
@@ -51,25 +52,15 @@ namespace CtrlAltEditor {
 
 		std::unique_ptr<EditorContext> context;
 		std::unique_ptr<EditorService> service;
-		std::vector<EditorWindow> editorWindowsList;
 
 		// bools
 		bool isPromptedToExit{ false };
 		bool isCreateEntity{ false };
 
+		Debug::FrameTimer* frameTimer;
 		Scene::SceneManager* scene_manager;
 
-		//
-		Debug::FrameTimer* frame_timer;
-
 		// TEST FUNCTIONS
-
-		void DisplayMenuBar();
-		void DisplayPlayState();
-		void DisplayHierarchy();
-		void DisplayInspector();
-		void DisplayScene();
-		void DisplayInConsole();
 
 	public:
 		Editor();

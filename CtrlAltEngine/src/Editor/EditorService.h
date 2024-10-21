@@ -13,9 +13,9 @@
 #ifndef EDITOR_SERVICE_H
 #define EDITOR_SERVICE_H
 
-#include "EditorService.h"
 #include "EditorContext.h"
 #include "Windows/EditorBaseWindow.h"
+#include "../Debug/Debugger.h"
 
 namespace CtrlAltEditor
 {
@@ -23,14 +23,17 @@ namespace CtrlAltEditor
 	{
 	private:
 		EditorContext& context;
+		Debug::FrameTimer& frameTimer;
 
 	public:
 
-		EditorService(EditorContext&) noexcept;
+		EditorService(EditorContext&, Debug::FrameTimer&);
 
-		void CreateWindow(EditorWindowType);
-		void AppSave();
-		void AppQuit();
+		void CreateEditorWindow(EditorWindowType);
+		void AppSave() const;
+		void AppQuit() const;
+
+		std::string const ReadFPS() const;
 	};
 }
 

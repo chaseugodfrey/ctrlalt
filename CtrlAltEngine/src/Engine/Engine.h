@@ -67,13 +67,11 @@ namespace Engine
 		std::unique_ptr<Scene::SceneManager> sceneManager;
 
 		//Editor
+		std::unique_ptr<Debug::FrameTimer> frameTimer;
 		std::unique_ptr<CtrlAltEditor::Editor> editor;
 
 		//Asset
 		AssetManager assetManager; 
-
-		//FrameTimer
-		Debug::FrameTimer frameTimer;
 
 		//GLFWwindow* CreateGLFWwindow(int width, int height);
 

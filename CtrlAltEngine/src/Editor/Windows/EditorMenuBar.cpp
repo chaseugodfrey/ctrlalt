@@ -4,18 +4,18 @@
 \file		EditorMenu.cpp
 \author 	Chase Rodrigues
 \par    	rodrigues.i@digipen.edu
-\date   	Sep 08, 2024
+\date   	Oct 20, 2024
 \brief
 
  */
  /******************************************************************************/
 
-#include "EditorMenu.h"
+#include "EditorMenuBar.h"
 
 namespace CtrlAltEditor
 {
 
-	void EditorMenu::Display()
+	void EditorMenuBar::Display()
 	{
 		// Set Menu Bar Size & position
 		// Remember to change size dynamically
@@ -74,7 +74,7 @@ namespace CtrlAltEditor
 
 	}
 
-	EditorMenu::~EditorMenu()
+	EditorMenuBar::~EditorMenuBar()
 	{
 
 	}

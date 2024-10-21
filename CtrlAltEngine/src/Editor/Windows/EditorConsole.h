@@ -1,31 +1,39 @@
 /******************************************************************************/
 /*!
 \group  	CtrlAlt
-\file		EditorMenu.h
+\file		EditorConsole.h
 \author 	Chase Rodrigues
 \par    	rodrigues.i@digipen.edu
-\date   	Sep 08, 2024
+\date   	Oct 20, 2024
 \brief
 
  */
  /******************************************************************************/
 
-#ifndef EDITOR_MENU_H
-#define EDITOR_MENU_H
+#ifndef EDITOR_CONSOLE_H
+#define EDITOR_CONSOLE_H
 
 #include "EditorBaseWindow.h"
+#include <vector>
 
 namespace CtrlAltEditor
 {
-	class EditorMenu : public EditorWindow
+	class EditorConsole : public EditorWindow
 	{
-	private:
 
 	public:
 
 		void Display() override;
+		friend void ConsoleLog(const std::string);
 
-		~EditorMenu();
+		~EditorConsole();
+
+	private:
+
+		std::vector<std::string> logList;
+
+		void ClearConsole();
+
 	};
 }
 

@@ -21,9 +21,6 @@ rodrigues.i@digipen.edu
 #include "../Systems/SKeyboardControl.h"
 #include "../Systems/SCollision.h"
 #include "../Math/MathLib.h"
-#include "../Scene/Scene.h"
-#include "../Debug/Debugger.h"
-
 
 using namespace MathLib;
 
@@ -34,7 +31,6 @@ using namespace MathLib;
 
 //Render::RenderPipeline renderSystem;
 Input::Input_Container global_input;// definition of the global variable 
-Debug::FrameTimer* frameTimer; //Defining frameTimer for fps
 
 namespace {
 
@@ -85,9 +81,9 @@ namespace Engine{
 
 
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
-
+        frameTimer = std::make_unique<Debug::FrameTimer>();
         editor = std::make_unique<CtrlAltEditor::Editor>();
-        editor->Initialize(mainWindow, sceneManager.get(),&frameTimer);
+        editor->Initialize(mainWindow, sceneManager.get(), frameTimer.get());
 
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
@@ -144,18 +140,16 @@ namespace Engine{
         registry->GetSystem<System::SPhysics>().Update();
         registry->GetSystem<System::SCollision>().Update();
         registry->GetSystem<System::SKeyboardControl>().SubscribeToEvents(eventBus);
-        registry->GetSystem<System::SAnimator>().Update(static_cast<GLfloat>(frameTimer.Get_dt()));
+        registry->GetSystem<System::SAnimator>().Update(static_cast<GLfloat>(frameTimer->Get_dt()));
         registry->GetSystem<System::SRender>().UpdateFlags();
-        global_input.Test_Left_Mouse_Button(frameTimer.Get_dt());
+        global_input.Test_Left_Mouse_Button(frameTimer->Get_dt());
         global_input.Test_Keybinds();
         
         registry->Update();
         CheckGLError();
+        frameTimer->update();
         editor->Update();
 
-        frameTimer.update();
-        if(frameTimer.GetFrameCount() == 59)
-            std::cout << frameTimer.ReadFPS() << std::endl; //This is what's suppose to be on Editor huhu
         
         //sceneManager->UpdateScene();
     }
@@ -186,8 +180,6 @@ namespace Engine{
         EnableMemoryLeakChecking();
         Setup();
         while (isRunning && !glfwWindowShouldClose(mainWindow) && !editor->GetExitPrompt()) {
-			//Frame Timer
-            frameTimer.update();
 			
             //Keyboard Input
             glfwPollEvents();
