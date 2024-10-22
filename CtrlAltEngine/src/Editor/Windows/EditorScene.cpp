@@ -2,8 +2,11 @@
 
 namespace CtrlAltEditor
 {
-	//ImGui::SetNextWindowSize(ImVec2(1120, 500));
-	//ImGui::SetNextWindowPos(ImVec2(400, 40));
+
+	EditorScene::EditorScene(Scene::SceneManager& _sceneManager, Debug::FrameTimer& _frameTimer) :
+		sceneManager(_sceneManager),
+		frameTimer(_frameTimer)
+	{};
 
 	/**
 	 * @brief Displays scene window in the editor.
@@ -26,6 +29,11 @@ namespace CtrlAltEditor
 		}
 
 		ImGui::End();
+	}
+
+	EditorScene::~EditorScene()
+	{
+
 	}
 }
 

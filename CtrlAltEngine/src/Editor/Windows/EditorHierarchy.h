@@ -28,6 +28,7 @@ namespace CtrlAltEditor
 	{
 	public:
 		void Display() override;
+		~EditorHierarchy();
 	};
 
 }

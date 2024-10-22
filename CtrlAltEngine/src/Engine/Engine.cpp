@@ -53,7 +53,9 @@ namespace Engine{
     /// <summary>
     /// 
     /// </summary>
-    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), registry(std::make_unique<ECS::Registry>()), windowWidth(0), windowHeight(0), isRunning(false) {
+    Engine::Engine() : eventBus(std::make_unique<Event::EventBus>()), 
+        registry(std::make_unique<ECS::Registry>()),
+        windowWidth(0), windowHeight(0), isRunning(false) {
         Logger::LogInfo("Engine Created");
     }
 
@@ -79,11 +81,10 @@ namespace Engine{
         glClearColor(1.f, 1.f, 0.f, 1.f);
         mainWindow = CreateGLFWwindow(windowWidth, windowHeight);
 
-
         sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
         frameTimer = std::make_unique<Debug::FrameTimer>();
         editor = std::make_unique<CtrlAltEditor::Editor>();
-        editor->Initialize(mainWindow, sceneManager.get(), frameTimer.get());
+        editor->Initialize(mainWindow, *sceneManager, *frameTimer);
 
         //## initialise input systems,
         // key binds WASD, 1 rot, 2 scale.
@@ -211,7 +212,6 @@ namespace {
     // HELPER FUNCTIONS
     GLFWwindow* CreateGLFWwindow(int width, int height)
     {
-
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DEPTH_BITS, 24);

@@ -14,21 +14,22 @@
 #define EDITOR_SCENE_H
 
 #include "EditorBaseWindow.h"
+#include "../../Scene/SceneManager.h"
+#include "../../Debug/Debugger.h"
 #include <vector>
 #include <memory>
 
 namespace CtrlAltEditor
 {
-
-
 	class EditorScene : public EditorWindow
 	{
+		Scene::SceneManager& sceneManager;
+		Debug::FrameTimer& frameTimer;
 	public:
 
-
-
+		EditorScene(Scene::SceneManager&, Debug::FrameTimer&);
 		void Display() override;
-
+		~EditorScene();
 	};
 }
 

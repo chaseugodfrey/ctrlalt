@@ -4,7 +4,10 @@
 
 namespace CtrlAltEditor
 {
-	EditorService::EditorService(EditorContext& _context, Debug::FrameTimer& _frameTimer) : context(_context), frameTimer(_frameTimer) {};
+	EditorService::EditorService(EditorContext& _context, Scene::SceneManager& _sceneManager, Debug::FrameTimer& _frameTimer): 
+		context(_context), 
+		sceneManager(_sceneManager), 
+		frameTimer(_frameTimer) {};
 
 	void EditorService::CreateEditorWindow(EditorWindowType type)
 	{
@@ -19,7 +22,7 @@ namespace CtrlAltEditor
 			window = std::make_unique<EditorPlayBar>();
 			break;
 		case CtrlAltEditor::SCENE:
-			window = std::make_unique<EditorScene>();
+			window = std::make_unique<EditorScene>(sceneManager, frameTimer);
 			break;
 		case CtrlAltEditor::HIERARCHY:
 			window = std::make_unique<EditorHierarchy>();
@@ -47,6 +50,11 @@ namespace CtrlAltEditor
 	{
 		AppSave();
 		Logger::LogInfo("Quit");
+	}
+
+	void EditorService::CreateEntity() const
+	{
+		
 	}
 
 	std::string const EditorService::ReadFPS() const

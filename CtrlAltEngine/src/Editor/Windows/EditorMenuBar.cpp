@@ -54,7 +54,7 @@ namespace CtrlAltEditor
 				{
 					//ImGui::BeginDisabled();
 
-					if (ImGui::MenuItem("Entity (WIP)"))
+					if (ImGui::MenuItem("Entity"))
 					{
 						//scene_manager->CreateEntityInScene("Basic");
 						//ECS::Entity entity = registry->CreateEntity();

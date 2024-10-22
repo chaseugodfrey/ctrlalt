@@ -24,7 +24,7 @@ namespace CtrlAltEditor
 	public:
 
 		void Display() override;
-		friend void ConsoleLog(const std::string);
+		//friend void ConsoleLog(const std::string);
 
 		~EditorConsole();
 

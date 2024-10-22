@@ -57,16 +57,13 @@ namespace CtrlAltEditor {
 		bool isPromptedToExit{ false };
 		bool isCreateEntity{ false };
 
-		Debug::FrameTimer* frameTimer;
-		Scene::SceneManager* scene_manager;
-
 		// TEST FUNCTIONS
 
 	public:
 		Editor();
 		~Editor();
 
-		void Initialize(GLFWwindow*, Scene::SceneManager*, Debug::FrameTimer*);
+		void Initialize(GLFWwindow*, Scene::SceneManager&, Debug::FrameTimer&);
 		void Update();
 		void Render(GLFWwindow*);
 		void Destroy();
@@ -75,9 +72,6 @@ namespace CtrlAltEditor {
 
 		// TEST FUNCTIONS
 		void LoadScene(int);
-		void ConsoleAddLine(std::string const&) const;
-		void ConsoleClear() const;
-		std::string ReadFPS() const;
 
 		// Get bools
 		bool GetExitPrompt();

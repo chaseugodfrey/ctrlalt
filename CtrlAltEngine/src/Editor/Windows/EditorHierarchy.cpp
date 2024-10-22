@@ -1,6 +1,3 @@
-#ifndef EDITOR_HIERARCHY_H
-#define EDITOR_HIERARCHY_H
-
 #include "EditorHierarchy.h"
 
 namespace CtrlAltEditor
@@ -17,6 +14,6 @@ namespace CtrlAltEditor
 		ImGui::End();
 
 	}
-}
 
-#endif
+	EditorHierarchy::~EditorHierarchy() {};
+}

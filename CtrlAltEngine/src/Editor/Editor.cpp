@@ -103,7 +103,7 @@ namespace CtrlAltEditor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::Initialize(GLFWwindow* window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
+	void Editor::Initialize(GLFWwindow* window, Scene::SceneManager& sceneManager, Debug::FrameTimer& frameTimer)
 	{
 
 		IMGUI_CHECKVERSION();
@@ -116,8 +116,8 @@ namespace CtrlAltEditor
 
 		deserialize_string();
 
-		context = std::make_unique<EditorContext>();
-		service = std::make_unique<EditorService>(*context.get(), *_frameTimer);
+		context = std::make_unique<EditorContext>(sceneManager);
+		service = std::make_unique<EditorService>(*context, sceneManager, frameTimer);
 		service->CreateEditorWindow(MENUBAR);
 		service->CreateEditorWindow(PLAYBAR);
 		service->CreateEditorWindow(SCENE);
@@ -135,7 +135,7 @@ namespace CtrlAltEditor
 		if (ImGui::IsKeyPressed(ImGuiKey_A))
 		{
 			static int count = 1;
-			ConsoleAddLine(std::to_string(count++));
+			//ConsoleAddLine(std::to_string(count++));
 		}
 
 		if (isPromptedToExit)
@@ -229,10 +229,10 @@ namespace CtrlAltEditor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::ConsoleAddLine(std::string const& str) const
-	{
-		console_data.push_back(str);
-	}
+	//void Editor::ConsoleAddLine(std::string const& str) const
+	//{
+	//	console_data.push_back(str);
+	//}
 
 
 
@@ -257,9 +257,9 @@ namespace CtrlAltEditor
 
 	void Editor::LoadScene(int index)
 	{
-		ConsoleAddLine("Scene Loaded: " + std::to_string(index));
+		//ConsoleAddLine("Scene Loaded: " + std::to_string(index));
 		std::string this_string = "Scene" + std::to_string(index);
-		scene_manager->SwitchScene(this_string);
+		//scene_manager->SwitchScene(this_string);
 	}
 
 }

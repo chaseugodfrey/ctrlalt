@@ -35,5 +35,8 @@ namespace CtrlAltEditor
 		ImGui::End();
 	}
 
-	EditorPlayBar::~EditorPlayBar() {};
+	EditorPlayBar::~EditorPlayBar() 
+	{
+	
+	};
 }
