@@ -159,7 +159,6 @@ namespace Engine{
     /// 
     /// </summary>
     void Engine::Render() {
-
         // SET BACKGROUND
         glfwMakeContextCurrent(mainWindow);
         glClearColor(1.f, 1.f, 1.f, 1.f);
@@ -171,7 +170,7 @@ namespace Engine{
         glfwPollEvents();
 
         registry->GetSystem<System::SRender>().Render();
-
+        registry->GetSystem<System::SRender>().DrawToScreen();
     }
 
     /// <summary>
