@@ -67,37 +67,52 @@ namespace Engine{
         //Logger::LogInfo("Engine Deleted");
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void Engine::Setup() {
+
+        if (!glfwInit()) {
+            return;
+        }
+        // CREATE WINDOWED APPLICATION
+        glClearColor(1.f, 1.f, 0.f, 1.f);
+        mainWindow = CreateGLFWwindow(windowWidth, windowHeight);
+
+        // System Set Ups
+        registry->AddSystem<System::SMovement>();
+        registry->AddSystem<System::SPhysics>();
+        registry->AddSystem<System::SAnimator>();
+        registry->AddSystem<System::SRender>();
+        registry->AddSystem<System::SCollision>();
+        registry->AddSystem<System::SKeyboardControl>();
+
+        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
+        frameTimer = std::make_unique<Debug::FrameTimer>();
+        editor = std::make_unique<CtrlAltEditor::Editor>();
+        editor->Setup(mainWindow, *sceneManager, *frameTimer);
+    }
+
     /// <summary>
     /// 
     /// </summary>
     void Engine::Initialize() {
 
-        if (!glfwInit()) {
-            return;
-        }
+ 
 
         isRunning = true;
-        // CREATE WINDOWED APPLICATION
-        glClearColor(1.f, 1.f, 0.f, 1.f);
-        mainWindow = CreateGLFWwindow(windowWidth, windowHeight);
-
-        sceneManager = std::make_unique<Scene::SceneManager>(registry.get());
-        frameTimer = std::make_unique<Debug::FrameTimer>();
-        editor = std::make_unique<CtrlAltEditor::Editor>();
-        editor->Initialize(mainWindow, *sceneManager, *frameTimer);
-
-        //## initialise input systems,
-        // key binds WASD, 1 rot, 2 scale.
-        //## my input system will be a static variable in header.
 
         global_input.Init_System(mainWindow);
+
+        // Scene Loading
         sceneManager->AddScene("Scene1", "Assets/scene1.txt");
         sceneManager->AddScene("Scene2", "Assets/scene2.txt");
         sceneManager->AddScene("Scene3", "Assets/scene3.txt");
         sceneManager->SwitchScene("Scene1");
 
-
-
+        // Editor
+        editor->Initialize(registry->GetSystem<System::SRender>().GetScreenTexture());
     }
 
     /// <summary>
@@ -116,18 +131,6 @@ namespace Engine{
         global_input.Update(mainWindow); // able to dynamically change windows for keychecks
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Engine::Setup() {
-        // System Set Ups
-		registry->AddSystem<System::SMovement>();
-        registry->AddSystem<System::SPhysics>();
-        registry->AddSystem<System::SAnimator>();
-        registry->AddSystem<System::SRender>();
-        registry->AddSystem<System::SCollision>();
-        registry->AddSystem<System::SKeyboardControl>();
-    }
 
     /// <summary>
     /// 
@@ -178,7 +181,7 @@ namespace Engine{
     /// </summary>
     void Engine::Run() {
         EnableMemoryLeakChecking();
-        Setup();
+
         while (isRunning && !glfwWindowShouldClose(mainWindow) && !editor->GetExitPrompt()) {
 			
             //Keyboard Input

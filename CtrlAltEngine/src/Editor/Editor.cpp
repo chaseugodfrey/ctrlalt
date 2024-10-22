@@ -103,7 +103,7 @@ namespace CtrlAltEditor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::Initialize(GLFWwindow* window, Scene::SceneManager& sceneManager, Debug::FrameTimer& frameTimer)
+	void Editor::Setup(GLFWwindow* window, Scene::SceneManager& sceneManager, Debug::FrameTimer& frameTimer)
 	{
 
 		IMGUI_CHECKVERSION();
@@ -118,6 +118,12 @@ namespace CtrlAltEditor
 
 		context = std::make_unique<EditorContext>(sceneManager);
 		service = std::make_unique<EditorService>(*context, sceneManager, frameTimer);
+
+	}
+
+	void Editor::Initialize(GLuint _frameBufferId)
+	{
+		context->frameBufferID = _frameBufferId;
 		service->CreateEditorWindow(MENUBAR);
 		service->CreateEditorWindow(PLAYBAR);
 		service->CreateEditorWindow(SCENE);

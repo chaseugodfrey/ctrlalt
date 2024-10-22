@@ -22,7 +22,7 @@ namespace CtrlAltEditor
 			window = std::make_unique<EditorPlayBar>();
 			break;
 		case CtrlAltEditor::SCENE:
-			window = std::make_unique<EditorScene>(sceneManager, frameTimer);
+			window = std::make_unique<EditorScene>(sceneManager, frameTimer, context.frameBufferID);
 			break;
 		case CtrlAltEditor::HIERARCHY:
 			window = std::make_unique<EditorHierarchy>();

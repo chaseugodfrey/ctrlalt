@@ -16,6 +16,7 @@
 #include "EditorBaseWindow.h"
 #include "../../Scene/SceneManager.h"
 #include "../../Debug/Debugger.h"
+#include "GLEW/GL/glew.h"
 #include <vector>
 #include <memory>
 
@@ -23,11 +24,13 @@ namespace CtrlAltEditor
 {
 	class EditorScene : public EditorWindow
 	{
+		GLuint frameBufferID;
+
 		Scene::SceneManager& sceneManager;
 		Debug::FrameTimer& frameTimer;
 	public:
 
-		EditorScene(Scene::SceneManager&, Debug::FrameTimer&);
+		EditorScene(Scene::SceneManager&, Debug::FrameTimer&, GLuint);
 		void Display() override;
 		~EditorScene();
 	};

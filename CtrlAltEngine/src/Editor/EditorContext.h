@@ -18,6 +18,7 @@
 #include "Windows/EditorBaseWindow.h"
 #include <vector>
 #include <memory>
+#include "GLEW/GL/glew.h"
 
 namespace CtrlAltEditor
 {
@@ -38,8 +39,8 @@ namespace CtrlAltEditor
 
 		bool isDirty;
 
-
-
+		// Scene
+		GLuint frameBufferID;
 
 		std::weak_ptr<ECS::Entity> selectedObject;
 

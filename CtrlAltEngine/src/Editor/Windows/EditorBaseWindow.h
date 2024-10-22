@@ -32,6 +32,7 @@ namespace CtrlAltEditor
 
 	class EditorWindow
 	{
+		
 	public:
 
 		std::string label;

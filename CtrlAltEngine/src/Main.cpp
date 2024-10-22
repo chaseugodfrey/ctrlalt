@@ -13,6 +13,7 @@
 
 int main() {
     Engine::Engine engine;
+    engine.Setup();
     engine.Initialize();
     engine.Run();
     engine.Destroy();

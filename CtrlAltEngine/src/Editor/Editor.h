@@ -63,7 +63,8 @@ namespace CtrlAltEditor {
 		Editor();
 		~Editor();
 
-		void Initialize(GLFWwindow*, Scene::SceneManager&, Debug::FrameTimer&);
+		void Setup(GLFWwindow*, Scene::SceneManager&, Debug::FrameTimer&);
+		void Initialize(GLuint);
 		void Update();
 		void Render(GLFWwindow*);
 		void Destroy();

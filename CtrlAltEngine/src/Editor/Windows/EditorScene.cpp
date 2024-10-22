@@ -3,9 +3,10 @@
 namespace CtrlAltEditor
 {
 
-	EditorScene::EditorScene(Scene::SceneManager& _sceneManager, Debug::FrameTimer& _frameTimer) :
+	EditorScene::EditorScene(Scene::SceneManager& _sceneManager, Debug::FrameTimer& _frameTimer, GLuint id) :
 		sceneManager(_sceneManager),
-		frameTimer(_frameTimer)
+		frameTimer(_frameTimer),
+		frameBufferID(id)
 	{};
 
 	/**
@@ -24,7 +25,18 @@ namespace CtrlAltEditor
 	{
 		if (ImGui::Begin("Scene", NULL))
 		{
+			const float scene_width		= ImGui::GetContentRegionAvail().x;
+			const float scene_height	= ImGui::GetContentRegionAvail().y;
 
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+
+			ImGui::GetWindowDrawList()->AddImage(
+				(void*)frameBufferID,
+				pos,
+				ImVec2(pos.x + scene_width, pos.y + scene_height),
+				ImVec2(0, 1),
+				ImVec2(1, 0)
+			);
 
 		}
 
