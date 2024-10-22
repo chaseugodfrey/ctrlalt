@@ -26,11 +26,11 @@ namespace CtrlAltEditor
 	{
 		GLuint frameBufferID;
 
-		Scene::SceneManager& sceneManager;
-		Debug::FrameTimer& frameTimer;
+		Scene::SceneManager const& sceneManager;
+		Debug::FrameTimer const& frameTimer;
 	public:
 
-		EditorScene(Scene::SceneManager&, Debug::FrameTimer&, GLuint);
+		EditorScene(Scene::SceneManager const&, Debug::FrameTimer const&, GLuint);
 		void Display() override;
 		~EditorScene();
 	};

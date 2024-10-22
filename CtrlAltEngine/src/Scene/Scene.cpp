@@ -360,6 +360,7 @@ namespace Scene {
         {
             //CreateEntity("Basic");
             ECS::Entity axol = registry->CreateEntity();
+            axol.AddComponent<Component::CIdentifier>();
             axol.AddComponent<Component::CTransform>(MathLib::vec2((i / max_obj) * 10 - 5, (i / max_obj) * 10 - 5));
             axol.AddComponent<Render::CRenderable>();
             Render::CRenderable& rComp = axol.GetComponent<Render::CRenderable>();
@@ -372,5 +373,10 @@ namespace Scene {
                 spawned = true;
         }
         Logger::LogInfo("Dynamically created 2500 objects in Scene Runtime for Scene 3.");
+    }
+
+    std::vector<ECS::Entity> Scene::GetEntities()
+    {
+        return sceneEntities;
     }
 }

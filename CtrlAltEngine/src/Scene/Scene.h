@@ -86,7 +86,7 @@ public:
      * \brief Creates an entity of the specified type using the entity factory.
      * \param entityType The type of entity to create.
      */
-    void CreateEntity(const std::string& entityType);
+    void CreateEntity(const std::string& entityType = "Basic");
 
     /*!
      * \brief Serializes the CTransform component of an entity into a string.
@@ -197,6 +197,8 @@ public:
      * \return True if entity data has been loaded, false otherwise.
      */
     bool IsDataLoaded() const { return isDataLoaded; }
+
+    std::vector<ECS::Entity> GetEntities();
 
     // FOR M1 PURPOSES
 

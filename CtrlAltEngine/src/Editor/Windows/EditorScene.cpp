@@ -3,7 +3,7 @@
 namespace CtrlAltEditor
 {
 
-	EditorScene::EditorScene(Scene::SceneManager& _sceneManager, Debug::FrameTimer& _frameTimer, GLuint id) :
+	EditorScene::EditorScene(Scene::SceneManager const& _sceneManager, Debug::FrameTimer const& _frameTimer, GLuint id) :
 		sceneManager(_sceneManager),
 		frameTimer(_frameTimer),
 		frameBufferID(id)

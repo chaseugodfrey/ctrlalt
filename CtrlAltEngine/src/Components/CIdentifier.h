@@ -8,7 +8,7 @@ namespace Component
 	struct CIdentifier
 	{
 		std::string name;
-		CIdentifier(std::string name = "") : name(name) {};
+		CIdentifier(std::string name = "Entity") : name(name) {};
 	};
 }
 

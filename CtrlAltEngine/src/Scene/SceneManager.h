@@ -47,7 +47,7 @@ namespace Scene
 		@param std::string& entityType
 		@return -
 		\*________________________________________________________________*/
-		void CreateEntityInScene(const std::string&);
+		void CreateEntityInScene();
 
 		/*!
 		@brief Function call to add a scene to the Editor given a filename and the filepath

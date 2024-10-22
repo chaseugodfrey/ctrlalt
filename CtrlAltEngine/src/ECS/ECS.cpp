@@ -298,3 +298,4 @@ namespace ECS
 		entitiesRemoveQueue.clear();
 	}
 }
+

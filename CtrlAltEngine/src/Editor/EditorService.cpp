@@ -25,7 +25,7 @@ namespace CtrlAltEditor
 			window = std::make_unique<EditorScene>(sceneManager, frameTimer, context.frameBufferID);
 			break;
 		case CtrlAltEditor::HIERARCHY:
-			window = std::make_unique<EditorHierarchy>();
+			window = std::make_unique<EditorHierarchy>(sceneManager);
 			break;
 		case CtrlAltEditor::INSPECTOR:
 			window = std::make_unique<EditorInspector>();
