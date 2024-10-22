@@ -220,7 +220,7 @@ namespace Render {
 		//Release texture from gpu store, can be an array or just individual
 		void ReleaseTexture(GLuint texture_array);
 
-		GLFWwindow* CreateTargetWindow(GLint width = 900, GLint height = 480);
+		GLFWwindow* CreateTargetWindow(GLint width = 800, GLint height = 600);
 		void SetTargetWindow(GLFWwindow* window);
 		void SetTargetAsCurrent();
 		GLFWwindow const* GetCurrentWindow();
@@ -230,10 +230,11 @@ namespace Render {
 
 		//void Init(GLint width = 900, GLint height = 480, std::string const& window_title = "Hello world");
 		//Draws a single renderable
-		void StartDraw();
+		void StartDraw(GLuint fbo = 0);
 		void Draw(CRenderable const&, glm::mat3 const&);
 		void DrawLine(glm::mat3 const&, glm::vec4 color, GLModel const&, GLSLShader&);
 		void FinishDraw();
+		void DrawToScreen(GLuint texture, GLModel const&, GLSLShader&, glm::mat3);
 	};
 
 	//For now just assume only 1 camera and its not a component
@@ -295,6 +296,11 @@ namespace System {
 		//Assume only 1 camera for now
 		Render::Camera2d camera;
 
+		//Assume only 1 framebuffer for now
+		GLuint frameBuffer;
+		GLuint renderBuffer;
+		GLuint screenTexture;
+
 		//Generate the default quad and default image
 		void LoadDefaults();
 
@@ -307,6 +313,10 @@ namespace System {
 		void UpdateFlags();
 		void Render();
 		void Destroy();
+
+		//very quick simple version for getting framebuffer to work
+		GLuint GetScreenTexture() { return screenTexture; }
+		void DrawToScreen();
 	};
 
 	//System that tells entities with animator component to update and check its state

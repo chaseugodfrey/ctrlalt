@@ -265,16 +265,61 @@ namespace Render {
 	}
 
 	//Setups for render pipeline if required
-	void RenderPipeline::StartDraw() {
+	void RenderPipeline::StartDraw(GLuint fbo) {
 		CheckGLError();
 		SetTargetAsCurrent();
 		CheckGLError();
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		CheckGLError();
+		//glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		CheckGLError();
 	}
-	void RenderPipeline::FinishDraw() {
+	void RenderPipeline::DrawToScreen(GLuint texture, GLModel const& mdl, GLSLShader& shdr_pgm, glm::mat3 tform) {
+		glDisable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT);
+		shdr_pgm.Use();
+		//say which vao to use for pipeline
+		glBindVertexArray(mdl.vao_ID);
+		CheckGLError();
+		//Use texture unit 0
+		glBindTextureUnit(6, texture);
+		CheckGLError();
+		//Get Uniform1i to pass texture unit to shader
+		GLuint uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uTex2d");
+		CheckGLError();
+		if (uniform_var_loc >= 0) {
+			glUniform1i(uniform_var_loc, 6);
+		}
+		else {
+			std::cout << "Uniform Variable doesn't exist!!!\n";
+			std::exit(EXIT_FAILURE);
+		}
+		CheckGLError();
+		//Upload xform mtx
+		uniform_var_loc = glGetUniformLocation(shdr_pgm.GetHandle(), "uModel_to_NDC");
+		if (uniform_var_loc >= 0) {
+			//put value of matrix in it
+			glUniformMatrix3fv(uniform_var_loc, 1, GL_FALSE, glm::value_ptr(tform));
+		}
+		else {
+			std::cout << "Uniform Variable doesn't exist!!!\n";
+			std::exit(EXIT_FAILURE);
+		}
+		CheckGLError();
+
+		glDrawElements(mdl.primitive_type, mdl.draw_cnt, GL_UNSIGNED_SHORT, NULL);
+
+		glBindVertexArray(0);
+
+		CheckGLError();
+		shdr_pgm.UnUse();
 		CheckGLError();
 		glfwSwapBuffers(target_window);
+	}
+	void RenderPipeline::FinishDraw() {
+		CheckGLError();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		CheckGLError();
 	}
 
@@ -562,12 +607,41 @@ namespace System {
 		global_input.Init_Add_Keybind("debug toggle", GLFW_KEY_G, Input::Input_Container::TRIGGER);
 
 		//Setup Render pipeline
-		render_pipeline.CreateTargetWindow(900, 480);
-		camera.Init(900, 480);
+		render_pipeline.CreateTargetWindow(800, 600);
+		camera.Init(800, 600);
 		render_pipeline.SetCamera(&camera);
 
-		//render_pipeline.SetT(render_pipeline.CreateNewWindow());
+		//Setup Framebuffer
+		glCreateFramebuffers(1, &frameBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &screenTexture);
+		//glBindTexture(GL_TEXTURE_2D, screenTexture);
+		glTextureStorage2D(screenTexture, 1, GL_RGB8, 800, 600);
 		CheckGLError();
+		glBindTexture(GL_TEXTURE_2D, 0);	//unbind from tex2d
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
+		CheckGLError();
+		//Attach depth buffer
+		glCreateRenderbuffers(1, &renderBuffer);
+		CheckGLError();
+		glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+		CheckGLError();
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 800, 600);
+		CheckGLError();
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		CheckGLError();
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
+		CheckGLError();
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			Logger::LogInfo("ERROR: FRAMEBUFFER IS NOT COMPLETE");
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		CheckGLError();
+
+
+
+		//render_pipeline.SetT(render_pipeline.CreateNewWindow());
 		//Load Assets
 		static const char* asset_directory = "../Assets/";
 		static const char* png_extention = ".png";
@@ -619,8 +693,8 @@ namespace System {
 		Logger::LogInfo(std::string("Released Image Data"));
 
 		//Constructing shader programs
-		//For now assume that there is only 1 vtx and frg shader
-		assert((vtx_shaders.size() != 1 || frg_shaders.size() != 1) || "There should only be one set of shaders!");
+		//For now assume that there is only 3 vtx and frg shader
+		//assert((vtx_shaders.size() != 1 || frg_shaders.size() != 1) || "There should only be one set of shaders!");
 
 		GLSLShader shader_pgm;
 		std::vector<std::pair<GLenum, std::string>> shdr_files{
@@ -636,6 +710,13 @@ namespace System {
 		shader_pgm2.CompileLinkValidate(shdr_files2);
 		shader_map.insert({ "PlainColor", shader_pgm2 });
 
+		GLSLShader shader_pgm3;
+		std::vector<std::pair<GLenum, std::string>> shdr_files3{
+			std::make_pair(GL_VERTEX_SHADER, vtx_shaders[2].string()),
+			std::make_pair(GL_FRAGMENT_SHADER, frg_shaders[2].string()) };
+		shader_pgm3.CompileLinkValidate(shdr_files3);
+		shader_map.insert({ "ScreenShader", shader_pgm3 });
+
 		LoadDefaults();
 		CheckGLError();
 	}
@@ -645,14 +726,14 @@ namespace System {
 		//Release Textures
 		Logger::LogInfo("Release Image from GPU...");
 		CheckGLError();
-		for (std::pair<std::string, GLuint> const& kvp : texture_map) {
+		for (std::pair<const std::string, GLuint> const& kvp : texture_map) {
 			render_pipeline.ReleaseTexture(kvp.second);
 		}
 		Logger::LogInfo("Image Release done..");
 
 		Logger::LogInfo("Release GPU Buffers...");
 		//Release vaos
-		for (std::pair<std::string, Render::GLModel> const& kvp : model_map) {
+		for (std::pair<const std::string, Render::GLModel> const& kvp : model_map) {
 			glDeleteBuffers(1, &kvp.second.vbo_ID);
 			glDeleteVertexArrays(1, &kvp.second.vao_ID);
 		}
@@ -664,6 +745,13 @@ namespace System {
 			it->second.DeleteShaderProgram();
 		}
 		Logger::LogInfo("Shaders Released..");
+		CheckGLError();
+
+		glDeleteRenderbuffers(1, &renderBuffer);
+		CheckGLError();
+		glDeleteTextures(1, &screenTexture);
+		CheckGLError();
+		glDeleteFramebuffers(1, &frameBuffer);
 		CheckGLError();
 
 		render_pipeline.DeleteCurrentWindow();
@@ -712,7 +800,7 @@ namespace System {
 	void SRender::Render()
 	{
 		CheckGLError();
-		render_pipeline.StartDraw();
+		render_pipeline.StartDraw(frameBuffer);
 		//Create a copy of the array because entity vector is used for ecs indexing
 		std::vector<ECS::Entity> entity_copy = GetEntities();
 		//sorting every frame kinda L
@@ -813,7 +901,6 @@ namespace System {
 		}
 
 		render_pipeline.FinishDraw();
-
 		CheckGLError();
 	}
 
@@ -859,6 +946,17 @@ namespace System {
 		glm::mat3 tform = camera.GetWorldtoNDC() * translate * rotate * scale;
 
 		render_pipeline.DrawLine(tform, color, model_map["line"], shader_map["PlainColor"]);
+	}
+
+	void SRender::DrawToScreen() {
+		render_pipeline.SetTargetAsCurrent();
+		//map to 2x2 ndc, -2 because of framebuffer reading from bottom left, but loaded textures from top left
+		glm::mat3 tform_mtx{
+		glm::vec3(2,0,0),
+		glm::vec3(0,-2,0),
+		glm::vec3(0,0,1)
+		};
+		render_pipeline.DrawToScreen(screenTexture, model_map["default"], shader_map["ScreenShader"], tform_mtx);
 	}
 
 	/************************************/
