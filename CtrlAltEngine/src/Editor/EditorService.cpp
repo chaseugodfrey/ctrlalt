@@ -29,38 +29,6 @@ namespace CtrlAltEditor
 		context.windowList.push_back(std::move(window));
 	}
 
-	//template <typename WindowType>
-	//std::unique_ptr<EditorWindow> EditorWindowFactory<WindowType>::Create(EditorService& service)
-	//{
-	//	std::unique_ptr<EditorWindow> window;
-	//	window = std::make_unique<WindowType>(service);
-
-	//	//switch (type)
-	//	//{
-	//	//case CtrlAltEditor::MENUBAR:
-	//	//	window = std::make_unique<EditorMenuBar>(*this);
-	//	//	break;
-	//	//case CtrlAltEditor::PLAYBAR:
-	//	//	window = std::make_unique<EditorPlayBar>();
-	//	//	break;
-	//	//case CtrlAltEditor::SCENE:
-	//	//	window = std::make_unique<EditorScene>(sceneManager, frameTimer, context.frameBufferID);
-	//	//	break;
-	//	//case CtrlAltEditor::HIERARCHY:
-	//	//	window = std::make_unique<EditorHierarchy>(sceneManager);
-	//	//	break;
-	//	//case CtrlAltEditor::INSPECTOR:
-	//	//	window = std::make_unique<EditorInspector>();
-	//	//	break;
-	//	//case CtrlAltEditor::CONSOLE:
-	//	//	window = std::make_unique<EditorConsole>();
-	//	//	break;
-	//	//default:
-	//	//	break;
-	//	//}
-	//	return window;
-	//}
-
 	void EditorService::CreateEntityInScene()
 	{
 		sceneManager.CreateEntityInScene();
@@ -77,8 +45,6 @@ namespace CtrlAltEditor
 		AppSave();
 		Logger::LogInfo("Quit");
 	}
-
-	
 
 	void EditorService::CreateEntity() const
 	{

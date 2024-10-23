@@ -202,8 +202,8 @@ namespace Engine{
     void Engine::Destroy() {
         //   CheckGLError();
         registry->GetSystem<System::SRender>().Destroy();
-        glfwDestroyWindow(mainWindow);
         editor->Destroy();
+        glfwDestroyWindow(mainWindow);
         glfwTerminate();
      //   CheckGLError();
     }
