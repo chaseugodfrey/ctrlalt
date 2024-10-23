@@ -21,7 +21,7 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
  /******************************************************************************/
-
+#include "../src/pch.h"
 #include "ECS.h"
 
 namespace ECS
@@ -292,6 +292,13 @@ namespace ECS
 		{
 			RemoveEntityFromSystems(entity);
 			entityComponentMasks[entity.GetID()].reset();
+
+			for(auto pool: componentPools)
+			{
+				if (pool) {
+					pool->RemoveEntityFromPool(entity.GetID());
+				}
+			}
 
 			freeIDs.push_back(entity.GetID());
 		}

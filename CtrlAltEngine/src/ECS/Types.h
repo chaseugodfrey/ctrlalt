@@ -15,7 +15,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  /******************************************************************************/
 #ifndef TYPE_H
 #define TYPE_H
-
 #include <bitset>
 #include <vector>
 
@@ -49,6 +48,7 @@ namespace ECS
 	class InterfacePool {
 	public:
 		virtual ~InterfacePool() = default;
+		virtual void RemoveEntityFromPool(EntityID entity) = 0;
 	};
 
 	//Systems

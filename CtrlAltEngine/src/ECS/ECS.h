@@ -21,13 +21,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 // INCLUDES
 ///=========================================================================================================
-#include "Types.h"
-#include <unordered_map>
-#include <set>
-//The type_index class is a wrapper class around a std::type_info object, 
-// that can be used as index in associative and unordered associative containers.
-#include <typeindex>
-#include <memory>
+#include "../src/pch.h"
 #include "../Logger/Logger.h"
 
 namespace ECS
@@ -310,7 +304,7 @@ namespace ECS
 		Pool(int capacity = 100)
 		{
 			size = 0;
-			data.reserve(capacity);
+			data.resize(capacity);
 		}	
 
 		/**
@@ -393,8 +387,47 @@ namespace ECS
 		 * 
 		 */
 		void SetComponent(EntityID index, T component) {
-			data[index] = component;
-			size++;
+			if (entityIDToIndex.find(index) != entityIDToIndex.end())
+			{
+				int i = entityIDToIndex[index];
+				data[i] = component;
+			}
+			else
+			{
+				int i = size;
+				entityIDToIndex.emplace(index, i);
+				indexToEntityID.emplace(i, index);
+				if (i >= data.capacity())
+				{
+					std::size_t newCapacity = (data.capacity() == 0) ? 100 : data.capacity() * 2;
+					data.resize(newCapacity);
+				}
+				data[i] = component;
+				size++;
+			}
+		}
+
+
+		void RemoveEntity(int entityID) {
+			int indexOfRemoved = entityIDToIndex[entityID];
+			int indexOfLast = size - 1;
+			data[indexOfRemoved] = data[indexOfLast];
+
+			int entityIDOfLast = indexToEntityID[indexOfLast];
+			entityIDToIndex[entityIDOfLast] = indexOfRemoved;
+			indexToEntityID[indexOfRemoved] = entityIDOfLast;
+
+			entityIDToIndex.erase(entityID);
+			indexToEntityID.erase(indexOfLast);
+			size--;
+		}
+
+
+		void RemoveEntityFromPool(int entityID) override {
+			if (entityIDToIndex.find(entityID) != entityIDToIndex.end())
+			{
+				RemoveEntity(entityID);
+			}
 		}
 
 		/**
@@ -404,8 +437,13 @@ namespace ECS
 		 * @return T& The component at the index
 		 * @note we typecast the data at the index to the component type
 		 */
-		T& GetComponent(EntityID index) {
+		T& GetComponent(EntityID id) {
+			int index = entityIDToIndex[id];
 			return static_cast<T&>(data[index]);
+		}
+
+		T& operator [](unsigned int index) {
+			return data[index];
 		}
 	};
 
@@ -528,7 +566,7 @@ namespace ECS
 
 		if (componentID >= componentPools.size())
 		{
-			componentPools.resize(componentID + 1);
+			componentPools.resize(componentID + 1, nullptr);
 		}
 		if (!componentPools[componentID])
 		{
@@ -538,16 +576,10 @@ namespace ECS
 
 		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
 
-		if (entityID >= componentPool->GetSize())
-		{
-			componentPool->Resize(numEntities);
-		}
-
 		TComponent newComponent(std::forward<TArgs>(args)...);
 
 		componentPool->SetComponent(entityID, newComponent);
 		entityComponentMasks[entityID].set(componentID);
-
 	}
 
 	/**
@@ -563,15 +595,6 @@ namespace ECS
 		const ComponentID componentID = Component<TComponent>::GetId();
 		const EntityID entityID = entity.GetID();
 
-		if (componentID >= componentPools.size())
-		{
-			return;
-		}
-
-		if (!componentPools[componentID])
-		{
-			return;
-		}
 		std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
 		componentPools->RemoveC(entityID);
 
@@ -651,6 +674,8 @@ namespace ECS
 	{
 		return registry->HasComponent<TComponent>(*this);
 	}
+
+
 
 	/**
 	 * @brief Get the component from the entity

@@ -117,6 +117,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)CtrlAltEngine\libs;$(SolutionDir)CtrlAltEngine\libs\spdlog\include;$(SolutionDir)CtrlAltEngine\libs\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>../src/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +143,8 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
       <AdditionalIncludeDirectories>$(SolutionDir)CtrlAltEngine\libs;$(SolutionDir)CtrlAltEngine\libs\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>../src/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -183,8 +187,15 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClCompile Include="src\Editor\Windows\EditorScene.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\EntityFactory\EntityFactory.cpp" />
+    <ClCompile Include="src\EventManager\EventBus.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
     <ClCompile Include="src\Math\MathLib.cpp" />
+    <ClCompile Include="src\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="src\PhysicsManager\PhysicsManager.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Render\glslshader.cpp" />
@@ -242,7 +253,6 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClInclude Include="src\Components\CGrid.h" />
     <ClInclude Include="src\Components\CIdentifier.h" />
     <ClInclude Include="src\Components\CRigidBody.h" />
-    <ClInclude Include="src\Components\RigidBodyComponent.h" />
     <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\Editor\EditorContext.h" />
@@ -261,6 +271,7 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClInclude Include="src\Editor\EditorIncludes.h" />
     <ClInclude Include="src\Math\MathLib.h" />
     <ClInclude Include="src\Logger\Logger.h" />
+    <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\PhysicsManager\PhysicsManager.h" />
     <ClInclude Include="src\EventManager\Event.h" />
     <ClInclude Include="src\EventManager\EventBus.h" />
@@ -279,6 +290,7 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
   <ItemGroup>
     <None Include="libs\GLFW\lib-vc2022\glfw3.dll" />
     <None Include="Scene\Mock_Entity.json" />
+    <None Include="src\EventManager\EventBus.inl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\GLEW\glew32.lib" />
