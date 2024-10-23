@@ -84,7 +84,7 @@ namespace Engine{
         registry->AddSystem<System::SMovement>();
         registry->AddSystem<System::SPhysics>();
         registry->AddSystem<System::SAnimator>();
-        registry->AddSystem<System::SRender>();
+        registry->AddSystem<System::SRender>(mainWindow);
         registry->AddSystem<System::SCollision>();
         registry->AddSystem<System::SKeyboardControl>();
 

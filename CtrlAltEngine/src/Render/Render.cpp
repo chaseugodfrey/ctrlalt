@@ -174,7 +174,7 @@ namespace Render {
 	RenderPipeline::RenderPipeline() {
 	}
 
-	GLFWwindow* RenderPipeline::CreateTargetWindow(GLint width, GLint height) {
+	GLFWwindow* RenderPipeline::CreateTargetWindow(GLint width, GLint height, GLFWwindow* shareable) {
 		view_width = width;
 		view_height = height;
 
@@ -191,7 +191,7 @@ namespace Render {
 
 		//CheckGLError();
 
-		target_window = glfwCreateWindow(width, height, "Render", NULL, NULL);
+		target_window = glfwCreateWindow(width, height, "Render", NULL, shareable);
 		if (!target_window) {
 			std::cerr << "GLFW unable to create OpenGL context - abort program\n";
 			glfwTerminate();
@@ -599,7 +599,7 @@ namespace System {
 	/************************************/
 	//SRender
 	/************************************/
-	SRender::SRender()
+	SRender::SRender(GLFWwindow* shareable)
 	{
 		RequireComponent<Render::CRenderable>();
 
@@ -607,7 +607,7 @@ namespace System {
 		global_input.Init_Add_Keybind("debug toggle", GLFW_KEY_G, Input::Input_Container::TRIGGER);
 
 		//Setup Render pipeline
-		render_pipeline.CreateTargetWindow(800, 600);
+		render_pipeline.CreateTargetWindow(800, 600, shareable);
 		camera.Init(800, 600);
 		render_pipeline.SetCamera(&camera);
 

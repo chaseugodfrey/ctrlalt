@@ -220,7 +220,7 @@ namespace Render {
 		//Release texture from gpu store, can be an array or just individual
 		void ReleaseTexture(GLuint texture_array);
 
-		GLFWwindow* CreateTargetWindow(GLint width = 800, GLint height = 600);
+		GLFWwindow* CreateTargetWindow(GLint width = 800, GLint height = 600, GLFWwindow * shareable = nullptr);
 		void SetTargetWindow(GLFWwindow* window);
 		void SetTargetAsCurrent();
 		GLFWwindow const* GetCurrentWindow();
@@ -307,7 +307,7 @@ namespace System {
 		//Draw line from 2 world positions, internal function, only called in render
 		void DrawLine(glm::vec2, glm::vec2, glm::vec4 color = {0.f,0.f,0.f,1.f});
 	public:
-		SRender();
+		SRender(GLFWwindow*);
 
 		//Check for changes in input for now, should be changed to engine env variables
 		void UpdateFlags();
