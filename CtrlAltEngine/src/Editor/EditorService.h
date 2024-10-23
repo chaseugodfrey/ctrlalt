@@ -14,12 +14,13 @@
 #define EDITOR_SERVICE_H
 
 #include "EditorContext.h"
-#include "Windows/EditorBaseWindow.h"
 #include "../Scene/SceneManager.h"
 #include "../Debug/Debugger.h"
 
 namespace CtrlAltEditor
 {
+	enum EditorWindowType : int;
+
 	class EditorService
 	{
 	private:
@@ -27,12 +28,19 @@ namespace CtrlAltEditor
 		Scene::SceneManager& sceneManager;
 		Debug::FrameTimer& frameTimer;
 
+		void Initialize();
+
 	public:
 
 		EditorService(EditorContext&, Scene::SceneManager&, Debug::FrameTimer&);
 
+		// References
+		Scene::SceneManager& GetSceneManager();
+		Debug::FrameTimer& GetFrameTimer();
+
 		// Windows
-		void CreateEditorWindow(EditorWindowType);
+		template <typename WindowType>
+		void CreateEditorWindow();
 		void CreateEntityInScene();
 
 		// Editor App
@@ -43,10 +51,11 @@ namespace CtrlAltEditor
 		void CreateEntity() const;
 
 		// Scene Control
-		//void UpdateSelectedObject()
+		void UpdateSelectedObject(ECS::Entity);
 
 		std::string const ReadFPS() const;
 	};
+
 }
 
 #endif

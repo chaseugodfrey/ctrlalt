@@ -9,6 +9,20 @@
 #include "Windows/EditorInspector.h"
 #include "Windows/EditorConsole.h"
 
+namespace CtrlAltEditor
+{
+	enum EditorWindowType
+	{
+		MENUBAR,
+		PLAYBAR,
+		SCENE,
+		HIERARCHY,
+		INSPECTOR,
+		CONSOLE,
+		PERFORMANCE
+	};
+}
+
 #endif // !EDITOR_ALL_WINDOWS_H
 
 

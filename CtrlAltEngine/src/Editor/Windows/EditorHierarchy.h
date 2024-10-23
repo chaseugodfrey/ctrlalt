@@ -20,17 +20,16 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define EDITOR_HIERACHY_H
 
 #include "EditorBaseWindow.h"
-#include "../../Scene/SceneManager.h"
 
 namespace CtrlAltEditor
 {
 
 	class EditorHierarchy : public EditorWindow
 	{
-		Scene::SceneManager& sceneManager;
 
 	public:
-		EditorHierarchy(Scene::SceneManager&);
+
+		explicit EditorHierarchy(EditorService&, EditorContext const&);
 		void Display() override;
 		~EditorHierarchy();
 	};

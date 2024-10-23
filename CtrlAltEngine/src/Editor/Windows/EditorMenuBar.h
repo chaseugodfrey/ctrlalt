@@ -14,17 +14,18 @@
 #define EDITOR_MENU_H
 
 #include "EditorBaseWindow.h"
-#include "../EditorService.h"
 
 namespace CtrlAltEditor
 {
+	class EditorService;
+	class EditorContext;
+
 	class EditorMenuBar : public EditorWindow
 	{
-	private:
-		EditorService& service;
+
 	public:
 
-		EditorMenuBar(EditorService&);
+		explicit EditorMenuBar(EditorService&, EditorContext const&);
 		void Display() override;
 
 		~EditorMenuBar();

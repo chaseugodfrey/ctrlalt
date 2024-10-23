@@ -116,7 +116,7 @@ namespace CtrlAltEditor
 
 		deserialize_string();
 
-		context = std::make_unique<EditorContext>(sceneManager);
+		context = std::make_unique<EditorContext>();
 		service = std::make_unique<EditorService>(*context, sceneManager, frameTimer);
 
 	}
@@ -124,12 +124,6 @@ namespace CtrlAltEditor
 	void Editor::Initialize(GLuint _frameBufferId)
 	{
 		context->frameBufferID = _frameBufferId;
-		service->CreateEditorWindow(MENUBAR);
-		service->CreateEditorWindow(PLAYBAR);
-		service->CreateEditorWindow(SCENE);
-		service->CreateEditorWindow(HIERARCHY);
-		service->CreateEditorWindow(INSPECTOR);
-		service->CreateEditorWindow(CONSOLE);
 	}
 
 	void Editor::Update()

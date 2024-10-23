@@ -22,7 +22,15 @@ namespace MathLib
 	class vec2
 	{
 	public:
-		float x, y;
+
+		union
+		{
+			struct
+			{
+				float x, y;
+			};
+			float elements[2];
+		};
 		/******************************************************************************/
 		/*
 			A default contructor that initialises the vector as 0,0.

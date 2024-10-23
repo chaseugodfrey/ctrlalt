@@ -1,10 +1,10 @@
 #include "EditorHierarchy.h"
+#include "../EditorService.h"
 #include "../../ECS/ECS.h"
 
 namespace CtrlAltEditor
 {
-	EditorHierarchy::EditorHierarchy(Scene::SceneManager& _sceneManager) :
-		sceneManager(_sceneManager) {};
+	EditorHierarchy::EditorHierarchy(EditorService& _service, EditorContext const& _context) : EditorWindow(_service, _context) {};
 
 	void EditorHierarchy::Display()
 	{
@@ -15,7 +15,7 @@ namespace CtrlAltEditor
 			static int selected_node = -1;
 			int id = 0;
 
-			for (auto& entity : sceneManager.GetEntityList())
+			for (auto& entity : service.GetSceneManager().GetEntityList())
 			{
 				std::string name = entity.GetComponent<Component::CIdentifier>().name;
 				name += "##";
@@ -38,7 +38,18 @@ namespace CtrlAltEditor
 					{
 						std::cout << "clicked" << std::endl;
 						selected_node = id;
-						
+						service.UpdateSelectedObject(entity);
+					}
+
+					if (ImGui::BeginPopupContextItem())
+					{
+						if (ImGui::Selectable("Add Entity"));
+						ImGui::SeparatorText("Components");
+						if (ImGui::Selectable("Add Collider"));
+						if (ImGui::Selectable("Add Rigidbody"));
+						if (ImGui::Selectable("Add Animation"));
+
+						ImGui::EndPopup();
 					}
 					//ImGui::Isitem
 

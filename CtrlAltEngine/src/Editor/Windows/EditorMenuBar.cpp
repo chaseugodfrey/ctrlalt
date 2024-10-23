@@ -11,12 +11,11 @@
  /******************************************************************************/
 
 #include "EditorMenuBar.h"
+#include "../EditorService.h"
 
 namespace CtrlAltEditor
 {
-
-	EditorMenuBar::EditorMenuBar(EditorService& _service) :
-		service(_service) {};
+	EditorMenuBar::EditorMenuBar(EditorService& _service, EditorContext const& _context) : EditorWindow(_service, _context) {};
 
 	void EditorMenuBar::Display()
 	{

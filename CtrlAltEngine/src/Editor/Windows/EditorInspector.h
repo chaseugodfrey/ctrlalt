@@ -23,6 +23,7 @@ namespace CtrlAltEditor
 
 	public:
 
+		explicit EditorInspector(EditorService&, EditorContext const&);
 		void Display() override;
 
 		~EditorInspector();

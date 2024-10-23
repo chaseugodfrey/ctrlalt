@@ -2,5 +2,7 @@
 
 namespace CtrlAltEditor
 {
-	//EditorWindow::EditorWindow(EditorService& const _service) : service(_service) {}
+	EditorWindow::EditorWindow(EditorService& _service, EditorContext const& _context) : 
+		service(_service),
+		context(_context) {};
 }

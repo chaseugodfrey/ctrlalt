@@ -19,6 +19,7 @@ It allows for adding, switching, and updating scenes, as well as serializing sce
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
 #include "../Components/CIdentifier.h"
+#include "../Render/Render.h"
 
 namespace Scene
 {
@@ -42,6 +43,8 @@ namespace Scene
 	{
 		ECS::Entity entity = registry->CreateEntity();
 		entity.AddComponent<Component::CIdentifier>();
+		entity.AddComponent<Component::CTransform>();
+		entity.AddComponent<Render::CRenderable>();
 		entityList.push_back(entity);
 	}
 

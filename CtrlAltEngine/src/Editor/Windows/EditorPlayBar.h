@@ -24,6 +24,7 @@ namespace CtrlAltEditor
 	{
 	public:
 
+		explicit EditorPlayBar(EditorService&, EditorContext const&);
 		void Display() override;
 
 		~EditorPlayBar();

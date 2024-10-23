@@ -11,6 +11,9 @@
  /******************************************************************************/
 
 #include "EditorInspector.h"
+#include "../EditorService.h"
+#include "../EditorContext.h"
+#include "../../ECS/ECS.h"
 
 /**
  * @brief Displays the inspector window in the editor.
@@ -23,6 +26,8 @@
  */
 namespace CtrlAltEditor
 {
+	EditorInspector::EditorInspector(EditorService& _service, EditorContext const& _context) : EditorWindow(_service, _context) {};
+
 	void EditorInspector::Display()
 	{
 		//ImGui::SetNextWindowSize(ImVec2(400, 500));
@@ -30,20 +35,36 @@ namespace CtrlAltEditor
 
 		if (ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse))
 		{
-			if (ImGui::TreeNode("Transform"))
+			if (context.selectedEntity.size() > 0)
 			{
-				static float coord[2]{ 0, 0 };
-				ImGui::DragFloat2("x: ", coord);
-				ImGui::TreePop();
+				auto& entity = context.selectedEntity[0];
+				if (entity.HasComponent<Component::CTransform>())
+				{
+					std::cout << "has" << std::endl;
+					auto& transform = entity.GetComponent<Component::CTransform>();
+					if (ImGui::TreeNode("Transform"))
+					{
+						ImGui::DragFloat2("x: ", transform.position.elements);
+						ImGui::TreePop();
+					}
+				}
+
+				//if (ImGui::TreeNode("Transform"))
+				//{
+				//	static float coord[2]{ 0, 0 };
+				//	ImGui::DragFloat2("x: ", coord);
+				//	ImGui::TreePop();
+				//}
+
+				//if (ImGui::InputText("Serialize Test", &test_text))
+				//{
+
+				//}
+
 			}
 
-			//if (ImGui::InputText("Serialize Test", &test_text))
-			//{
-
-			//}
 
 		}
-
 		ImGui::End();
 	}
 

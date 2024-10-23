@@ -24,13 +24,10 @@ namespace CtrlAltEditor
 {
 	class EditorScene : public EditorWindow
 	{
-		GLuint frameBufferID;
 
-		Scene::SceneManager const& sceneManager;
-		Debug::FrameTimer const& frameTimer;
 	public:
 
-		EditorScene(Scene::SceneManager const&, Debug::FrameTimer const&, GLuint);
+		explicit EditorScene(EditorService&, EditorContext const&);
 		void Display() override;
 		~EditorScene();
 	};
