@@ -59,7 +59,7 @@ namespace Engine
 	private:
 		bool isRunning;
 
-		GLFWwindow* mainWindow;
+		GLFWwindow* mainWindow{};
 
 		//ECS
 		std::unique_ptr<ECS::Registry> registry;
