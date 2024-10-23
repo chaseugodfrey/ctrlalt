@@ -42,7 +42,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "../ECS/ECS.h"
 #include "../Scene/SceneManager.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
 
 	//========================================================
@@ -50,12 +50,6 @@ namespace Editor
 	//========================================================
 
 	// TESTING PURPOSES
-	static Editor* editor = nullptr;
-
-	Editor const* GetEditor()
-	{
-		return editor;
-	}
 
 	std::string file_path{ "Resources/test.txt" };
 	std::string test_text{};
@@ -85,10 +79,9 @@ namespace Editor
 	//========================================================
 	//========================================================
 
-	Editor::Editor() : window(nullptr), frame_timer(nullptr), scene_manager(nullptr)
+	Editor::Editor()
 	{
 		//Logger::LogInfo("Editor Created");
-		editor = this;
 	};
 
 	Editor::~Editor()
@@ -110,12 +103,8 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::Initialize(GLFWwindow* _window, Scene::SceneManager* _scene_manager, Debug::FrameTimer* _frameTimer)
+	void Editor::Setup(GLFWwindow* window, Scene::SceneManager& sceneManager, Debug::FrameTimer& frameTimer)
 	{
-		//Dependencies
-		window = _window;
-		scene_manager = _scene_manager;
-		frame_timer = _frameTimer;
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -126,6 +115,21 @@ namespace Editor
 		ImGui_ImplOpenGL3_Init("#version 450");
 
 		deserialize_string();
+
+		context = std::make_unique<EditorContext>(sceneManager);
+		service = std::make_unique<EditorService>(*context, sceneManager, frameTimer);
+
+	}
+
+	void Editor::Initialize(GLuint _frameBufferId)
+	{
+		context->frameBufferID = _frameBufferId;
+		service->CreateEditorWindow(MENUBAR);
+		service->CreateEditorWindow(PLAYBAR);
+		service->CreateEditorWindow(SCENE);
+		service->CreateEditorWindow(HIERARCHY);
+		service->CreateEditorWindow(INSPECTOR);
+		service->CreateEditorWindow(CONSOLE);
 	}
 
 	void Editor::Update()
@@ -137,7 +141,7 @@ namespace Editor
 		if (ImGui::IsKeyPressed(ImGuiKey_A))
 		{
 			static int count = 1;
-			ConsoleAddLine(std::to_string(count++));
+			//ConsoleAddLine(std::to_string(count++));
 		}
 
 		if (isPromptedToExit)
@@ -148,21 +152,18 @@ namespace Editor
 		// ===========================================
 	}
 
-	void Editor::Draw()
+	void Editor::Render(GLFWwindow* window)
 	{
+		// ImGUI Set New Frames
 		glfwMakeContextCurrent(window);
 		ImGui_ImplGlfw_NewFrame();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
 
-		// To Do:
-		// Convert into separate window file sub classes
-		DisplayMenuBar();
-		DisplayPlayState();
-		DisplayInspector();
-		DisplayScene();
-		DisplayInConsole();
+		//
+		DisplayGUIWindows();
 
+		// ImGUI Render
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
@@ -173,6 +174,17 @@ namespace Editor
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+	}
+
+	void Editor::DisplayGUIWindows()
+	{
+		if (context->windowList.size() <= 0)
+			return;
+
+		for (auto& window : context->windowList)
+		{
+			window->Display();
+		}
 	}
 
 	// EDITOR WINDOWS
@@ -187,181 +199,7 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::DisplayMenuBar()
-	{
-		// Set Menu Bar Size & position
-		// Remember to change size dynamically
-		ImGui::SetNextWindowSize(ImVec2(1920, 40));
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
 
-		static ImVec2 frame_padding(5.0f, 10.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, frame_padding);
-
-		// Menu Bar Rendering
-		if (ImGui::Begin("AxelUnderland", NULL,
-			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
-		{
-			if (ImGui::BeginMenuBar())
-			{
-				ImGui::SetWindowFontScale(1.2f);
-				// FILE DROP DOWN MENU
-				if (ImGui::BeginMenu("File"))
-				{
-					ImGui::MenuItem("Exit", NULL, &isPromptedToExit);
-
-					// DISABLE SAVE SCENE FOR NOW
-					//if (ImGui::MenuItem("Save Scene"))
-					//{
-					//	scene_manager->SaveScene();
-					//}
-
-					ImGui::EndMenu();
-				}
-
-				if (ImGui::BeginMenu("Create"))
-				{
-					//ImGui::BeginDisabled();
-
-					if (ImGui::MenuItem("Entity (WIP)"))
-					{
-						scene_manager->CreateEntityInScene("Basic");
-						//ECS::Entity entity = registry->CreateEntity();
-
-					}
-					//ImGui::EndDisabled();
-					ImGui::EndMenu();
-				}
-
-				// FOR M1 SUBMISSION PURPOSES
-				if (ImGui::BeginMenu("M1 Scenes"))
-				{
-					if (ImGui::MenuItem("Scene 1"))
-					{
-						LoadScene(1);
-					};
-
-					if (ImGui::MenuItem("Scene 2"))
-					{
-						LoadScene(2);
-					};
-
-					if (ImGui::MenuItem("Scene 3"))
-					{
-						LoadScene(3);
-					};
-
-					ImGui::EndMenu();
-				}
-
-				ImGui::EndMenuBar();
-			}
-
-		};
-
-		ImGui::PopStyleVar();
-		ImGui::End();
-
-	}
-
-	/**
-	 * @brief Displays the play state window in the editor.
-	 *
-	 * This function sets up and renders the play state window, which includes buttons
-	 * for "Play" and "Stop", as well as displaying the current frames per second (FPS).
-	 *
-	 * @return void This function does not return a value.
-	 */
-
-	void Editor::DisplayPlayState()
-	{
-
-		ImGui::SetNextWindowSize(ImVec2(1920, 40));
-		ImGui::SetNextWindowPos(ImVec2(0, 40));
-
-		if (ImGui::Begin("PlayState", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar))
-		{
-
-			ImVec2 btn_size(36, 20);
-			ImGui::SameLine(ImGui::GetWindowWidth() * 0.5f);
-			ImGui::Button("Play", btn_size); ImGui::SameLine();
-			ImGui::Dummy(btn_size); ImGui::SameLine();
-			ImGui::Button("Stop", btn_size);
-		}
-
-		ImGui::SameLine(ImGui::GetWindowWidth() * 0.95f);
-		ImGui::Text(ReadFPS().c_str());
-	
-
-		ImGui::End();
-	}
-
-	/**
-	 * @brief Displays the inspector window in the editor.
-	 *
-	 * This function creates and renders the inspector window, allowing users to view
-	 * and edit entity properties such as "Transform". It includes drag-and-drop for
-	 * modifying position coordinates and an input text field for serialization testing.
-	 *
-	 * @return void This function does not return a value.
-	 */
-
-	void Editor::DisplayInspector()
-	{
-		//ImGui::SetNextWindowSize(ImVec2(400, 500));
-		//ImGui::SetNextWindowPos(ImVec2(0, 40));
-
-		if (ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse ))
-		{
-			if (ImGui::TreeNode("Transform"))
-			{
-				static float coord[2]{ 0, 0 };
-				ImGui::DragFloat2("x: ", coord);
-				ImGui::TreePop();
-			}
-
-			if (ImGui::InputText("Serialize Test", &test_text))
-			{
-
-			}
-
-		}
-
-		ImGui::End();
-	}
-
-	void Editor::DisplayHierarchy()
-	{
-		//ImGui::SetNextWindowSize(ImVec2(400, 500));
-		//ImGui::SetNextWindowPos(ImVec2(1920 - 400, 40));
-
-	}
-
-	/**
-	 * @brief Displays scene window in the editor.
-	 *
-	 * This function displays the scene rendered as a frame buffer
-	 * from the rendering system after converting it into an ImGUI
-	 * texture.
-	 * 
-	 * Not currently working now.
-	 *
-	 * @return void This function does not return a value.
-	 */
-
-	void Editor::DisplayScene()
-	{
-		//ImGui::SetNextWindowSize(ImVec2(1120, 500));
-		//ImGui::SetNextWindowPos(ImVec2(400, 40));
-
-		if (ImGui::Begin("Scene", NULL))
-		{
-
-
-		}
-
-		ImGui::End();
-
-	}
 
 	/**
 	 * @brief Displays the console window in the editor.
@@ -374,50 +212,6 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::DisplayInConsole()
-	{
-		//ImGui::SetNextWindowSize(ImVec2(800, 500));
-		//ImGui::SetNextWindowPos(ImVec2(400, 500));
-		
-
-		if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse))
-		{
-
-			if (ImGui::Button("Clear"))
-			{
-				ConsoleClear();
-			}
-
-			static bool auto_scroll = true;
-			static float scroll_pos = 0.f;
-
-			if (ImGui::BeginTable("Console_Table", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_BordersInner | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY))
-			{
-
-				for (size_t i = 0; i < console_data.size(); i++)
-				{
-					ImGui::TableNextRow(NULL, 25.0f);
-					ImGui::TableNextColumn();
-					ImGui::Text(console_data[i].c_str());
-				}
-
-				if (auto_scroll)
-					ImGui::SetScrollY(ImGui::GetScrollMaxY());
-
-				if (ImGui::GetScrollY() < ImGui::GetScrollMaxY() - 10.0f)
-					auto_scroll = false;
-				else
-					auto_scroll = true;
-
-
-			
-				ImGui::EndTable();
-			}
-
-		}
-
-		ImGui::End();
-	}
 
 	/**
 	 * @brief Retrieves the exit prompt status.
@@ -441,23 +235,12 @@ namespace Editor
 	 * @return void This function does not return a value.
 	 */
 
-	void Editor::ConsoleAddLine(std::string const& str) const
-	{
-		console_data.push_back(str);
-	}
+	//void Editor::ConsoleAddLine(std::string const& str) const
+	//{
+	//	console_data.push_back(str);
+	//}
 
-	/**
-	 * @brief Clears the console log.
-	 *
-	 * This function clears all the text currently stored in the console's log.
-	 *
-	 * @return void This function does not return a value.
-	 */
 
-	void Editor::ConsoleClear() const
-	{
-		console_data.clear();
-	}
 
 	/**
 	 * @brief Reads and returns the current frames per second (FPS).
@@ -467,12 +250,6 @@ namespace Editor
 	 *
 	 * @return std::string A formatted string showing the current FPS.
 	 */
-
-	std::string Editor::ReadFPS() const
-	{
-		std::string FPSCOUNT = "FPS + " + frame_timer->ReadFPS();
-		return FPSCOUNT;
-	}
 
 	/**
 	 * @brief Loads a scene based on its index.
@@ -486,9 +263,9 @@ namespace Editor
 
 	void Editor::LoadScene(int index)
 	{
-		ConsoleAddLine("Scene Loaded: " + std::to_string(index));
+		//ConsoleAddLine("Scene Loaded: " + std::to_string(index));
 		std::string this_string = "Scene" + std::to_string(index);
-		scene_manager->SwitchScene(this_string);
+		//scene_manager->SwitchScene(this_string);
 	}
 
 }

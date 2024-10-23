@@ -44,7 +44,8 @@ constexpr const char* LOG_INFO_COLOR = GREEN; /*!< Default color for info log me
  * - `LOG_INFO`: Represents informational messages.
  */
 enum Severity : uint8_t {
-    LOG_INFO /*!< Informational log messages. */
+    LOG_INFO, /*!< Informational log messages. */
+    LOG_EDITOR
 };
 
 /*!

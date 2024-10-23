@@ -38,11 +38,11 @@ namespace Scene
 	@param std::string& entityType
 	@return -
 	\*________________________________________________________________*/
-	void SceneManager::CreateEntityInScene(const std::string& entityType)
+	void SceneManager::CreateEntityInScene()
 	{
 		if (currentScene)
 		{
-			currentScene->CreateEntity(entityType);
+			currentScene->CreateEntity();
 			currentScene->DebugPrintEntityCount();
 		}
 	}

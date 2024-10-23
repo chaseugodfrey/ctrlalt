@@ -31,61 +31,53 @@ The following macros control the inclusion of additional API headers. Any number
 #include  <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include <vector>
+#include <memory>
 
-#include "Editor_Includes.h"
-#include "EditorWindow.h"
+// Include Editor 
+#include "EditorIncludes.h"
+#include "EditorContext.h"
+#include "EditorService.h"
+
+#include "Windows/EditorBaseWindow.h"
+
 #include "../Scene/SceneManager.h"
 #include "../ECS/ECS.h"
 #include "../Debug/Debugger.h"
 
-namespace Editor {
+namespace CtrlAltEditor {
 
 	class Editor {
 
 	private:
 
+		std::unique_ptr<EditorContext> context;
+		std::unique_ptr<EditorService> service;
+
 		// bools
 		bool isPromptedToExit{ false };
 		bool isCreateEntity{ false };
 
-		GLFWwindow* window;
-
-		std::vector<EditorWindow*> gui_windows_list;
-		Scene::SceneManager* scene_manager;
-
-		//
-		Debug::FrameTimer* frame_timer;
-
 		// TEST FUNCTIONS
-
-		void DisplayMenuBar();
-		void DisplayPlayState();
-		void DisplayHierarchy();
-		void DisplayInspector();
-		void DisplayScene();
-		void DisplayInConsole();
 
 	public:
 		Editor();
 		~Editor();
 
-		void Initialize(GLFWwindow*, Scene::SceneManager*, Debug::FrameTimer*);
+		void Setup(GLFWwindow*, Scene::SceneManager&, Debug::FrameTimer&);
+		void Initialize(GLuint);
 		void Update();
-		void Draw();
+		void Render(GLFWwindow*);
 		void Destroy();
+
+		void DisplayGUIWindows();
 
 		// TEST FUNCTIONS
 		void LoadScene(int);
-		void ConsoleAddLine(std::string const&) const;
-		void ConsoleClear() const;
-		std::string ReadFPS() const;
 
 		// Get bools
 		bool GetExitPrompt();
 
 	};
-
-	Editor const* GetEditor();
 
 }
 

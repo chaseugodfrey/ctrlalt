@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 \group  	CtrlAlt
-\file		Editor_Hierarchy.h
+\file		EditorHierarchy.h
 \author 	Chase Rodrigues
 \par    	rodrigues.i@digipen.edu
 \date   	Sep 08, 2024
@@ -19,15 +19,20 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #ifndef EDITOR_HIERACHY_H
 #define EDITOR_HIERACHY_H
 
-#include "EditorWindow.h"
+#include "EditorBaseWindow.h"
+#include "../../Scene/SceneManager.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
 
-	class Hierarchy : public EditorWindow
+	class EditorHierarchy : public EditorWindow
 	{
+		Scene::SceneManager& sceneManager;
+
 	public:
-		void Display();
+		EditorHierarchy(Scene::SceneManager&);
+		void Display() override;
+		~EditorHierarchy();
 	};
 
 }

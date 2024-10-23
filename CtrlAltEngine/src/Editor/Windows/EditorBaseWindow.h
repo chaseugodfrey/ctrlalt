@@ -4,7 +4,7 @@
 \file		EditorWindow.h
 \author 	Chase Rodrigues
 \par    	rodrigues.i@digipen.edu
-\date   	Sep 08, 2024
+\date   	Oct 20, 2024
 \brief
 
  */
@@ -13,19 +13,31 @@
 #ifndef EDITOR_WINDOW_H
 #define EDITOR_WINDOW_H
 
-#include "Editor_Includes.h"
 #include <string>
+#include "../EditorIncludes.h"
 
-namespace Editor
+namespace CtrlAltEditor
 {
+
+	enum EditorWindowType
+	{
+		MENUBAR,
+		PLAYBAR,
+		SCENE,
+		HIERARCHY,
+		INSPECTOR,
+		CONSOLE,
+		PERFORMANCE
+	};
+
 	class EditorWindow
 	{
+		
 	public:
 
 		std::string label;
-
+		
 		virtual void Display() = 0;
-
 		virtual ~EditorWindow() = default;
 	};
 }

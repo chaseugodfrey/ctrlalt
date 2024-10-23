@@ -59,19 +59,19 @@ namespace Engine
 	private:
 		bool isRunning;
 
+		GLFWwindow* mainWindow;
+
 		//ECS
 		std::unique_ptr<ECS::Registry> registry;
 		std::unique_ptr<Event::EventBus> eventBus;
 		std::unique_ptr<Scene::SceneManager> sceneManager;
-		
+
 		//Editor
-		Editor::Editor* editor;
+		std::unique_ptr<Debug::FrameTimer> frameTimer;
+		std::unique_ptr<CtrlAltEditor::Editor> editor;
 
 		//Asset
 		AssetManager assetManager; 
-
-		//FrameTimer
-		Debug::FrameTimer frameTimer;
 
 		//GLFWwindow* CreateGLFWwindow(int width, int height);
 
@@ -91,6 +91,7 @@ namespace Engine
 		void Render();
 
 		void Destroy();
+
 		int windowWidth;
 		int windowHeight;
 		
