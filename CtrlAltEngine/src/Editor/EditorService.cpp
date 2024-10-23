@@ -16,7 +16,7 @@ namespace CtrlAltEditor
 		switch (type)
 		{
 		case CtrlAltEditor::MENUBAR:
-			window = std::make_unique<EditorMenuBar>();
+			window = std::make_unique<EditorMenuBar>(*this);
 			break;
 		case CtrlAltEditor::PLAYBAR:
 			window = std::make_unique<EditorPlayBar>();
@@ -39,6 +39,12 @@ namespace CtrlAltEditor
 
 		context.windowList.push_back(std::move(window));
 
+	}
+
+	void EditorService::CreateEntityInScene()
+	{
+		sceneManager.CreateEntityInScene();
+		std::cout << "Created Entity" << std::endl;
 	}
 
 	void EditorService::AppSave() const

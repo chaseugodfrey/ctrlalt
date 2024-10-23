@@ -15,6 +15,9 @@
 namespace CtrlAltEditor
 {
 
+	EditorMenuBar::EditorMenuBar(EditorService& _service) :
+		service(_service) {};
+
 	void EditorMenuBar::Display()
 	{
 		// Set Menu Bar Size & position
@@ -56,7 +59,7 @@ namespace CtrlAltEditor
 
 					if (ImGui::MenuItem("Entity"))
 					{
-						//scene_manager->CreateEntityInScene("Basic");
+						service.CreateEntityInScene();
 						//ECS::Entity entity = registry->CreateEntity();
 
 					}

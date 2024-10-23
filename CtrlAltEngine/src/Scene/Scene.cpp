@@ -51,7 +51,7 @@ namespace Scene {
     }
 
 
-    void Scene::CreateEntity(const std::string& entityType)
+    ECS::Entity Scene::CreateEntity(const std::string& entityType)
     {
         std::map<std::string, std::string> componentData;
 
@@ -63,8 +63,10 @@ namespace Scene {
             componentData["CTransform"] = SerializeTransform(entity.GetComponent<Component::CTransform>());
             sceneEntities.push_back(entity);
             entityData.push_back({ std::to_string(entityID), componentData });
+            return entity;
             //    registry->AddEntityToSystems(entity);
         }
+
         else if (entityType == "Player")
         {
             ECS::Entity entity = entityFactory.CreatePlayerEntity();
@@ -74,7 +76,9 @@ namespace Scene {
             sceneEntities.push_back(entity);
             entityData.push_back({ std::to_string(entityID), componentData });
             registry->AddEntityToSystems(entity);
+            return entity;
         }
+
         else if (entityType == "Enemy")
         {
             ECS::Entity entity = entityFactory.CreateEnemyEntity();
@@ -84,12 +88,13 @@ namespace Scene {
             sceneEntities.push_back(entity);
             entityData.push_back({ std::to_string(entityID), componentData });
             registry->AddEntityToSystems(entity);
+            return entity;
         }
 
         else
         {
             Logger::LogInfo("Unknown entity type: " + entityType);
-            return;
+            return 0;
         }
     }
 
@@ -138,6 +143,7 @@ namespace Scene {
 
         for (const auto& [entityId, components] : entityData) {
             ECS::Entity entity = registry->CreateEntity();
+            entity.AddComponent<Component::CIdentifier>();
             //Updating in scene does not imply updating in Registry
 
             for (const auto& [componentType, componentData] : components) {

@@ -28,7 +28,7 @@ namespace Scene
 	@param -
 	@return -
 	\*________________________________________________________________*/
-	SceneManager::SceneManager(ECS::Registry* registry) : registry(registry), currentScene(nullptr) {
+	SceneManager::SceneManager(ECS::Registry* registry) : registry(registry), currentScene(0) {
 
 	}
 
@@ -40,11 +40,9 @@ namespace Scene
 	\*________________________________________________________________*/
 	void SceneManager::CreateEntityInScene()
 	{
-		if (currentScene)
-		{
-			currentScene->CreateEntity();
-			currentScene->DebugPrintEntityCount();
-		}
+		ECS::Entity entity = registry->CreateEntity();
+		entity.AddComponent<Component::CIdentifier>();
+		entityList.push_back(entity);
 	}
 
 	/*!
@@ -55,10 +53,7 @@ namespace Scene
 	\*________________________________________________________________*/
 	void SceneManager::AddScene(const std::string& name, const std::string& filePath)
 	{
-		auto scene = std::make_unique<Scene>(registry, name, filePath);
-		scene->LoadEntityData();
-		scenes[name] = std::move(scene);
-		Logger::LogInfo("Scene added: " + name);
+
 	}
 
 	/*!
@@ -69,7 +64,7 @@ namespace Scene
 	\*________________________________________________________________*/
 	void SceneManager::SaveScene()
 	{
-		currentScene->SaveDataToFile();
+
 	}
 
 	/*!
@@ -80,7 +75,7 @@ namespace Scene
 	\*________________________________________________________________*/
 	void SceneManager::RemoveScene(const std::string& scene)
 	{
-		scenes.erase(scene);
+
 	}
 
 	/*!
@@ -89,19 +84,20 @@ namespace Scene
 	@param const std::string& sceneName
 	@return -
 	\*________________________________________________________________*/
-	void SceneManager::SwitchScene(const std::string& sceneName) {
-		auto it = scenes.find(sceneName);
-		if (it != scenes.end()) {
-			if (currentScene)
-				currentScene->Unload();
-			currentScene = it->second.get();
-			currentScene->Load();
-			Logger::LogInfo("Switched to scene: " + sceneName);
-			currentScene->DebugPrintEntityCount();
-		}
-		else {
-			Logger::LogInfo("Error, no scene: " + sceneName);
-		}
+	void SceneManager::SwitchScene(const std::string& sceneName) 
+	{
+		//auto it = scenes.find(sceneName);
+		//if (it != scenes.end()) {
+		//	if (currentScene)
+		//		currentScene->Unload();
+		//	currentScene = it->second.get();
+		//	currentScene->Load();
+		//	Logger::LogInfo("Switched to scene: " + sceneName);
+		//	currentScene->DebugPrintEntityCount();
+		//}
+		//else {
+		//	Logger::LogInfo("Error, no scene: " + sceneName);
+		//}
 	}
 
 	/*!
@@ -110,9 +106,9 @@ namespace Scene
 	@param -
 	@return -
 	\*________________________________________________________________*/
-	void SceneManager::UpdateScene()
+	void SceneManager::Update()
 	{
-		if (currentScene) currentScene->Update();
+
 	}
 
 	/*!
@@ -123,7 +119,7 @@ namespace Scene
 	\*________________________________________________________________*/
 	std::string SceneManager::GetSceneNumber()
 	{
-		return currentScene->GetCurrentSceneName();
+		return "a";
 	}
 
 	/*!
@@ -132,9 +128,14 @@ namespace Scene
 	@param -
 	@return -
 	\*________________________________________________________________*/
-	Scene* SceneManager::GetScene()
+	int SceneManager::GetCurrentScene()
 	{
 		return currentScene;
+	}
+
+	std::vector<ECS::Entity> SceneManager::GetEntityList()
+	{
+		return entityList;
 	}
 
 }

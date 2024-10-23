@@ -15,6 +15,7 @@
 
 #include <string>
 #include "../EditorIncludes.h"
+#include "../EditorContext.h"
 
 namespace CtrlAltEditor
 {
@@ -33,10 +34,13 @@ namespace CtrlAltEditor
 	class EditorWindow
 	{
 		
+	protected:
+		EditorContext& context;
+
 	public:
 
 		std::string label;
-		
+		EditorWindow(EditorContext& _context) : context(_context) {};
 		virtual void Display() = 0;
 		virtual ~EditorWindow() = default;
 	};

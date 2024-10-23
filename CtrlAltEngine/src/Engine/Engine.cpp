@@ -106,10 +106,10 @@ namespace Engine{
         global_input.Init_System(mainWindow);
 
         // Scene Loading
-        sceneManager->AddScene("Scene1", "Assets/scene1.txt");
-        sceneManager->AddScene("Scene2", "Assets/scene2.txt");
-        sceneManager->AddScene("Scene3", "Assets/scene3.txt");
-        sceneManager->SwitchScene("Scene1");
+        //sceneManager->AddScene("Scene1", "Assets/scene1.txt");
+        //sceneManager->AddScene("Scene2", "Assets/scene2.txt");
+        //sceneManager->AddScene("Scene3", "Assets/scene3.txt");
+        //sceneManager->SwitchScene("Scene1");
 
         // Editor
         editor->Initialize(registry->GetSystem<System::SRender>().GetScreenTexture());
@@ -137,7 +137,7 @@ namespace Engine{
     /// </summary>
     void Engine::Update() {
 
-        sceneManager->UpdateScene();
+        sceneManager->Update();
 
         eventBus->Reset();
 		registry->GetSystem<System::SMovement>().Update();

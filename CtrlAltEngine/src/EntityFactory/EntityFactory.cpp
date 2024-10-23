@@ -42,6 +42,7 @@ namespace EntityFactory {
 	ECS::Entity EntityFactory::CreateBasicEntity()
 	{
 		ECS::Entity entity = registry->CreateEntity();
+		entity.AddComponent<Component::CIdentifier>();
 		entity.AddComponent<Component::CTransform>();
 		entity.AddComponent<Render::CRenderable>();
 		Render::CRenderable& rComp = entity.GetComponent<Render::CRenderable>();
@@ -64,6 +65,7 @@ namespace EntityFactory {
 	ECS::Entity EntityFactory::CreatePlayerEntity()
 	{
 		ECS::Entity entity = registry->CreateEntity();
+		entity.AddComponent<Component::CIdentifier>();
 		entity.AddComponent<Component::CTransform>();
 		entity.AddComponent<Component::CRigidBody>();
 		entity.AddComponent<Component::CIdentifier>("Player");
@@ -86,6 +88,7 @@ namespace EntityFactory {
 	ECS::Entity EntityFactory::CreateEnemyEntity()
 	{
 		ECS::Entity entity = registry->CreateEntity();
+		entity.AddComponent<Component::CIdentifier>();
 		entity.AddComponent<Component::CTransform>();
 		entity.AddComponent<Component::CRigidBody>();
 		entity.AddComponent<Component::CIdentifier>("Enemy");

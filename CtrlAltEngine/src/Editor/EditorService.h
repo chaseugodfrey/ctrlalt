@@ -33,6 +33,7 @@ namespace CtrlAltEditor
 
 		// Windows
 		void CreateEditorWindow(EditorWindowType);
+		void CreateEntityInScene();
 
 		// Editor App
 		void AppSave() const;
@@ -40,6 +41,9 @@ namespace CtrlAltEditor
 
 		// Create
 		void CreateEntity() const;
+
+		// Scene Control
+		//void UpdateSelectedObject()
 
 		std::string const ReadFPS() const;
 	};
