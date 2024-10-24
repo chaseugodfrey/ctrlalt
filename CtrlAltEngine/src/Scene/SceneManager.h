@@ -17,7 +17,6 @@ It allows for adding, switching, and updating scenes, as well as serializing sce
 #include <unordered_map>
 #include <memory>
 #include <string>
-#include "Scene.h"
 #include "../ECS/ECS.h"
 #include "../Components/CRigidBody.h"
 #include "../Components/CTransform.h"
@@ -28,9 +27,11 @@ namespace Scene
 	class SceneManager
 	{
 	private:
-		std::map<std::string, std::unique_ptr<Scene>> scenes;
-		Scene* currentScene;
+		//std::map<std::string, std::unique_ptr<Scene>> scenes;
+		int currentScene;
 		ECS::Registry* registry;
+
+		std::vector<ECS::Entity> entityList;
 
 	public:
 		/*!
@@ -40,14 +41,6 @@ namespace Scene
 		@return -
 		\*________________________________________________________________*/
 		SceneManager(ECS::Registry*);
-
-		/*!
-		@brief Function call for Editor to make changes in Scene
-		Special scenarios: -
-		@param std::string& entityType
-		@return -
-		\*________________________________________________________________*/
-		void CreateEntityInScene();
 
 		/*!
 		@brief Function call to add a scene to the Editor given a filename and the filepath
@@ -82,12 +75,12 @@ namespace Scene
 		void SwitchScene(const std::string&);
 
 		/*!
-		@brief Editor to call UpdateScene
+		@brief 
 		Special scenarios: -
 		@param -
 		@return -
 		\*________________________________________________________________*/
-		void UpdateScene();
+		void Update();
 
 		/*!
 		@brief Get current Scene name in the form of an std::string
@@ -103,7 +96,18 @@ namespace Scene
 		@param -
 		@return -
 		\*________________________________________________________________*/
-		Scene* GetScene();
+		int GetCurrentScene();
+
+
+		/*!
+		@brief Function call for Editor to make changes in Scene
+		Special scenarios: -
+		@param std::string& entityType
+		@return -
+		\*________________________________________________________________*/
+		void CreateEntityInScene();
+
+		std::vector<ECS::Entity> GetEntityList();
 
 	};
 }

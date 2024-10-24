@@ -26,26 +26,23 @@ namespace CtrlAltEditor
 	class EditorContext
 	{
 	private:
-		Scene::SceneManager& sceneManager;
+
+		bool isDirty;
 
 	public:
 
 		// Constructor
-		EditorContext(Scene::SceneManager&);
 		~EditorContext();
 
 		// Editor Variables
 		std::vector<std::unique_ptr<EditorWindow>> windowList;
 
-		bool isDirty;
 
 		// Scene
 		GLuint frameBufferID;
 
-		std::weak_ptr<ECS::Entity> selectedObject;
+		std::vector<ECS::Entity> selectedEntity;
 
-
-		
 	};
 }
 

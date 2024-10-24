@@ -23,6 +23,7 @@ namespace CtrlAltEditor
 
 	public:
 
+		explicit EditorConsole(EditorService&, EditorContext const&);
 		void Display() override;
 		//friend void ConsoleLog(const std::string);
 

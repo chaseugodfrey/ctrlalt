@@ -14,6 +14,7 @@
 
 namespace CtrlAltEditor
 {
+	EditorConsole::EditorConsole(EditorService& _service, EditorContext const& _context) : EditorWindow(_service, _context) {};
 
 	void EditorConsole::Display()
 

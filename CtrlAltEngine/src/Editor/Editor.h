@@ -39,6 +39,7 @@ The following macros control the inclusion of additional API headers. Any number
 #include "EditorService.h"
 
 #include "Windows/EditorBaseWindow.h"
+#include "EditorAllWindows.h"
 
 #include "../Scene/SceneManager.h"
 #include "../ECS/ECS.h"

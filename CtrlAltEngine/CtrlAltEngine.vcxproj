@@ -201,7 +201,6 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClCompile Include="src\Render\glslshader.cpp" />
     <ClCompile Include="src\Render\Render.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Scene\SceneManager.cpp" />
     <ClCompile Include="src\Systems\SCollision.cpp" />
     <ClCompile Include="src\Serialisation\Mock_Serialisation.cpp" />
@@ -283,7 +282,6 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClInclude Include="src\Systems\SCollision.h" />
     <ClInclude Include="src\Systems\SPhysics.h" />
     <ClInclude Include="src\Serialisation\Mock_Serialisation.h" />
-    <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Scene\SceneManager.h" />
     <ClInclude Include="src\Utility\TimeClass\Time.h" />
   </ItemGroup>

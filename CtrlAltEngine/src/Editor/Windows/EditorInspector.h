@@ -14,6 +14,7 @@
 #define EDITOR_INSPECTOR_H
 
 #include "EditorBaseWindow.h"
+#include "../../ECS/ECS.h"
 #include <vector>
 
 namespace CtrlAltEditor
@@ -23,11 +24,15 @@ namespace CtrlAltEditor
 
 	public:
 
+		explicit EditorInspector(EditorService&, EditorContext const&);
 		void Display() override;
 
 		~EditorInspector();
 
 	private:
+
+		ImGuiTreeNodeFlags treeFlags;
+		void DisplayTransform(ECS::Entity const&);
 
 	};
 }

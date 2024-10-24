@@ -17,12 +17,15 @@
 
 namespace CtrlAltEditor
 {
+	class EditorService;
+	class EditorContext;
+
 	class EditorMenuBar : public EditorWindow
 	{
-	private:
 
 	public:
 
+		explicit EditorMenuBar(EditorService&, EditorContext const&);
 		void Display() override;
 
 		~EditorMenuBar();

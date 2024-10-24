@@ -11,6 +11,9 @@
  /******************************************************************************/
 #include "../src/pch.h"
 #include "EditorInspector.h"
+#include "../EditorService.h"
+#include "../EditorContext.h"
+#include "../../ECS/ECS.h"
 
 /**
  * @brief Displays the inspector window in the editor.
@@ -23,29 +26,70 @@
  */
 namespace CtrlAltEditor
 {
+	EditorInspector::EditorInspector(EditorService& _service, EditorContext const& _context) :
+		EditorWindow(_service, _context),
+		treeFlags(ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_AllowItemOverlap) {};
+
 	void EditorInspector::Display()
 	{
-		//ImGui::SetNextWindowSize(ImVec2(400, 500));
-		//ImGui::SetNextWindowPos(ImVec2(0, 40));
-
 		if (ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse))
 		{
-			if (ImGui::TreeNode("Transform"))
+			if (context.selectedEntity.size() > 0)
 			{
-				static float coord[2]{ 0, 0 };
-				ImGui::DragFloat2("x: ", coord);
-				ImGui::TreePop();
+				auto& entity = context.selectedEntity[0];
+				if (entity.HasComponent<Component::CTransform>()) { DisplayTransform(entity); }
+
 			}
 
-			//if (ImGui::InputText("Serialize Test", &test_text))
-			//{
-
-			//}
 
 		}
-
 		ImGui::End();
 	}
 
 	EditorInspector::~EditorInspector() {};
+
+	void EditorInspector::DisplayTransform(ECS::Entity const& entity)
+	{
+		auto& transform = entity.GetComponent<Component::CTransform>();
+		if (ImGui::TreeNodeEx("Transform", treeFlags))
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("+"))
+			{
+
+			}
+
+			ImGui::Spacing();
+
+			// Translation
+			ImGui::Text("Translation");
+			ImGui::SameLine(150.0f);
+			ImGui::SetNextItemWidth(100.0f);
+			ImGui::DragFloat("x##t", &transform.position.x, 0.1f, 0.0f, 0.0f, "X: %.3f");
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(100.0f);
+			ImGui::DragFloat("y##t", &transform.position.y, 0.1f, 0.0f, 0.0f, "Y: %.3f");
+
+			// Scale
+			ImGui::Text("Scale");
+			ImGui::SameLine(150.0f);
+			ImGui::SetNextItemWidth(100.0f);
+			ImGui::DragFloat("x##s", &transform.scale.x, 0.1f, 0.0f, 0.0f, "X: %.3f");
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(100.0f);
+			ImGui::DragFloat("y##s", &transform.scale.y, 0.1f, 0.0f, 0.0f, "Y: %.3f");
+
+			// Rotation
+			ImGui::Text("Rotation");
+			ImGui::SameLine(150.0f);
+			ImGui::SetNextItemWidth(100.0f);
+			float rot = transform.rotation;
+			ImGui::DragFloat("##r", &rot, 0.1f, 0.0f, 0.0f, "%.1f");
+			transform.rotation = rot;
+
+			ImGui::TreePop();
+
+		}
+
+	}
 }

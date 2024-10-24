@@ -19,24 +19,21 @@
 namespace CtrlAltEditor
 {
 
-	enum EditorWindowType
-	{
-		MENUBAR,
-		PLAYBAR,
-		SCENE,
-		HIERARCHY,
-		INSPECTOR,
-		CONSOLE,
-		PERFORMANCE
-	};
+	class EditorService;
+	class EditorContext;
 
 	class EditorWindow
 	{
+
+	protected:
+		EditorService& service;
+		EditorContext const& context;
 		
 	public:
 
 		std::string label;
 		
+		explicit EditorWindow(EditorService&, EditorContext const&);
 		virtual void Display() = 0;
 		virtual ~EditorWindow() = default;
 	};

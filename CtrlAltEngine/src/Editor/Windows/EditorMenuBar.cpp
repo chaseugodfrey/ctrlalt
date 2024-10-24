@@ -11,9 +11,11 @@
  /******************************************************************************/
 #include "../src/pch.h"
 #include "EditorMenuBar.h"
+#include "../EditorService.h"
 
 namespace CtrlAltEditor
 {
+	EditorMenuBar::EditorMenuBar(EditorService& _service, EditorContext const& _context) : EditorWindow(_service, _context) {};
 
 	void EditorMenuBar::Display()
 	{
@@ -56,7 +58,7 @@ namespace CtrlAltEditor
 
 					if (ImGui::MenuItem("Entity"))
 					{
-						//scene_manager->CreateEntityInScene("Basic");
+						service.CreateEntityInScene();
 						//ECS::Entity entity = registry->CreateEntity();
 
 					}
