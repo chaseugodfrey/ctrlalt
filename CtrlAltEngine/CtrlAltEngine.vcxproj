@@ -175,6 +175,7 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClCompile Include="src\Editor\EditorContext.cpp" />
     <ClCompile Include="src\Editor\EditorService.cpp" />
     <ClCompile Include="src\Editor\Windows\EditorBaseWindow.cpp" />
+    <ClCompile Include="src\Editor\Windows\EditorDockspace.cpp" />
     <ClCompile Include="src\Editor\Windows\EditorHierarchy.cpp" />
     <ClCompile Include="src\Editor\Windows\EditorConsole.cpp" />
     <ClCompile Include="src\Editor\Windows\EditorInspector.cpp" />
@@ -248,6 +249,7 @@ xcopy /y /i /d "$(SolutionDir)CtrlAltEngine\libs\GLEW\glew32.dll" "$(TargetDir)"
     <ClInclude Include="src\Editor\EditorService.h" />
     <ClInclude Include="src\Editor\EditorAllWindows.h" />
     <ClInclude Include="src\Editor\Windows\EditorConsole.h" />
+    <ClInclude Include="src\Editor\Windows\EditorDockspace.h" />
     <ClInclude Include="src\Editor\Windows\EditorInspector.h" />
     <ClInclude Include="src\Editor\Windows\EditorMenuBar.h" />
     <ClInclude Include="src\Editor\Windows\EditorPlayBar.h" />

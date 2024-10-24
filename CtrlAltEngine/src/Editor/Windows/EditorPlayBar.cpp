@@ -21,7 +21,6 @@ namespace CtrlAltEditor
 
 		if (ImGui::Begin("PlayState", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar))
 		{
-
 			ImVec2 btn_size(36, 20);
 			ImGui::SameLine(ImGui::GetWindowWidth() * 0.5f);
 			ImGui::Button("Play", btn_size); ImGui::SameLine();

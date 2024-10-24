@@ -22,6 +22,7 @@
 
 namespace CtrlAltEditor
 {
+	enum EditorWindowType;
 
 	class EditorContext
 	{
@@ -40,8 +41,10 @@ namespace CtrlAltEditor
 
 		// Scene
 		GLuint frameBufferID;
-
+		
 		std::vector<ECS::Entity> selectedEntity;
+
+		std::unique_ptr<EditorWindow> GetWindow(int) const;
 
 	};
 }

@@ -4,6 +4,7 @@
 #include "Windows/EditorBaseWindow.h"
 #include "Windows/EditorMenuBar.h"
 #include "Windows/EditorPlayBar.h"
+#include "Windows/EditorDockspace.h"
 #include "Windows/EditorScene.h"
 #include "Windows/EditorHierarchy.h"
 #include "Windows/EditorInspector.h"
@@ -15,6 +16,7 @@ namespace CtrlAltEditor
 	{
 		MENUBAR,
 		PLAYBAR,
+		DOCKSPACE,
 		SCENE,
 		HIERARCHY,
 		INSPECTOR,

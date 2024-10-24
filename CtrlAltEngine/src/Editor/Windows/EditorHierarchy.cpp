@@ -8,7 +8,7 @@ namespace CtrlAltEditor
 
 	void EditorHierarchy::Display()
 	{
-		if (ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+		if (ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoCollapse))
 		{
 			ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
 

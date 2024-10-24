@@ -16,6 +16,7 @@ namespace CtrlAltEditor
 	{
 		CreateEditorWindow<EditorMenuBar>();
 		CreateEditorWindow<EditorPlayBar>();
+		CreateEditorWindow<EditorDockspace>();
 		CreateEditorWindow<EditorScene>();
 		CreateEditorWindow<EditorHierarchy>();
 		CreateEditorWindow<EditorInspector>();

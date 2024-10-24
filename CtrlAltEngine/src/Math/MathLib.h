@@ -23,14 +23,7 @@ namespace MathLib
 	{
 	public:
 
-		union
-		{
-			struct
-			{
-				float x, y;
-			};
-			float elements[2];
-		};
+		float x, y;
 		/******************************************************************************/
 		/*
 			A default contructor that initialises the vector as 0,0.
